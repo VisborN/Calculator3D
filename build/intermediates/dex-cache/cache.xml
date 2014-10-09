@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pre-dex-items>
+
+    <item
+        dex="C:\Dropbox\AndroidStudioProjects\Calculator3D\Calculator3D\build\intermediates\pre-dexed\debug\support-annotations-20.0.0-56196fe813d0f5e6273c18c2b71cdc616aa78079.jar"
+        jar="C:\Program Files\android-studio\sdk\extras\android\m2repository\com\android\support\support-annotations\20.0.0\support-annotations-20.0.0.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="9d9013e9ff35fc3756411e62873c363c70c638fa"/>
+    <item
+        dex="C:\Dropbox\AndroidStudioProjects\Calculator3D\Calculator3D\build\intermediates\pre-dexed\debug\internal_impl-20.0.0-7b200530aff507d02d74d6b8958c1a155ba4f33f.jar"
+        jar="C:\Dropbox\AndroidStudioProjects\Calculator3D\Calculator3D\build\intermediates\exploded-aar\com.android.support\support-v4\20.0.0\libs\internal_impl-20.0.0.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="e40b3078e3fbd353c9f44da8df25a8fc0078209d"/>
+    <item
+        dex="C:\Dropbox\AndroidStudioProjects\Calculator3D\Calculator3D\build\intermediates\pre-dexed\debug\classes-dad22d375d6e0b542be176267be8a9eecb6611a8.jar"
+        jar="C:\Dropbox\AndroidStudioProjects\Calculator3D\Calculator3D\build\intermediates\exploded-aar\com.android.support\support-v13\20.0.0\classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="e128103d5281ddd26195a7f980b36d0d005a4e56"/>
+    <item
+        dex="C:\andro projects\Calculator3D\Calculator3D\build\intermediates\pre-dexed\debug\classes-e1fa532f587c9d3e2e9892bb4082eb8260107f35.jar"
+        jar="C:\andro projects\Calculator3D\Calculator3D\build\intermediates\exploded-aar\com.android.support\support-v4\20.0.0\classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="8694693636ab36910c8100ce527c258ff3ebece0"/>
+    <item
+        dex="C:\andro projects\Calculator3D\Calculator3D\build\intermediates\pre-dexed\debug\classes-cb1a18c4cc7e1da09f5fed8fe45d0695b66e7348.jar"
+        jar="C:\andro projects\Calculator3D\Calculator3D\build\intermediates\exploded-aar\com.android.support\support-v13\20.0.0\classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="e128103d5281ddd26195a7f980b36d0d005a4e56"/>
+    <item
+        dex="C:\Dropbox\AndroidStudioProjects\Calculator3D\Calculator3D\build\intermediates\pre-dexed\debug\internal_impl-20.0.0-70b2a6c18d810246f00f14da939e9afbd33c7dd0.jar"
+        jar="C:\Dropbox\AndroidStudioProjects\Calculator3D\Calculator3D\build\intermediates\exploded-aar\com.android.support\support-v13\20.0.0\libs\internal_impl-20.0.0.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="27bbd3982cdfe4468a9bf99c8c773734a9049e33"/>
+    <item
+        dex="C:\andro projects\Calculator3D\Calculator3D\build\intermediates\pre-dexed\debug\internal_impl-20.0.0-0454b97f3b598a4179bf0a79529ae2dbcbd8e08e.jar"
+        jar="C:\andro projects\Calculator3D\Calculator3D\build\intermediates\exploded-aar\com.android.support\support-v4\20.0.0\libs\internal_impl-20.0.0.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="e40b3078e3fbd353c9f44da8df25a8fc0078209d"/>
+    <item
+        dex="C:\andro projects\Calculator3D\Calculator3D\build\intermediates\pre-dexed\debug\internal_impl-20.0.0-b30c4a0cb345ac4a12254c129da134283d52581e.jar"
+        jar="C:\andro projects\Calculator3D\Calculator3D\build\intermediates\exploded-aar\com.android.support\support-v13\20.0.0\libs\internal_impl-20.0.0.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="27bbd3982cdfe4468a9bf99c8c773734a9049e33"/>
+    <item
+        dex="C:\Dropbox\AndroidStudioProjects\Calculator3D\Calculator3D\build\intermediates\pre-dexed\debug\classes-3253fc98e474e6abe8e31b4b1ceb6ebff260644c.jar"
+        jar="C:\Dropbox\AndroidStudioProjects\Calculator3D\Calculator3D\build\intermediates\exploded-aar\com.android.support\support-v4\20.0.0\classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="8694693636ab36910c8100ce527c258ff3ebece0"/>
+
+</pre-dex-items>

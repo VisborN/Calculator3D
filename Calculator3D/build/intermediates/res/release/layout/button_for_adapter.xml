@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/buttonforadapter"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="false">
+
+    <Button
+        android:id="@+id/button_in_button_for_adapter"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/std_button"
+        android:textColor="#FFFFFF"
+        android:textSize="40sp"
+
+
+    />
+
+
+</LinearLayout><!-- From: file:/C:/andro%20projects/Calculator3D/Calculator3D/src/main/res/layout/button_for_adapter.xml -->
