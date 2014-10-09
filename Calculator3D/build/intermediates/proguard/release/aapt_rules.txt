@@ -1,0 +1,10 @@
+# view res/layout/main_fragment.xml #generated:48
+# view res/layout/pagesadapter.xml #generated:45
+-keep class android.support.v4.view.ViewPager { <init>(...); }
+
+# view res/layout/main_activ_main_drawer.xml #generated:3
+-keep class android.support.v4.widget.DrawerLayout { <init>(...); }
+
+# view AndroidManifest.xml #generated:17
+-keep class com.dudkovlad.Calc3d.MainActivity { <init>(...); }
+
