@@ -20,7 +20,7 @@ public class MyCalc {
     TextView equation_view;
     TextView resultview;
     Parser equation_parse;
-    TextView debugview;
+    public TextView debugview;
 
     public MyCalc (Context mContext, TextView equation_view_, TextView resultview_, TextView debugview_ )
     {
@@ -76,8 +76,8 @@ public class MyCalc {
         result  = equation_parse.Result(equation);
         long end = System.nanoTime();
 
-        debugview.setText(debugview.getText().toString() + "runtime: "+Long.toString(end-start)+" ns or "+Long.toString((end-start)/1000000)+" ms");
-
+        debugview.setText(debugview.getText().toString() + "runtime: "+(end-start)+" ns or "+((end-start)/1000000)+" ms" + 33333333/(end-start));
+        debugview.setText(debugview.getText().toString() + "   "+Double.valueOf("1.0e+36"));
         if (result.equals("Error")) result = "";
         resultview.setText(result);
 

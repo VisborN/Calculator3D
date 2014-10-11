@@ -74,7 +74,6 @@ public class EnteringFragment extends Fragment  {
         states.addState(new int[] {android.R.attr.state_focused},
                 getResources().getDrawable(R.drawable.focused));*/
         states.addState(new int[] { },new BitmapDrawable(getResources(),icon_bmp_up));
-        //ShapeDrawable shape = new ShapeDrawable();
 
 
         mainLay = (LinearLayout)inflater.inflate(R.layout.main_fragment, container, false);
@@ -102,9 +101,15 @@ public class EnteringFragment extends Fragment  {
         equation_view.setGravity(Gravity.END);
         equation_view.setTextSize(45);
 
+
         delete_button.setImageDrawable(states);/*getResources().getDrawable(R.drawable.ic_for_redact)*/
-        delete_button.setLayoutParams(new LinearLayout.LayoutParams(
+        if (Data.del_but_show)
+            delete_button.setLayoutParams(new LinearLayout.LayoutParams(
                 0,LinearLayout.LayoutParams.WRAP_CONTENT, Data.del_but_prcnt));
+        else
+            delete_button.setLayoutParams(new LinearLayout.LayoutParams(
+                    0,LinearLayout.LayoutParams.WRAP_CONTENT, 0));
+
         delete_button.setBackground(new ColorDrawable(0xff633F29));
 
 

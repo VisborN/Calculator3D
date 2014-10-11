@@ -17,4 +17,4 @@
             android:divider="@android:color/transparent"
             android:dividerHeight="0dp"
             android:background="#111"/>
-</android.support.v4.widget.DrawerLayout><!-- From: file:/C:/andro%20projects/Calculator3D/Calculator3D/src/main/res/layout/main_activ_main_drawer.xml -->
+</android.support.v4.widget.DrawerLayout><!-- From: file:/C:/Calculator3D/Calculator3D/src/main/res/layout/main_activ_main_drawer.xml -->

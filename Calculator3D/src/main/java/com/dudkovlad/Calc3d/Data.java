@@ -21,7 +21,7 @@ public class Data {
     public static String  pages_button_value[][];
     public static boolean del_but_show, pages_vertical_slide;
     public static int del_but_prcnt, del_but_color_up, del_but_color_down;
-
+    public static boolean result_show_float;
 
     public static void Load_Data(SharedPreferences __prefs)
     {
@@ -41,7 +41,9 @@ public class Data {
             history_num_sys[i]  = prefs.getInt("history_num_sys"    +tmp, 10);
             history_degrees[i]  = prefs.getBoolean("history_degrees"+tmp, true);
         }
-        del_but_show = prefs.getBoolean("del_but_show", true);
+        result_show_float = prefs.getBoolean("result_show_float", false);
+
+        del_but_show = prefs.getBoolean("del_but_show", false);
         del_but_prcnt = prefs.getInt("del_but_prcnt", 25);
         del_but_color_up = prefs.getInt("del_but_color_up",     0x00B97A57);
         del_but_color_down = prefs.getInt("del_but_color_down", 0x009F6342);

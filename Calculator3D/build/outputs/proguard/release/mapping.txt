@@ -922,12 +922,12 @@ com.dudkovlad.Calc3d.MainActivity -> com.dudkovlad.Calc3d.MainActivity:
     void AddToEquation(java.lang.String) -> a
     void onPause() -> onPause
 com.dudkovlad.Calc3d.MyCalc -> com.dudkovlad.Calc3d.h:
-    java.lang.String equation -> b
-    java.lang.String result -> c
+    java.lang.String equation -> c
+    java.lang.String result -> d
     android.widget.TextView equation_view -> a
-    android.widget.TextView resultview -> d
-    com.dudkovlad.Calc3d.Parser.Parser equation_parse -> e
-    android.widget.TextView debugview -> f
+    android.widget.TextView resultview -> e
+    com.dudkovlad.Calc3d.Parser.Parser equation_parse -> f
+    android.widget.TextView debugview -> b
     void DelFromEquation() -> a
     void DelAllFromEquation() -> b
     void Result() -> c
@@ -961,8 +961,9 @@ com.dudkovlad.Calc3d.Parser.Element_of_equation -> com.dudkovlad.Calc3d.a.b:
     com.dudkovlad.Calc3d.Parser.Complex comp -> a
     java.lang.String func -> b
     double real -> c
-    int type -> d
+    short type -> d
     char var -> e
+    short stype -> f
     com.dudkovlad.Calc3d.Parser.Element_of_equation String_to_Element(java.lang.String) -> a
     com.dudkovlad.Calc3d.Parser.Element_of_equation[] Cut_put(com.dudkovlad.Calc3d.Parser.Element_of_equation[],com.dudkovlad.Calc3d.Parser.Element_of_equation[],int,int) -> a
     java.lang.String Double_to_String(double) -> a

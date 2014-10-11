@@ -22,17 +22,28 @@ public class Const {
     public static final short FUNCRE  = 16;
     public static final short REAL    = 17;
     public static final short COMPLEX = 18;
-    public static final short COMPARE = 24;
-    public static final short EQUAL   = 19;
-    public static final short MORE    = 20;
-    public static final short MORE_OR_EQUAL = 21;
-    public static final short LESS    = 22;
-    public static final short LESS_OR_EQUAL = 23;
-    public static final short SET = 23;
-    public static final short AND = 23;
-    public static final short OR = 23;
-    public static final short XOR = 23;
-    public static final short DIFF = 23;
+    public static final short COMPARE = 19;
+    public static final short EQUAL   = 20;
+    public static final short MORE    = 21;
+    public static final short MORE_OR_EQUAL = 22;
+    public static final short LESS    = 23;
+    public static final short LESS_OR_EQUAL = 24;
+    public static final short SET = 25;
+    public static final short AND = 26;
+    public static final short OR = 27;
+    public static final short XOR = 28;
+    public static final short DIFF = 29;
+    public static final short SIN = 30;
+    public static final short COS = 31;
+    public static final short TAN = 32;
+    public static final short LOG = 33;
+    public static final short LN = 34;
+    public static final short ABS = 35;
+    public static final short SQRT = 36;
+    public static final short CBRT = 37;
+    public static final short FACTORIAL = 38;
+
+
 
 
 

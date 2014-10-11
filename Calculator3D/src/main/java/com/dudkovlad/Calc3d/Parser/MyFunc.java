@@ -1,16 +1,17 @@
 package com.dudkovlad.Calc3d.Parser;
 
+import com.dudkovlad.Calc3d.Data;
 import com.dudkovlad.Calc3d.MainActivity;
 
 /**
  * Created by vlad on 16.06.2014.
  */
-public class MyFunc {
-    static double Factorial(double num) {
+public  class MyFunc {
+    static public <T> double Factorial(T num) {
         double fact=1;
-        if (num%1==0)
-            for (int i=1; i<=(int)num; i++) {
-                fact*=i;
+        if (((Float)num)%1==0)
+            for (int i=1; i<=(Float)num; i++) {
+                fact=((double)i)*fact;
             }
         /*else {
             double tmp1 = Math.sqrt(2*Math.PI/num);
@@ -28,7 +29,7 @@ public class MyFunc {
     public static String[] Cut_put (String[] arr1, String[] arr2, int ind1, int ind2)
     {
         if (ind1> ind2){
-            //MainActivity.debugview.setText("Error: " + "$20" + " ");
+            MainActivity.data_del.debugview.setText("Error: " + "$20" + " ");
             return new String[]{"Error"};
         }
         String[] out = new String [arr1.length - ind2 - 1 + ind1 + arr2.length ];
@@ -55,22 +56,15 @@ public class MyFunc {
 
     public static String Double_to_String (double in)
     {
-/*
-        int outi;
-        if (in%1==0) {
 
-            if (((Double) in).equals((double) (outi = ((Double) in).intValue())))
-                return Integer.toString(outi); //max integer 2147483647
-        }
-        return Float.toString((float)in);     //max float 7    E38
-    */
         Long outl;
-        if (in%1==0) {
+        if (((Double) in).equals((double) (outl = ((Double) in).longValue())))
+            return Long.toString(outl);   //max long 1E17
+        if (Data.result_show_float)
+            return Float.toString((float)in);       //max float 7    E38
 
-            if (((Double) in).equals((double) (outl = ((Double) in).longValue())))
-                return Long.toString(outl); //max long 1E17
-        }
-        return Double.toString((float)in);     //max double 14   E38
+
+        return Double.toString(in);     //max double 14   E308
 
     }
 
@@ -81,7 +75,7 @@ public class MyFunc {
     public static String[] Take_part (String[] arr, int ind1, int ind2 )
     {
         if (ind1> ind2) {
-            //MainActivity.debugview.setText("Error: " + "$21" + " ");
+            MainActivity.data_del.debugview.setText("Error: " + "$21" + " ");
             return new String[]{"Error"};
         }
         String[] out = new String[ind2 - ind1 + 1];

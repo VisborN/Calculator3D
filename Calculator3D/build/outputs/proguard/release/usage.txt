@@ -1472,7 +1472,7 @@ com.dudkovlad.Calc3d.Parser.Complex:
     123:125:public static com.dudkovlad.Calc3d.Parser.Complex plus(com.dudkovlad.Calc3d.Parser.Complex,com.dudkovlad.Calc3d.Parser.Complex)
 com.dudkovlad.Calc3d.Parser.Const
 com.dudkovlad.Calc3d.Parser.Element_of_equation:
-    26:29:Element_of_equation(com.dudkovlad.Calc3d.Parser.Complex)
+    28:31:Element_of_equation(com.dudkovlad.Calc3d.Parser.Complex)
 com.dudkovlad.Calc3d.Parser.MyFunc:
     8:8:public MyFunc()
     30:38:public static java.lang.String[] Cut_put(java.lang.String[],java.lang.String[],int,int)
