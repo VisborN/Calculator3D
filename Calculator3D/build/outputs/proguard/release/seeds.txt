@@ -1,9 +1,0 @@
-android.support.v4.view.ViewPager
-android.support.v4.view.ViewPager: ViewPager(android.content.Context)
-android.support.v4.view.ViewPager: ViewPager(android.content.Context,android.util.AttributeSet)
-android.support.v4.widget.DrawerLayout
-android.support.v4.widget.DrawerLayout: DrawerLayout(android.content.Context)
-android.support.v4.widget.DrawerLayout: DrawerLayout(android.content.Context,android.util.AttributeSet)
-android.support.v4.widget.DrawerLayout: DrawerLayout(android.content.Context,android.util.AttributeSet,int)
-com.dudkovlad.Calc3d.MainActivity
-com.dudkovlad.Calc3d.MainActivity: MainActivity()

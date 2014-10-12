@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle" >
-    <!--corners android:radius="1px" /-->
-    <solid android:color="#B97A57"/>
-    <!--stroke
-        android:width="1px"
-        android:color="#384248" /-->
-</shape><!-- From: file:/C:/Calculator3D/Calculator3D/src/main/res/drawable/std_button_normal.xml -->
