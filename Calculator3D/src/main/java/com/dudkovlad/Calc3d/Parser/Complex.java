@@ -19,11 +19,15 @@ public class Complex {
 
     public String toString() {
         if (im == 0) return MyFunc.Double_to_String(re);
-        if (im != 1) {
+        if (im != 1&& im != -1) {
             if (re == 0) return MyFunc.Double_to_String(im) + "i";
+            if (im < 0)
+                return MyFunc.Double_to_String(re) + MyFunc.Double_to_String(im) + "i";
             return MyFunc.Double_to_String(re) + "+" + MyFunc.Double_to_String(im) + "i";
         }else {
             if (re == 0) return "i";
+            if (im < 0)
+                return MyFunc.Double_to_String(re) + "-" + "i";
             return MyFunc.Double_to_String(re) + "+" + "i";
         }
     }

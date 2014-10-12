@@ -76,8 +76,7 @@ public class MyCalc {
         result  = equation_parse.Result(equation);
         long end = System.nanoTime();
 
-        debugview.setText(debugview.getText().toString() + "runtime: "+(end-start)+" ns or "+((end-start)/1000000)+" ms" + 33333333/(end-start));
-        debugview.setText(debugview.getText().toString() + "   "+Double.valueOf("1.0e+36"));
+        //debugview.setText(debugview.getText().toString() + "runtime: "+(end-start)+" ns or "+((end-start)/1000000)+" ms   " + 33333333/(end-start) + " iterations per frame");
         if (result.equals("Error")) result = "";
         resultview.setText(result);
 

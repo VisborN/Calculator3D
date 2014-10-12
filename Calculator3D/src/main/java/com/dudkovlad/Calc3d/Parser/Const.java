@@ -4,55 +4,80 @@ package com.dudkovlad.Calc3d.Parser;
  * Created by vlad on 25.05.2014.
  */
 public class Const {
-    public static final short VAR     = 1;
-    public static final short PLUS    = 2;
-    public static final short MINUS   = 3;
-    public static final short DIV     = 4;
-    public static final short MULT    = 5;
-    public static final short POW     = 6;
-    public static final short ROOT    = 7;
-    public static final short PRCNT   = 8;
-    public static final short LBR     = 9;
-    public static final short RBR     = 10;
-    public static final short LPAR    = 11;
-    public static final short RPAR    = 12;
-    public static final short VLINE   = 13;
-    public static final short ERROR   = 14;
-    public static final short FUNC    = 15;
-    public static final short FUNCRE  = 16;
-    public static final short REAL    = 17;
-    public static final short COMPLEX = 18;
-    public static final short COMPARE = 19;
-    public static final short EQUAL   = 20;
-    public static final short MORE    = 21;
-    public static final short MORE_OR_EQUAL = 22;
-    public static final short LESS    = 23;
-    public static final short LESS_OR_EQUAL = 24;
-    public static final short SET = 25;
-    public static final short AND = 26;
-    public static final short OR = 27;
-    public static final short XOR = 28;
-    public static final short DIFF = 29;
-    public static final short SIN = 30;
-    public static final short COS = 31;
-    public static final short TAN = 32;
-    public static final short LOG = 33;
-    public static final short LN = 34;
-    public static final short ABS = 35;
-    public static final short SQRT = 36;
-    public static final short CBRT = 37;
-    public static final short FACTORIAL = 38;
+    public static final byte ERROR          = 0;
+
+    public static final byte B_TYPE         = 1;
+    public static final byte VAR            = 2;
+    public static final byte REAL           = 3;
+    public static final byte COMPLEX        = 4;
+    public static final byte E_TYPE         = 20;
 
 
 
 
+    public static final byte B_FUNC         = 21;
+    public static final byte ROOT           = 22;
+    public static final byte SIN            = 23;
+    public static final byte COS            = 24;
+    public static final byte TAN            = 25;
+    public static final byte LOG            = 26;
+    public static final byte LN             = 27;
+    public static final byte ABS            = 28;
+    public static final byte SQRT           = 29;
+    public static final byte CBRT           = 30;
+    public static final byte E_FUNC         = 40;
 
 
 
 
+    public static final byte B_FUNCRE       = 41;
+    public static final byte FACTORIAL      = 42;
+    public static final byte E_FUNCRE       = 60;
 
 
 
 
+    public static final byte B_OPER         = 61;
+    public static final byte POW            = 62;
+    public static final byte OPER_PRIOR1    = 63;
+    public static final byte DIV            = 64;
+    public static final byte MULT           = 65;
+    public static final byte PRCNT          = 66;
+    public static final byte OPER_PRIOR2    = 67;
+    public static final byte PLUS           = 68;
+    public static final byte MINUS          = 69;
+    public static final byte E_OPER         = 80;
+
+
+
+
+    public static final byte B_BRACK        = 81;
+    public static final byte LBR            = 82;
+    public static final byte RBR            = 83;
+    public static final byte LPAR           = 84;
+    public static final byte RPAR           = 85;
+    public static final byte VLINE          = 86;
+    public static final byte E_BRACK        = 100;
+
+
+
+
+    public static final byte B_COMPARE      = 101;
+    public static final byte EQUAL          = 102;
+    public static final byte MORE           = 103;
+    public static final byte MORE_OR_EQUAL  = 104;
+    public static final byte LESS           = 105;
+    public static final byte LESS_OR_EQUAL  = 106;
+    public static final byte E_COMPARE      = 120;
+
+
+
+
+    public static final byte B_SET          = -20;          //ввиду отсутствия соглашения
+    public static final byte AND            = -19;          //о приоритете операций над множествами
+    public static final byte XOR            = -17;          //приоритеты не расстывлены
+    public static final byte OR             = -16;          //Priorities are not defined
+    public static final byte DIFF           = -14;          //because of there isn't
+    public static final byte E_SET          = -1;           //any general agreement
 
 }

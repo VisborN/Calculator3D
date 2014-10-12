@@ -3,6 +3,8 @@ package com.dudkovlad.Calc3d.Parser;
 
 import android.media.Image;
 
+import com.dudkovlad.Calc3d.MainActivity;
+
 /**
  * Created by vlad on 04.05.2014.
  */
@@ -40,7 +42,11 @@ public class Parser {
 
     public String Result ()
     {
+        long start = System.nanoTime();
         equation_optim_ = Polynomial (equation_optim_);
+        long end = System.nanoTime();
+        MainActivity.data_del.debugview.setText(MainActivity.data_del.debugview.getText().toString() + "runtime: "+(end-start)+" ns or "+((end-start)/1000000)+" ms   " + 33333333/(end-start) + " iterations per frame");
+
 
 
         if (equation_optim_[0].type == Const.LBR)
@@ -205,10 +211,14 @@ public class Parser {
         for (int i = 0, j = bm / 2; i < arr.length && j > 0; i++)
             if (b == 0&&arr[i].type == Const.VLINE) {
                 if (bml == -1 && i < arr.length - 1) {
-                    if (!((arr[i + 1].type >= Const.DIV && arr[i + 1].type <= Const.PRCNT) || arr[i + 1].type == Const.RPAR || arr[i + 1].type == Const.RBR || arr[i + 1].type == Const.FUNCRE)) {
+                    if (!((arr[i + 1].type >= Const.DIV && arr[i + 1].type <= Const.PRCNT) ||
+                            arr[i + 1].type == Const.RPAR || arr[i + 1].type == Const.RBR ||
+                            (Const.B_FUNCRE <arr[i+1].type &&arr[i+1].type < Const.E_FUNCRE))) {
                         bml = i;
                     } else return new Element_of_equation[]{new Element_of_equation("$7")};
-                } else if (i > 0 && !((arr[i - 1].type >= Const.PLUS && arr[i - 1].type <= Const.PRCNT) || arr[i - 1].type == Const.LPAR || arr[i - 1].type == Const.LBR || arr[i - 1].type == Const.FUNC)) {
+                } else if (i > 0 && !((arr[i - 1].type >= Const.PLUS && arr[i - 1].type <= Const.PRCNT)
+                        ||  arr[i - 1].type == Const.LPAR || arr[i - 1].type == Const.LBR ||
+                        (Const.B_FUNC <arr[i-1].type &&arr[i-1].type < Const.E_FUNC))) {
                     if (bml == i - 1) {
                         if (bml > 0)
                             arr = MyFunc.Cut_put(arr, MyFunc.Take_part(arr, bml - 1, bml - 1), bml - 1, i);
@@ -224,7 +234,8 @@ public class Parser {
 
 
                 } else if (i < arr.length - 1 && !((arr[i + 1].type >= Const.DIV && arr[i + 1].type <= Const.PRCNT) ||
-                        arr[i + 1].type == Const.RPAR || arr[i + 1].type == Const.RBR || arr[i + 1].type == Const.FUNCRE)) {
+                        arr[i + 1].type == Const.RPAR || arr[i + 1].type == Const.RBR ||
+                        (Const.B_FUNCRE <arr[i+1].type &&arr[i+1].type < Const.E_FUNCRE))) {
                     bml = i;
                 } else return new Element_of_equation[]{new Element_of_equation("$9")};
             }
@@ -246,22 +257,22 @@ public class Parser {
     {
         int bm = 0;
         for (int i = 0; i < arr.length; i++)
-            if (bm==0&&arr[i].type == Const.FUNC) {
+            if (bm==0&& Const.B_FUNC <arr[i].type &&arr[i].type < Const.E_FUNC) {
                 if (i < arr.length - 1 && (arr[i + 1].type == Const.REAL ||arr[i + 1].type == Const.COMPLEX))
-                    arr = MyFunc.Cut_put(arr, new Element_of_equation[]{Function(MyFunc.Take_part(arr, i, i + 1))}, i, i + 1);
-                else if (i >= arr.length - 1 || arr[i + 1].type != Const.LPAR && arr[i + 1].type != Const.LBR && arr[i + 1].type != Const.FUNC&& arr[i + 1].type != Const.VAR)
+                    arr = MyFunc.Cut_put(arr, new Element_of_equation[]{Function_parser.Run_func(arr[i].type, arr[i+1])}, i, i + 1);
+                else if (i >= arr.length - 1 || arr[i + 1].type != Const.LPAR && arr[i + 1].type != Const.LBR &&
+                        ( Const.B_FUNC >arr[i].type ||arr[i].type > Const.E_FUNC)&& arr[i + 1].type != Const.VAR)
                     return new Element_of_equation[]{new Element_of_equation("$11")};
-            } else if (bm==0&&arr[i].type == Const.FUNCRE) {
+            } else if (bm==0&&Const.B_FUNCRE <arr[i].type &&arr[i].type < Const.E_FUNCRE) {
                 if (i > 0 && (arr[i - 1].type == Const.REAL ||arr[i - 1].type == Const.COMPLEX)) {
                     arr = MyFunc.Cut_put(arr,
                             new Element_of_equation[]{
-                                Function(new Element_of_equation[]{
-                                    new Element_of_equation(arr[i]), new Element_of_equation(arr[i - 1])
-                                })
+                                Function_parser.Run_func(arr[i].type, arr[i - 1])
                             }, i - 1, i);
                     i--;
                 }
-                else if (i <= 0 || arr[i - 1].type != Const.LPAR &&arr[i - 1].type != Const.LBR && arr[i - 1].type != Const.FUNCRE&& arr[i - 1].type != Const.VAR)
+                else if (i <= 0 || arr[i - 1].type != Const.LPAR &&arr[i - 1].type != Const.LBR &&
+                        (Const.B_FUNCRE >arr[i].type ||arr[i].type > Const.E_FUNCRE)&& arr[i - 1].type != Const.VAR)
                     return new Element_of_equation[]{new Element_of_equation("$12")};
             }
             else if (arr[i].type == Const.LBR||arr[i].type == Const.LPAR) bm++;
@@ -283,9 +294,9 @@ public class Parser {
             case 2:
                 for (int i = 0; i < arr.length-1; i++)
                 if ((arr[i].type == Const.VAR|| arr[i].type == Const.RBR || arr[i].type == Const.RPAR ||
-                        arr[i].type == Const.FUNCRE || arr[i].type == Const.REAL || arr[i].type == Const.COMPLEX)&&
+                        (Const.B_FUNCRE <arr[i].type &&arr[i].type < Const.E_FUNCRE) || arr[i].type == Const.REAL || arr[i].type == Const.COMPLEX)&&
                     (arr[i+1].type == Const.VAR || arr[i + 1].type == Const.LBR || arr[i + 1].type == Const.LPAR ||
-                        arr[i + 1].type == Const.FUNC || arr[i + 1].type == Const.REAL || arr[i + 1].type == Const.COMPLEX))
+                            ( Const.B_FUNC <arr[i+1].type &&arr[i+1].type < Const.E_FUNC) || arr[i + 1].type == Const.REAL || arr[i + 1].type == Const.COMPLEX))
                         arr = MyFunc.Cut_put(arr, new Element_of_equation[]{arr[i], new Element_of_equation(Const.MULT), arr[i + 1]}, i, i + 1);
                 operator = new int[]{Const.MULT, Const.DIV};
                 break;
@@ -305,8 +316,8 @@ public class Parser {
                         arr = MyFunc.Cut_put(arr, new Element_of_equation[]{Operator(MyFunc.Take_part(arr, i - 1, i + 1))}, i - 1, i + 1);
                         i--;
                     } else if ( arr[i + 1].type != Const.LPAR && arr[i + 1].type != Const.LBR &&
-                                arr[i + 1].type != Const.FUNC && arr[i - 1].type != Const.LPAR &&
-                                arr[i - 1].type != Const.LBR && arr[i - 1].type != Const.FUNCRE &&
+                                ( Const.B_FUNC >arr[i+1].type ||arr[i+1].type > Const.E_FUNC) && arr[i - 1].type != Const.LPAR &&
+                                arr[i - 1].type != Const.LBR && (Const.B_FUNCRE >arr[i-1].type ||arr[i-1].type > Const.E_FUNCRE) &&
                                 arr[i + 1].type != Const.VAR && arr[i - 1].type != Const.VAR)
                         return new Element_of_equation[]{new Element_of_equation("$oper "+prioritet_level+ "   ")};
 
@@ -314,78 +325,13 @@ public class Parser {
                 else if (arr[i].type == Const.LBR || arr[i].type == Const.LPAR) bm++;
                 else if (arr[i].type == Const.RBR || arr[i].type == Const.RPAR) bm--;
         int temp = arr[arr.length-1].type;
-        if (temp==Const.MINUS||temp==Const.PRCNT||temp==Const.ROOT||temp==Const.POW||temp==Const.MULT||temp==Const.DIV||temp==Const.PLUS)
+        if (Const.B_OPER<temp&&temp<Const.E_OPER)
             return new Element_of_equation[]{new Element_of_equation("$14")};
         return arr;
     }
 
   //-------------------------------------------------------------------------------------------------------------
 
-    private Element_of_equation Function (Element_of_equation[] arr)
-    {
-        Element_of_equation output=new Element_of_equation(Const.ERROR);
-        if (arr[0].type == Const.ERROR||arr[1].type==Const.ERROR||(arr[0].type!=Const.FUNC&&arr[0].type!=Const.FUNCRE))
-            return output;
-        if (arr[1].type==Const.REAL) {
-            output.type = Const.REAL;
-            if (arr[0].func.equals("Sin"))
-                output.real = Math.sin(arr[1].real);
-            else if (arr[0].func.equals("Cos"))
-                output.real = Math.cos(arr[1].real);
-            else if (arr[0].func.equals("Tan"))
-                output.real = Math.tan(arr[1].real);
-            else if (arr[0].func.equals("Log"))
-                output.real = Math.log10(arr[1].real);
-            else if (arr[0].func.equals("Ln"))
-                output.real = Math.log(arr[1].real);
-            else if (arr[0].func.equals("Abs"))
-                output.real = Math.abs(arr[1].real);
-            else if (arr[0].func.equals("Sqrt"))
-                if (arr[1].real >= 0)
-                    output.real = Math.sqrt(arr[1].real);
-                else
-                {
-                    output.type = Const.COMPLEX;
-                    output.comp = new Complex(0,1).times( Math.sqrt(arr[1].real));
-                }
-            else if (arr[0].func.equals("Cbrt"))
-                output.real = Math.cbrt(arr[1].real);
-            else  if (arr[0].func.equals("!")){
-                if (arr[1].real>=0)
-                    output.real = MyFunc.Factorial(arr[1].real);
-            }
-            else output.type = Const.ERROR;
-        }else if(arr[1].type == Const.COMPLEX){
-            output.type = Const.COMPLEX;
-            if (arr[0].func.equals("Sin"))
-                output.comp = arr[1].comp.sin();
-            else if (arr[0].func.equals("Cos"))
-                output.comp = arr[1].comp.cos();
-            else if (arr[0].func.equals("Tan"))
-                output.comp = arr[1].comp.tan();
-            else if (arr[0].func.equals("Log"))
-                output.comp = arr[1].comp.log10();
-            else if (arr[0].func.equals("Ln"))
-                output.comp = arr[1].comp.ln();
-            else if (arr[0].func.equals("Abs"))
-                output.comp = new Complex(arr[1].comp.abs(), 0);
-            else if (arr[0].func.equals("Sqrt"))
-                output.comp = arr[1].comp.pow(0.5);
-            else if (arr[0].func.equals("Cbrt"))
-                output.comp = arr[1].comp.pow(1.0 / 3.0);
-            else  if (arr[0].func.equals("!"))
-                output.type = Const.ERROR;   //TODO factorial of complex value
-            else output.type = Const.ERROR;
-        }
-        if (output.type == Const.ERROR) return new Element_of_equation("$15");
-        if( output.type == Const.COMPLEX ) {
-            if (Math.abs(output.comp.re) < 0.0000000000001) output.comp.re = 0;
-            if (Math.abs(output.comp.im) < 0.0000000000001) output.comp.im = 0;
-        }
-        if (output.type == Const.REAL && Math.abs(output.real)< 0.0000000000001 ) output.real = 0;
-
-        return output;
-    }
 
 
     //-------------------------------------------------------------------------------------------------------------

@@ -9,13 +9,15 @@ import java.lang.reflect.Type;
  * Created by vlad on 21.05.2014.
  */
 public class Element_of_equation {
-    Complex comp;
-    short  func;
-    double  real;
+    Complex     comp;
+    Complex64   compf;
+    double      real;
+    float       realf;
+    boolean     is_float;
 
-    short   type;
-    char    var;
-    short   stype;
+    char        var;
+
+    byte        type;
 
 
 
@@ -25,12 +27,28 @@ public class Element_of_equation {
     {
         real = _real;
         type = Const.REAL;
+        is_float = false;
     }
 
     Element_of_equation (Complex _comp)
     {
         comp = _comp;
         type = Const.COMPLEX;
+        is_float = false;
+    }
+
+    Element_of_equation(float _real)
+    {
+        realf = _real;
+        type = Const.REAL;
+        is_float = true;
+    }
+
+    Element_of_equation (Complex64 _comp)
+    {
+        compf = _comp;
+        type = Const.COMPLEX;
+        is_float = true;
     }
 
     Element_of_equation (String some)
@@ -48,15 +66,19 @@ public class Element_of_equation {
 
                 real = Double.valueOf(some);
                 if (((Double)real).isNaN()) type = Const.ERROR;
+                is_float = false;
         }else
+            if(some.equals("³√"))
+                type = Const.CBRT;
+        else
             if (some.equals(">="))
-                {type = Const.COMPARE; stype = Const.MORE_OR_EQUAL;}
+                type = Const.MORE_OR_EQUAL;
         else
             if (some.equals("<="))
-                {type = Const.COMPARE; stype = Const.LESS_OR_EQUAL;}
+                type = Const.LESS_OR_EQUAL;
         else
             if (some.length()>1)
-                {type = Const.FUNC; func = Function_parser.Funcname_to_Funcint(some);}
+                type = Function_parser.Funcname_to_Funcint(some);
         else
             if (some.length()==1&&'A'<=in0&&in0<='Z')
                 {type = Const.VAR; var = in0;}
@@ -64,28 +86,28 @@ public class Element_of_equation {
             switch (in0){
                 case 'π': type = Const.REAL; real = Math.PI; break;
                 case 'e': type = Const.REAL; real = Math.E;break;
-                case 'i': type = Const.COMPLEX; comp = new Complex(0,1);break;
+                case 'i': type = Const.COMPLEX; comp = new Complex(0,1);is_float = false;break;
                 case '(': type = Const.LPAR;break;
                 case ')': type = Const.RPAR;break;
                 case '|': type = Const.VLINE;break;
-                case '!': type = Const.FUNCRE;func = Function_parser.Funcname_to_Funcint("!"); break;
+                case '!': type = Function_parser.Funcname_to_Funcint("!"); break;
                 case '+': type = Const.PLUS;break;
                 case '-': type = Const.MINUS;break;
                 case '÷': type = Const.DIV;break;
                 case '×': type = Const.MULT;break;
                 case '^': type = Const.POW;break;
-                case '√': type = Const.ROOT;break;
+                case '√': type = Const.SQRT;break;
                 case '%': type = Const.PRCNT;break;
                 case '[': type = Const.LBR;break;
                 case ']': type = Const.RBR;break;
-                case '=': type = Const.COMPARE; stype = Const.EQUAL;break;
-                case '>': type = Const.COMPARE; stype = Const.MORE;break;
-                case '<': type = Const.COMPARE; stype = Const.LESS;break;
+                case '=': type = Const.EQUAL;break;
+                case '>': type = Const.MORE;break;
+                case '<': type = Const.LESS;break;
                 case '.': type = Const.ERROR;break;
-                case '∩': type = Const.SET; stype = Const.AND;break;
-                case '∪': type = Const.SET; stype = Const.OR;break;
-                case '∆': type = Const.SET; stype = Const.XOR;break;
-                case '\\': type = Const.SET; stype = Const.DIFF;break;
+                case '∩': type = Const.AND;break;
+                case '∪': type = Const.OR;break;
+                case '∆': type = Const.XOR;break;
+                case '\\': type = Const.DIFF;break;
 
 
             }
@@ -99,11 +121,10 @@ public class Element_of_equation {
     }
 
 
-    Element_of_equation (short _type)
+    Element_of_equation (byte _type)
     {
         type = _type;
-        if (type >=Const.FUNC&& type <= Const.COMPLEX) type = Const.ERROR;
-
+        if (type >Const.B_TYPE&& type < Const.E_TYPE) type = Const.ERROR;
     }
 
     Element_of_equation (Element_of_equation in)
@@ -113,46 +134,37 @@ public class Element_of_equation {
         {
             case Const.COMPLEX: comp    = in.comp;break;
             case Const.REAL:    real    = in.real;break;
-            case Const.FUNC:    func    = in.func;break;
-            case Const.FUNCRE:  func    = in.func;break;
             case Const.VAR:     var     = in.var;break;
-            case Const.COMPARE:
-            case Const.SET:     stype   = in.stype;break;
         }
     }
 
     public static String Element_to_String (Element_of_equation in)
     {
-        String out = "Error";
-        switch (in.type)
-        {
-            case Const.REAL:    out = MyFunc.Double_to_String(in.real);break;
-            case Const.FUNC:    out = Function_parser.Funcint_to_Funcname(in.func);break;
-            case Const.FUNCRE:  out = Function_parser.Funcint_to_Funcname(in.func);break;
-            case Const.LPAR:    out = "(";break;
-            case Const.RPAR:    out = ")";break;
-            case Const.VLINE:   out = "|";break;
-            case Const.VAR:     out = in.var+"";break;
-            case Const.PLUS:    out = "+";break;
-            case Const.MINUS:   out = "-";break;
-            case Const.DIV:     out = "÷";break;
-            case Const.MULT:    out = "×";break;
-            case Const.POW:     out = "^";break;
-            case Const.ROOT:    out = "√";break;
-            case Const.PRCNT:   out = "%";break;
-            case Const.COMPLEX: out = in.comp.toString();break;
-            case Const.COMPARE:
-                switch (in.stype)
-                {
-                    case Const.EQUAL: out = "=";break;
-                    case Const.MORE: out = ">";break;
-                    case Const.LESS: out = "<";break;
-                    case Const.AND: out = "∩";break;
-                    case Const.OR: out = "∪";break;
-                    case Const.XOR: out = "∆";break;
-                    case Const.DIFF: out = "\\";break;
-                }
-        }
+        String out;
+        if ((out = Function_parser.Funcint_to_Funcname(in.type)).equals( "Error"))
+            switch (in.type)
+            {
+                case Const.REAL:    out = MyFunc.Double_to_String(in.real);break;
+                case Const.LPAR:    out = "(";break;
+                case Const.RPAR:    out = ")";break;
+                case Const.VLINE:   out = "|";break;
+                case Const.VAR:     out = in.var+"";break;
+                case Const.PLUS:    out = "+";break;
+                case Const.MINUS:   out = "-";break;
+                case Const.DIV:     out = "÷";break;
+                case Const.MULT:    out = "×";break;
+                case Const.POW:     out = "^";break;
+                case Const.ROOT:    out = "√";break;
+                case Const.PRCNT:   out = "%";break;
+                case Const.COMPLEX: out = in.comp.toString();break;
+                case Const.EQUAL: out = "=";break;
+                case Const.MORE: out = ">";break;
+                case Const.LESS: out = "<";break;
+                case Const.AND: out = "∩";break;
+                case Const.OR: out = "∪";break;
+                case Const.XOR: out = "∆";break;
+                case Const.DIFF: out = "\\";break;
+            }
         return out;
     }
 
@@ -186,7 +198,7 @@ public class Element_of_equation {
                         type = 1;                                                                       //type = 1 is num
                     else if ( 'A' <= temp_cm && temp_cm <= 'Z' )                                        //type = 2 is func
                         type = 2;                                                                       //type = 3 is operator with more then one signs
-                    else if (temp_cm=='<' || temp_cm == '>')                                            //type = 0 is operator
+                    else if (temp_cm=='<' || temp_cm == '>' || temp_cm == '³')                                            //type = 0 is operator
                         type = 3;
                     else type = 0;
                 }
@@ -212,7 +224,7 @@ public class Element_of_equation {
                         if (out[j].type == Const.ERROR) return new Element_of_equation[]{out[j]};
                     }
                 }
-                else if (type == 3&&temp_c=='='&&(temp_cm == '<'||temp_cm == '>'))
+                else if (type == 3&&((temp_c=='='&&(temp_cm == '<'||temp_cm == '>'))||(temp_c == '√'&&temp_cm == '³')))
                 {
                     temp_s = temp_s + temp_c;
                 }
