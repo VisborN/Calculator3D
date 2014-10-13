@@ -18,6 +18,8 @@ public class Element_of_equation {
     char        var;
 
     byte        type;
+    byte        stype = 0;
+    byte        priority;
 
 
 
@@ -27,6 +29,7 @@ public class Element_of_equation {
     {
         real = _real;
         type = Const.REAL;
+        stype = Const.B_NUM;
         is_float = false;
     }
 
@@ -34,6 +37,7 @@ public class Element_of_equation {
     {
         comp = _comp;
         type = Const.COMPLEX;
+        stype = Const.B_NUM;
         is_float = false;
     }
 
@@ -41,6 +45,7 @@ public class Element_of_equation {
     {
         realf = _real;
         type = Const.REAL;
+        stype = Const.B_NUM;
         is_float = true;
     }
 
@@ -48,6 +53,7 @@ public class Element_of_equation {
     {
         compf = _comp;
         type = Const.COMPLEX;
+        stype = Const.B_NUM;
         is_float = true;
     }
 
@@ -57,8 +63,12 @@ public class Element_of_equation {
         if (in0 == '$') {
             type = Const.ERROR;
             MainActivity.data_del.debugview.setText("Error: " + some + " ");
+            return;
         }else
-            if (some.equals("Error")) type = Const.ERROR;
+            if (some.equals("Error")) {
+                type = Const.ERROR;
+                return;
+            }
         else
             if ('0' <= in0&&in0 <= '9') {
 
@@ -108,9 +118,39 @@ public class Element_of_equation {
                 case '∪': type = Const.OR;break;
                 case '∆': type = Const.XOR;break;
                 case '\\': type = Const.DIFF;break;
-
-
             }
+
+        if(Const.B_NUM<type&&type<Const.E_NUM)
+            stype = Const.B_NUM;
+        else
+            if(Const.B_OPER<type&&type<Const.E_OPER)
+            {
+                stype = Const.B_OPER;
+                if (type<Const.OPER_PRIOR1)
+                    priority = 0;
+                else
+                if (type<Const.OPER_PRIOR2)
+                    priority = 1;
+                else priority = 2;
+            }
+        else
+            if(Const.B_RBRACK<type&&type<Const.E_RBRACK)
+                stype = Const.B_RBRACK;
+        else
+            if(Const.B_LBRACK<type&&type<Const.E_LBRACK)
+                stype = Const.B_LBRACK;
+        else
+            if(Const.B_COMPARE<type&&type<Const.E_COMPARE)
+                stype = Const.B_COMPARE;
+        else
+            if(Const.B_FUNC<type&&type<Const.E_FUNC)
+                stype = Const.B_FUNC;
+        else
+            if(Const.B_FUNCRE<type&&type<Const.E_FUNCRE)
+                stype = Const.B_FUNCRE;
+        else
+            if(Const.B_SET<type&&type<Const.E_SET)
+                stype = Const.B_SET;
     }
 
 
@@ -124,18 +164,63 @@ public class Element_of_equation {
     Element_of_equation (byte _type)
     {
         type = _type;
-        if (type >Const.B_TYPE&& type < Const.E_TYPE) type = Const.ERROR;
+        if(Const.B_NUM<type&&type<Const.E_NUM)
+            stype = Const.B_NUM;
+        else
+        if(Const.B_OPER<type&&type<Const.E_OPER)
+        {
+            stype = Const.B_OPER;
+            if (type<Const.OPER_PRIOR1)
+                priority = 0;
+            else
+            if (type<Const.OPER_PRIOR2)
+                priority = 1;
+            else priority = 2;
+        }
+        else
+        if(Const.B_RBRACK<type&&type<Const.E_RBRACK)
+            stype = Const.B_RBRACK;
+        else
+        if(Const.B_LBRACK<type&&type<Const.E_LBRACK)
+            stype = Const.B_LBRACK;
+        else
+        if(Const.B_COMPARE<type&&type<Const.E_COMPARE)
+            stype = Const.B_COMPARE;
+        else
+        if(Const.B_FUNC<type&&type<Const.E_FUNC)
+            stype = Const.B_FUNC;
+        else
+        if(Const.B_FUNCRE<type&&type<Const.E_FUNCRE)
+            stype = Const.B_FUNCRE;
+        else
+        if(Const.B_SET<type&&type<Const.E_SET)
+            stype = Const.B_SET;
+
+
+        if (stype == Const.B_NUM) type = Const.ERROR;
+
     }
 
     Element_of_equation (Element_of_equation in)
     {
         type = in.type;
-        switch (type)
-        {
-            case Const.COMPLEX: comp    = in.comp;break;
-            case Const.REAL:    real    = in.real;break;
-            case Const.VAR:     var     = in.var;break;
-        }
+        is_float = in.is_float;
+        stype = in.stype;
+        priority = in.priority;
+        if(!in.is_float)
+            switch (type)
+            {
+                case Const.COMPLEX: comp    = in.comp;break;
+                case Const.REAL:    real    = in.real;break;
+                case Const.VAR:     var     = in.var;break;
+            }
+        else
+            switch (type)
+            {
+                case Const.COMPLEX: compf    = in.compf;break;
+                case Const.REAL:    realf    = in.realf;break;
+                case Const.VAR:     var     = in.var;break;
+            }
     }
 
     public static String Element_to_String (Element_of_equation in)

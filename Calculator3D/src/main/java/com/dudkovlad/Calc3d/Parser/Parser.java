@@ -127,7 +127,6 @@ public class Parser {
             if (b1 > b2){
                 for(int i = b1-b2; i > 0; i--)
                     arr = MyFunc.Cut_put(arr, new Element_of_equation[]{arr[arr.length - 1], new Element_of_equation(Const.RPAR)}, arr.length - 1, arr.length - 1);
-                b2 = b1;
             }else if (b2 > b1){
                 for(int i = b2-b1; i > 0; i--)
                     arr = MyFunc.Cut_put(arr, new Element_of_equation[]{new Element_of_equation(Const.RPAR), arr[0]}, 0, 0);
@@ -211,14 +210,13 @@ public class Parser {
         for (int i = 0, j = bm / 2; i < arr.length && j > 0; i++)
             if (b == 0&&arr[i].type == Const.VLINE) {
                 if (bml == -1 && i < arr.length - 1) {
-                    if (!((arr[i + 1].type >= Const.DIV && arr[i + 1].type <= Const.PRCNT) ||
-                            arr[i + 1].type == Const.RPAR || arr[i + 1].type == Const.RBR ||
-                            (Const.B_FUNCRE <arr[i+1].type &&arr[i+1].type < Const.E_FUNCRE))) {
+                    if (!((arr[i + 1].stype == Const.B_OPER&& arr[i + 1].type != Const.PLUS&& arr[i + 1].type != Const.MINUS) ||
+                            arr[i + 1].stype == Const.B_RBRACK  ||
+                            arr[i+1].stype == Const.B_FUNCRE)) {
                         bml = i;
                     } else return new Element_of_equation[]{new Element_of_equation("$7")};
-                } else if (i > 0 && !((arr[i - 1].type >= Const.PLUS && arr[i - 1].type <= Const.PRCNT)
-                        ||  arr[i - 1].type == Const.LPAR || arr[i - 1].type == Const.LBR ||
-                        (Const.B_FUNC <arr[i-1].type &&arr[i-1].type < Const.E_FUNC))) {
+                } else if (i > 0 && !(arr[i - 1].stype == Const.B_OPER
+                        ||  arr[i - 1].stype == Const.B_LBRACK || arr[i-1].stype == Const.B_FUNC)) {
                     if (bml == i - 1) {
                         if (bml > 0)
                             arr = MyFunc.Cut_put(arr, MyFunc.Take_part(arr, bml - 1, bml - 1), bml - 1, i);
@@ -226,21 +224,22 @@ public class Parser {
                             arr = MyFunc.Cut_put(arr, MyFunc.Take_part(arr, i + 1, i + 1), bml, i + 1);
                         else return new Element_of_equation[]{new Element_of_equation("$8")};
                     }
-                    arr = MyFunc.Cut_put(arr, new Element_of_equation[]{new Element_of_equation("Abs")}, bml, bml);
+                    arr = MyFunc.Cut_put(arr, new Element_of_equation[]{new Element_of_equation(Const.ABS)}, bml, bml);
                     arr = MyFunc.Cut_put(arr, Polynomial(MyFunc.Take_part(arr, bml + 1, i - 1)), bml + 1, i);
                     j--;
                     bml = -1;
                     i = -1;
 
 
-                } else if (i < arr.length - 1 && !((arr[i + 1].type >= Const.DIV && arr[i + 1].type <= Const.PRCNT) ||
-                        arr[i + 1].type == Const.RPAR || arr[i + 1].type == Const.RBR ||
-                        (Const.B_FUNCRE <arr[i+1].type &&arr[i+1].type < Const.E_FUNCRE))) {
+                } else if (i < arr.length - 1 && !
+                        ((arr[i + 1].stype == Const.B_OPER&& arr[i + 1].type != Const.PLUS&& arr[i + 1].type != Const.MINUS) ||
+                        arr[i + 1].stype == Const.B_RBRACK ||
+                        arr[i+1].stype == Const.B_FUNCRE)) {
                     bml = i;
                 } else return new Element_of_equation[]{new Element_of_equation("$9")};
             }
-            else if (arr[i].type == Const.LBR||arr[i].type == Const.LPAR) b++;
-            else if (arr[i].type == Const.RBR||arr[i].type == Const.RPAR) b--;
+            else if (arr[i].stype == Const.B_LBRACK) b++;
+            else if (arr[i].stype == Const.B_RBRACK) b--;
 
 
         bm = 0;
@@ -257,26 +256,26 @@ public class Parser {
     {
         int bm = 0;
         for (int i = 0; i < arr.length; i++)
-            if (bm==0&& Const.B_FUNC <arr[i].type &&arr[i].type < Const.E_FUNC) {
-                if (i < arr.length - 1 && (arr[i + 1].type == Const.REAL ||arr[i + 1].type == Const.COMPLEX))
+            if (bm==0&& arr[i].stype == Const.B_FUNC) {
+                if (i < arr.length - 1 && arr[i + 1].stype == Const.B_NUM)
                     arr = MyFunc.Cut_put(arr, new Element_of_equation[]{Function_parser.Run_func(arr[i].type, arr[i+1])}, i, i + 1);
-                else if (i >= arr.length - 1 || arr[i + 1].type != Const.LPAR && arr[i + 1].type != Const.LBR &&
-                        ( Const.B_FUNC >arr[i].type ||arr[i].type > Const.E_FUNC)&& arr[i + 1].type != Const.VAR)
+                else if (i >= arr.length - 1 || arr[i + 1].stype != Const.B_LBRACK &&
+                        arr[i].stype != Const.B_FUNC && arr[i + 1].type != Const.VAR)
                     return new Element_of_equation[]{new Element_of_equation("$11")};
-            } else if (bm==0&&Const.B_FUNCRE <arr[i].type &&arr[i].type < Const.E_FUNCRE) {
-                if (i > 0 && (arr[i - 1].type == Const.REAL ||arr[i - 1].type == Const.COMPLEX)) {
+            } else if (bm==0&&arr[i].stype == Const.B_FUNCRE ){
+                if (i > 0 && arr[i - 1].stype == Const.B_NUM) {
                     arr = MyFunc.Cut_put(arr,
                             new Element_of_equation[]{
                                 Function_parser.Run_func(arr[i].type, arr[i - 1])
                             }, i - 1, i);
                     i--;
                 }
-                else if (i <= 0 || arr[i - 1].type != Const.LPAR &&arr[i - 1].type != Const.LBR &&
-                        (Const.B_FUNCRE >arr[i].type ||arr[i].type > Const.E_FUNCRE)&& arr[i - 1].type != Const.VAR)
+                else if (i <= 0 || arr[i - 1].stype != Const.B_LBRACK &&
+                        arr[i].stype !=Const.B_FUNCRE && arr[i - 1].type != Const.VAR)
                     return new Element_of_equation[]{new Element_of_equation("$12")};
             }
-            else if (arr[i].type == Const.LBR||arr[i].type == Const.LPAR) bm++;
-            else if (arr[i].type == Const.RBR||arr[i].type == Const.RPAR) bm--;
+            else if (arr[i].stype == Const.B_LBRACK) bm++;
+            else if (arr[i].stype == Const.B_RBRACK) bm--;
 
         return arr;
     }
@@ -293,10 +292,14 @@ public class Parser {
                 break;
             case 2:
                 for (int i = 0; i < arr.length-1; i++)
-                if ((arr[i].type == Const.VAR|| arr[i].type == Const.RBR || arr[i].type == Const.RPAR ||
-                        (Const.B_FUNCRE <arr[i].type &&arr[i].type < Const.E_FUNCRE) || arr[i].type == Const.REAL || arr[i].type == Const.COMPLEX)&&
-                    (arr[i+1].type == Const.VAR || arr[i + 1].type == Const.LBR || arr[i + 1].type == Const.LPAR ||
-                            ( Const.B_FUNC <arr[i+1].type &&arr[i+1].type < Const.E_FUNC) || arr[i + 1].type == Const.REAL || arr[i + 1].type == Const.COMPLEX))
+                if (   (arr[i].type  == Const.VAR||
+                        arr[i].stype == Const.B_RBRACK ||
+                        arr[i].stype == Const.B_FUNCRE ||
+                        arr[i].stype == Const.B_NUM     )&&
+                       (arr[i + 1].type  == Const.VAR ||
+                        arr[i + 1].stype == Const.B_LBRACK ||
+                        arr[i + 1].stype == Const.B_FUNC ||
+                        arr[i + 1].stype == Const.B_NUM))
                         arr = MyFunc.Cut_put(arr, new Element_of_equation[]{arr[i], new Element_of_equation(Const.MULT), arr[i + 1]}, i, i + 1);
                 operator = new int[]{Const.MULT, Const.DIV};
                 break;
@@ -312,20 +315,22 @@ public class Parser {
         for (int i = 1; i < arr.length - 1; i++)
             for (int j = 0; j < operator.length; j++)
                 if (bm == 0 && arr[i].type == operator[j]) {
-                    if ((arr[i - 1].type == Const.REAL || arr[i - 1].type == Const.COMPLEX) && (arr[i + 1].type == Const.REAL || arr[i + 1].type == Const.COMPLEX)) {
+                    if (arr[i - 1].stype == Const.B_NUM && arr[i + 1].stype == Const.B_NUM) {
                         arr = MyFunc.Cut_put(arr, new Element_of_equation[]{Operator(MyFunc.Take_part(arr, i - 1, i + 1))}, i - 1, i + 1);
                         i--;
-                    } else if ( arr[i + 1].type != Const.LPAR && arr[i + 1].type != Const.LBR &&
-                                ( Const.B_FUNC >arr[i+1].type ||arr[i+1].type > Const.E_FUNC) && arr[i - 1].type != Const.LPAR &&
-                                arr[i - 1].type != Const.LBR && (Const.B_FUNCRE >arr[i-1].type ||arr[i-1].type > Const.E_FUNCRE) &&
-                                arr[i + 1].type != Const.VAR && arr[i - 1].type != Const.VAR)
-                        return new Element_of_equation[]{new Element_of_equation("$oper "+prioritet_level+ "   ")};
+                    } else if ( arr[i + 1].stype != Const.B_LBRACK &&
+                                arr[i + 1].stype != Const.B_FUNC &&
+                                arr[i - 1].stype != Const.B_LBRACK &&
+                                arr[i - 1].stype != Const.B_FUNCRE &&
+                                arr[i + 1].type  != Const.VAR &&
+                                arr[i - 1].type  != Const.VAR)
+                        return new Element_of_equation[]{new Element_of_equation("$oper "+prioritet_level+ " " + arr [i+1].type + " " + arr [i-1].type )};
 
                 }
-                else if (arr[i].type == Const.LBR || arr[i].type == Const.LPAR) bm++;
-                else if (arr[i].type == Const.RBR || arr[i].type == Const.RPAR) bm--;
-        int temp = arr[arr.length-1].type;
-        if (Const.B_OPER<temp&&temp<Const.E_OPER)
+                else if (arr[i].stype == Const.B_LBRACK) bm++;
+                else if (arr[i].stype == Const.B_RBRACK) bm--;
+
+        if (arr[arr.length-1].stype == Const.B_OPER)
             return new Element_of_equation[]{new Element_of_equation("$14")};
         return arr;
     }
@@ -437,7 +442,11 @@ public class Parser {
                 if (Math.abs(output.comp.re) < 0.0000000000001) output.comp.re = 0;
                 if (Math.abs(output.comp.im) < 0.0000000000001) output.comp.im = 0;
             }
+
         }
+
+        output.stype = Const.B_NUM;
+        output.is_float = false;
 
         return output;
 

@@ -3,14 +3,16 @@ package com.dudkovlad.Calc3d.Parser;
 /**
  * Created by vlad on 25.05.2014.
  */
-public class Const {
+public final class Const {
     public static final byte ERROR          = 0;
 
-    public static final byte B_TYPE         = 1;
-    public static final byte VAR            = 2;
+
+    public static final byte VAR            = 1;
+
+    public static final byte B_NUM         = 2;
     public static final byte REAL           = 3;
     public static final byte COMPLEX        = 4;
-    public static final byte E_TYPE         = 20;
+    public static final byte E_NUM         = 20;
 
 
 
@@ -51,14 +53,16 @@ public class Const {
 
 
 
-    public static final byte B_BRACK        = 81;
-    public static final byte LBR            = 82;
-    public static final byte RBR            = 83;
-    public static final byte LPAR           = 84;
-    public static final byte RPAR           = 85;
-    public static final byte VLINE          = 86;
-    public static final byte E_BRACK        = 100;
+    public static final byte B_RBRACK        = 81;
+    public static final byte RBR            = 82;
+    public static final byte RPAR           = 83;
+    public static final byte E_RBRACK        = 86;
+    public static final byte B_LBRACK        = 87;
+    public static final byte LBR            = 88;
+    public static final byte LPAR           = 89;
+    public static final byte E_LBRACK        = 99;
 
+    public static final byte VLINE          = 100;
 
 
 
