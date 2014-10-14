@@ -1,32 +1,39 @@
 apply plugin: 'com.android.application'
 
+def getVersion() {
+    def date = new Date()
+    def formattedDate = date.format('1.Md') //here changing version
+    return formattedDate
+}
+
 android {
     compileSdkVersion 20
     buildToolsVersion "19.1.0"
 
     defaultConfig {
+
         minSdkVersion 16
         targetSdkVersion 20
-        versionCode 1
-        versionName "1.0"
+        versionCode 1                       //here changing version
+        versionName getVersion()
+        applicationId "com.dudkovlad.Calc3d"
     }
 
+
+
+
     signingConfigs{
-        debug {
-            storeFile file("debug.keystore")
-        }
         release{
             storeFile file ("keystore_.jks")
             storePassword "fkjycbfkjycj"
             keyAlias "dudkovlad"
             keyPassword "fkjycbfkjycj"
         }
-    }
 
+    }
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
-            signingConfig signingConfigs.release
         }
 
         release {
@@ -34,9 +41,15 @@ android {
             debuggable false
             //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             signingConfig signingConfigs.release
+            applicationVariants.all { variant ->
+                def file = variant.outputFile
+                variant.outputFile = new File(file.parent,  "" + defaultConfig.applicationId + ".v" + versionName + variant.buildType.name + ".apk")
+                //variant.outputFile = new File(file.parent, file.name.replace("Calculator3D-release", defaultConfig.applicationId + "-" + defaultConfig.versionName))
+            }
 
         }
     }
+
 
     /*
                 android {
@@ -69,3 +82,4 @@ dependencies {
     compile 'com.android.support:support-v13:20.0.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
+

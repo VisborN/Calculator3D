@@ -58,102 +58,197 @@ public class Function_parser {
     public static Element_of_equation Run_func (byte type, Element_of_equation in1)
     {
 
-        Element_of_equation output=new Element_of_equation(Const.ERROR);
         if (type == Const.ERROR||in1.type==Const.ERROR)
-            return output;
+            return in1;
         if (!in1.is_float){
             if (in1.type==Const.REAL) {
-                output.type = Const.REAL;
                 switch (type)
                 {
-                    case Const.SIN: output.real = Math.sin(in1.real);break;
-                    case Const.COS: output.real = Math.cos(in1.real);break;
-                    case Const.TAN: output.real = Math.tan(in1.real);break;
-                    case Const.LOG: output.real = Math.log10(in1.real);break;
-                    case Const.LN:  output.real = Math.log(in1.real);break;
-                    case Const.ABS: output.real = Math.abs(in1.real);break;
+                    case Const.SIN: in1.real = Math.sin(in1.real);break;
+                    case Const.COS: in1.real = Math.cos(in1.real);break;
+                    case Const.TAN: in1.real = Math.tan(in1.real);break;
+                    case Const.LOG: in1.real = Math.log10(in1.real);break;
+                    case Const.LN:  in1.real = Math.log(in1.real);break;
+                    case Const.ABS: in1.real = Math.abs(in1.real);break;
                     case Const.SQRT:
                         if (in1.real >= 0)
-                            output.real = Math.sqrt(in1.real);
+                            in1.real = Math.sqrt(in1.real);
                         else
                         {
-                            output.type = Const.COMPLEX;
-                            output.comp = new Complex(0,1).times( Math.sqrt(in1.real));
+                            in1.type = Const.COMPLEX;
+                            in1.comp = new Complex(0,1).times( Math.sqrt(in1.real));
                         }break;
-                    case Const.CBRT: output.real = Math.cbrt(in1.real);break;
-                    case Const.FACTORIAL: output.real = MyFunc.Factorial(in1.real);break;
-                    default: output.type = Const.ERROR;break;
+                    case Const.CBRT: in1.real = Math.cbrt(in1.real);break;
+                    case Const.FACTORIAL: in1.real = MyFunc.Factorial(in1.real);break;
+                    default: in1.type = Const.ERROR;break;
                 }
+                if ( Math.abs(in1.real) < 0.0000000000001)
+                    in1.real = 0;
             }
             else if(in1.type == Const.COMPLEX){
-                output.type = Const.COMPLEX;
                 switch (type)
                 {
-                    case Const.SIN:     output.comp = in1.comp.sin();break;
-                    case Const.COS:     output.comp = in1.comp.cos();break;
-                    case Const.TAN:     output.comp = in1.comp.tan();break;
-                    case Const.LOG:     output.comp = in1.comp.log10();break;
-                    case Const.LN:      output.comp = in1.comp.ln();break;
-                    case Const.ABS:     output.real = in1.comp.abs();output.type = Const.REAL;break;
-                    case Const.SQRT:    output.comp = in1.comp.pow(0.5);break;
-                    case Const.CBRT:    output.comp = in1.comp.pow(1.0 / 3.0);break;
-                    case Const.FACTORIAL:output.type = Const.ERROR; break;
-                    default:            output.type = Const.ERROR;break;
+                    case Const.SIN:     in1.comp = in1.comp.sin();break;
+                    case Const.COS:     in1.comp = in1.comp.cos();break;
+                    case Const.TAN:     in1.comp = in1.comp.tan();break;
+                    case Const.LOG:     in1.comp = in1.comp.log10();break;
+                    case Const.LN:      in1.comp = in1.comp.ln();break;
+                    case Const.ABS:     in1.real = in1.comp.abs();in1.type = Const.REAL;break;
+                    case Const.SQRT:    in1.comp = in1.comp.pow(0.5);break;
+                    case Const.CBRT:    in1.comp = in1.comp.pow(1.0 / 3.0);break;
+                    case Const.FACTORIAL:in1.type = Const.ERROR; break;
+                    default:            in1.type = Const.ERROR;break;
                 }
+                if (Math.abs(in1.comp.re) < 0.0000000000001) in1.comp.re = 0;
+                if (Math.abs(in1.comp.im) < 0.0000000000001) in1.comp.im = 0;
             }
         }
         else
         {
-            output.is_float = true;
-            if (in1.type==Const.REAL) {
-                output.type = Const.REAL;
+            if (in1.type==Const.REAL)
                 switch (type)
                 {
-                    case Const.SIN: output.realf = (float)Math.sin(in1.realf);break;
-                    case Const.COS: output.realf = (float)Math.cos(in1.realf);break;
-                    case Const.TAN: output.realf = (float)Math.tan(in1.realf);break;
-                    case Const.LOG: output.realf = (float)Math.log10(in1.realf);break;
-                    case Const.LN:  output.realf = (float)Math.log(in1.realf);break;
-                    case Const.ABS: output.realf = Math.abs(in1.realf);break;
+                    case Const.SIN: in1.realf = (float)Math.sin(in1.realf);break;
+                    case Const.COS: in1.realf = (float)Math.cos(in1.realf);break;
+                    case Const.TAN: in1.realf = (float)Math.tan(in1.realf);break;
+                    case Const.LOG: in1.realf = (float)Math.log10(in1.realf);break;
+                    case Const.LN:  in1.realf = (float)Math.log(in1.realf);break;
+                    case Const.ABS: in1.realf = Math.abs(in1.realf);break;
                     case Const.SQRT:
                         if (in1.realf >= 0)
-                            output.realf = (float)Math.sqrt(in1.realf);
+                            in1.realf = (float)Math.sqrt(in1.realf);
                         else
                         {
-                            output.type = Const.COMPLEX;
-                            output.compf = new Complex64(0,1).times( (float)Math.sqrt(in1.real));
+                            in1.type = Const.COMPLEX;
+                            in1.compf = new Complex64(0,1).times( (float)Math.sqrt(in1.real));
                         }break;
-                    case Const.CBRT: output.realf = (float)Math.cbrt(in1.realf);break;
-                    case Const.FACTORIAL: output.realf = MyFunc.Factorial(in1.realf);break;
-                    default: output.type = Const.ERROR;break;
+                    case Const.CBRT: in1.realf = (float)Math.cbrt(in1.realf);break;
+                    case Const.FACTORIAL: in1.realf = MyFunc.Factorial(in1.realf);break;
+                    default: in1.type = Const.ERROR;break;
                 }
-            }
-            else if(in1.type == Const.COMPLEX){
-                output.type = Const.COMPLEX;
+            else if(in1.type == Const.COMPLEX)
                 switch (type)
                 {
-                    case Const.SIN:     output.compf = in1.compf.sin();break;
-                    case Const.COS:     output.compf = in1.compf.cos();break;
-                    case Const.TAN:     output.compf = in1.compf.tan();break;
-                    case Const.LOG:     output.compf = in1.compf.log10();break;
-                    case Const.LN:      output.compf = in1.compf.ln();break;
-                    case Const.ABS:     output.realf = in1.compf.abs();output.type = Const.REAL;break;
-                    case Const.SQRT:    output.compf = in1.compf.pow(0.5f);break;
-                    case Const.CBRT:    output.compf = in1.compf.pow(1.0f / 3.0f);break;
-                    case Const.FACTORIAL:output.type = Const.ERROR; break;
-                    default:            output.type = Const.ERROR;break;
+                    case Const.SIN:     in1.compf = in1.compf.sin();break;
+                    case Const.COS:     in1.compf = in1.compf.cos();break;
+                    case Const.TAN:     in1.compf = in1.compf.tan();break;
+                    case Const.LOG:     in1.compf = in1.compf.log10();break;
+                    case Const.LN:      in1.compf = in1.compf.ln();break;
+                    case Const.ABS:     in1.realf = in1.compf.abs();in1.type = Const.REAL;break;
+                    case Const.SQRT:    in1.compf = in1.compf.pow(0.5f);break;
+                    case Const.CBRT:    in1.compf = in1.compf.pow(1.0f / 3.0f);break;
+                    case Const.FACTORIAL:in1.type = Const.ERROR; break;
+                    default:            in1.type = Const.ERROR;break;
                 }
+        }
+
+        if (in1.type == Const.ERROR) return new Element_of_equation("$15");
+        return in1;
+
+    }
+
+
+
+
+    public static Element_of_equation Run_func2 (byte type,Element_of_equation in1, Element_of_equation in2 )
+    {
+        if (in1.type == Const.ERROR || type == Const.ERROR || in2.type == Const.ERROR)
+            return in2;
+        if (!in1.is_float&&!in2.is_float){
+            double out;
+            if (in1.type == Const.REAL&& in2.type == Const.REAL){
+                switch (type) {
+                    case Const.PLUS: in1.real = in1.real + in2.real; break;
+                    case Const.MINUS: in1.real = in1.real - in2.real; break;
+                    case Const.DIV: in1.real = in1.real / in2.real; break;
+                    case Const.MULT: in1.real = in1.real * in2.real; break;
+                    case Const.PRCNT: in1.real = in1.real % in2.real; break;
+                    case Const.POW:
+                        out = Math.pow(in1.real, in2.real);
+                        if (Double.isNaN(out)) {
+                            in1.type = Const.COMPLEX;
+                            in1.comp = new Complex(in1.real).pow(in2.real);
+                        }else in1.real = out;
+                        break;
+                    case Const.ROOT:
+                        out = Math.pow(in2.real, 1/in1.real);
+                        if (Double.isNaN(out)) {
+                            in1.type = Const.COMPLEX;
+                            in1.comp = new Complex(in2.real).pow(1 / in1.real);
+                        }else in1.real = out;
+                        break;
+                }
+                if (Math.abs(in1.real)< 0.0000000000001 ) in1.real = 0;
+
+            }
+            else {
+                if (in1.type == Const.COMPLEX && in2.type != Const.COMPLEX) {
+                    in2.type = Const.COMPLEX;
+                    in2.comp = new Complex(in2.real);
+                }
+                else if (in1.type != Const.COMPLEX && in2.type == Const.COMPLEX){
+                    in1.type = Const.COMPLEX;
+                    in1.comp = new Complex(in2.real);
+                }
+                switch (type) {
+                    case Const.PLUS: in1.comp = in1.comp.plus(in2.comp);break;
+                    case Const.MINUS: in1.comp = in1.comp.minus(in2.comp);break;
+                    case Const.DIV: in1.comp = in1.comp.divides(in2.comp);break;
+                    case Const.MULT: in1.comp = in1.comp.times(in2.comp);break;
+                    case Const.POW:in1.comp = in1.comp.pow(in2.comp);break;
+                    case Const.ROOT:in1.comp = in2.comp.pow(Complex.divides1(in1.comp));break;
+                }
+                if (Math.abs(in1.comp.re) < 0.0000000000001) in1.comp.re = 0;
+                if (Math.abs(in1.comp.im) < 0.0000000000001) in1.comp.im = 0;
             }
         }
+        else if (in1.is_float&&in2.is_float) {
+            float out;
+            if (in1.type == Const.REAL&& in2.type == Const.REAL){
+                switch (type) {
+                    case Const.PLUS: in1.realf = in1.realf + in2.realf; break;
+                    case Const.MINUS: in1.realf = in1.realf - in2.realf; break;
+                    case Const.DIV: in1.realf = in1.realf / in2.realf; break;
+                    case Const.MULT: in1.realf = in1.realf * in2.realf; break;
+                    case Const.PRCNT: in1.realf = in1.realf % in2.realf; break;
+                    case Const.POW:
+                        out = (float)Math.pow(in1.realf, in2.realf);
+                        if (Float.isNaN(out)) {
+                            in1.type = Const.COMPLEX;
+                            in1.compf = new Complex64(in1.realf).pow(in2.realf);
+                        }else in1.realf = out;
+                        break;
+                    case Const.ROOT:
+                        out = (float)Math.pow(in2.realf, 1/in1.realf);
+                        if (Float.isNaN(out)) {
+                            in1.type = Const.COMPLEX;
+                            in1.compf = new Complex64(in2.realf).pow(1 / in1.realf);
+                        }else in1.realf = out;
+                        break;
+                }
 
-        if (output.type == Const.ERROR) return new Element_of_equation("$15");
-        if(!output.is_float && output.type == Const.COMPLEX ) {
-            if (Math.abs(output.comp.re) < 0.0000000000001) output.comp.re = 0;
-            if (Math.abs(output.comp.im) < 0.0000000000001) output.comp.im = 0;
-        }
-        if (!output.is_float && output.type == Const.REAL && Math.abs(output.real)< 0.0000000000001 ) output.real = 0;
+            }
+            else {
+                if (in1.type == Const.COMPLEX && in2.type != Const.COMPLEX) {
+                    in2.type = Const.COMPLEX;
+                    in2.compf = new Complex64(in2.realf);
+                }
+                else if (in1.type != Const.COMPLEX && in2.type == Const.COMPLEX){
+                    in1.type = Const.COMPLEX;
+                    in1.compf = new Complex64(in2.realf);
+                }
+                switch (type) {
+                    case Const.PLUS: in1.compf = in1.compf.plus(in2.compf);break;
+                    case Const.MINUS: in1.compf = in1.compf.minus(in2.compf);break;
+                    case Const.DIV: in1.compf = in1.compf.divides(in2.compf);break;
+                    case Const.MULT: in1.compf = in1.compf.times(in2.compf);break;
+                    case Const.POW:in1.compf = in1.compf.pow(in2.compf);break;
+                    case Const.ROOT:in1.compf = in2.compf.pow(Complex64.divides1(in1.compf));break;
+                }
+            }
 
-        return output;
+        }else return new Element_of_equation("$1511");
+        return in1;
 
     }
 

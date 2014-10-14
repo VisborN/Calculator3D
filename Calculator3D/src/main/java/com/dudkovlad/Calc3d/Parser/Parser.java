@@ -316,7 +316,7 @@ public class Parser {
             for (int j = 0; j < operator.length; j++)
                 if (bm == 0 && arr[i].type == operator[j]) {
                     if (arr[i - 1].stype == Const.B_NUM && arr[i + 1].stype == Const.B_NUM) {
-                        arr = MyFunc.Cut_put(arr, new Element_of_equation[]{Operator(MyFunc.Take_part(arr, i - 1, i + 1))}, i - 1, i + 1);
+                        arr = MyFunc.Cut_put(arr, new Element_of_equation[]{Function_parser.Run_func2(arr[i].type, arr [i - 1], arr [i + 1])}, i - 1, i + 1);
                         i--;
                     } else if ( arr[i + 1].stype != Const.B_LBRACK &&
                                 arr[i + 1].stype != Const.B_FUNC &&
@@ -340,8 +340,7 @@ public class Parser {
 
 
     //-------------------------------------------------------------------------------------------------------------
-
-    private Element_of_equation Operator (Element_of_equation[] arr )
+/*    private Element_of_equation Operator (Element_of_equation[] arr )
     {
         if (arr [0].type == Const.ERROR || arr [1].type == Const.ERROR || arr [2].type == Const.ERROR)
             return new Element_of_equation ("$16");
@@ -450,6 +449,6 @@ public class Parser {
 
         return output;
 
-    }
+    }*/
 
 }
