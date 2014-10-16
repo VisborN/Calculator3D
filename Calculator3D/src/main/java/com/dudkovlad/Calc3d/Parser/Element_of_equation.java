@@ -29,7 +29,7 @@ public class Element_of_equation {
     {
         real = _real;
         type = Const.REAL;
-        stype = Const.B_NUM;
+        stype = Const.NUM;
         is_float = false;
     }
 
@@ -37,7 +37,7 @@ public class Element_of_equation {
     {
         comp = _comp;
         type = Const.COMPLEX;
-        stype = Const.B_NUM;
+        stype = Const.NUM;
         is_float = false;
     }
 
@@ -45,7 +45,7 @@ public class Element_of_equation {
     {
         realf = _real;
         type = Const.REAL;
-        stype = Const.B_NUM;
+        stype = Const.NUM;
         is_float = true;
     }
 
@@ -53,7 +53,7 @@ public class Element_of_equation {
     {
         compf = _comp;
         type = Const.COMPLEX;
-        stype = Const.B_NUM;
+        stype = Const.NUM;
         is_float = true;
     }
 
@@ -120,12 +120,12 @@ public class Element_of_equation {
                 case '\\': type = Const.DIFF;break;
             }
 
-        if(Const.B_NUM<type&&type<Const.E_NUM)
-            stype = Const.B_NUM;
+        if(Const.NUM<type&&type<Const.NUM)
+            stype = Const.NUM;
         else
-            if(Const.B_OPER<type&&type<Const.E_OPER)
+            if(Const.OPER<type&&type<Const.END_OPER)
             {
-                stype = Const.B_OPER;
+                stype = Const.OPER;
                 if (type<Const.OPER_PRIOR1)
                     priority = 0;
                 else
@@ -134,23 +134,23 @@ public class Element_of_equation {
                 else priority = 2;
             }
         else
-            if(Const.B_RBRACK<type&&type<Const.E_RBRACK)
-                stype = Const.B_RBRACK;
+            if(Const.RBRACK<type&&type<Const.END_RBRACK)
+                stype = Const.RBRACK;
         else
-            if(Const.B_LBRACK<type&&type<Const.E_LBRACK)
-                stype = Const.B_LBRACK;
+            if(Const.LBRACK<type&&type<Const.END_LBRACK)
+                stype = Const.LBRACK;
         else
-            if(Const.B_COMPARE<type&&type<Const.E_COMPARE)
-                stype = Const.B_COMPARE;
+            if(Const.COMPARE<type&&type<Const.END_COMPARE)
+                stype = Const.COMPARE;
         else
-            if(Const.B_FUNC<type&&type<Const.E_FUNC)
-                stype = Const.B_FUNC;
+            if(Const.FUNC<type&&type<Const.END_FUNC)
+                stype = Const.FUNC;
         else
-            if(Const.B_FUNCRE<type&&type<Const.E_FUNCRE)
-                stype = Const.B_FUNCRE;
+            if(Const.FUNCRE<type&&type<Const.END_FUNCRE)
+                stype = Const.FUNCRE;
         else
-            if(Const.B_SET<type&&type<Const.E_SET)
-                stype = Const.B_SET;
+            if(Const.SET<type&&type<Const.END_SET)
+                stype = Const.SET;
     }
 
 
@@ -164,12 +164,12 @@ public class Element_of_equation {
     Element_of_equation (byte _type)
     {
         type = _type;
-        if(Const.B_NUM<type&&type<Const.E_NUM)
-            stype = Const.B_NUM;
+        if(Const.NUM<type&&type<Const.END_NUM)
+            stype = Const.NUM;
         else
-        if(Const.B_OPER<type&&type<Const.E_OPER)
+        if(Const.OPER<type&&type<Const.END_OPER)
         {
-            stype = Const.B_OPER;
+            stype = Const.OPER;
             if (type<Const.OPER_PRIOR1)
                 priority = 0;
             else
@@ -178,26 +178,26 @@ public class Element_of_equation {
             else priority = 2;
         }
         else
-        if(Const.B_RBRACK<type&&type<Const.E_RBRACK)
-            stype = Const.B_RBRACK;
+        if(Const.RBRACK<type&&type<Const.END_RBRACK)
+            stype = Const.RBRACK;
         else
-        if(Const.B_LBRACK<type&&type<Const.E_LBRACK)
-            stype = Const.B_LBRACK;
+        if(Const.LBRACK<type&&type<Const.END_LBRACK)
+            stype = Const.LBRACK;
         else
-        if(Const.B_COMPARE<type&&type<Const.E_COMPARE)
-            stype = Const.B_COMPARE;
+        if(Const.COMPARE<type&&type<Const.END_COMPARE)
+            stype = Const.COMPARE;
         else
-        if(Const.B_FUNC<type&&type<Const.E_FUNC)
-            stype = Const.B_FUNC;
+        if(Const.FUNC<type&&type<Const.END_FUNC)
+            stype = Const.FUNC;
         else
-        if(Const.B_FUNCRE<type&&type<Const.E_FUNCRE)
-            stype = Const.B_FUNCRE;
+        if(Const.FUNCRE<type&&type<Const.END_FUNCRE)
+            stype = Const.FUNCRE;
         else
-        if(Const.B_SET<type&&type<Const.E_SET)
-            stype = Const.B_SET;
+        if(Const.SET<type&&type<Const.END_SET)
+            stype = Const.SET;
 
 
-        if (stype == Const.B_NUM) type = Const.ERROR;
+        if (stype == Const.NUM) type = Const.ERROR;
 
     }
 
@@ -223,17 +223,20 @@ public class Element_of_equation {
             }
     }
 
-    public static String Element_to_String (Element_of_equation in)
+
+
+
+    public String toString ()
     {
         String out;
-        if ((out = Function_parser.Funcint_to_Funcname(in.type)).equals( "Error"))
-            switch (in.type)
+        if ((out = Function_parser.Funcint_to_Funcname(type)).equals( "Error"))
+            switch (type)
             {
-                case Const.REAL:    out = MyFunc.Double_to_String(in.real);break;
+                case Const.REAL:    out = MyFunc.Double_to_String(real);break;
                 case Const.LPAR:    out = "(";break;
                 case Const.RPAR:    out = ")";break;
                 case Const.VLINE:   out = "|";break;
-                case Const.VAR:     out = in.var+"";break;
+                case Const.VAR:     out = var+"";break;
                 case Const.PLUS:    out = "+";break;
                 case Const.MINUS:   out = "-";break;
                 case Const.DIV:     out = "÷";break;
@@ -241,124 +244,19 @@ public class Element_of_equation {
                 case Const.POW:     out = "^";break;
                 case Const.ROOT:    out = "√";break;
                 case Const.PRCNT:   out = "%";break;
-                case Const.COMPLEX: out = in.comp.toString();break;
-                case Const.EQUAL: out = "=";break;
-                case Const.MORE: out = ">";break;
-                case Const.LESS: out = "<";break;
-                case Const.AND: out = "∩";break;
-                case Const.OR: out = "∪";break;
-                case Const.XOR: out = "∆";break;
-                case Const.DIFF: out = "\\";break;
+                case Const.COMPLEX: out = comp.toString();break;
+                case Const.EQUAL:   out = "=";break;
+                case Const.MORE:    out = ">";break;
+                case Const.LESS:    out = "<";break;
+                case Const.AND:     out = "∩";break;
+                case Const.OR:      out = "∪";break;
+                case Const.XOR:     out = "∆";break;
+                case Const.DIFF:    out = "\\";break;
             }
         return out;
     }
 
-    public static Element_of_equation[] String_to_Elementarr (String in)
-    {
-        if (in.isEmpty()) return new Element_of_equation[]{new Element_of_equation("$32")};
-        String temp_s = in.charAt(0)+"";
-        char temp_c=0, temp_cm=0, temp_cp=0;
-        int in_length  = in.length();
-        Element_of_equation [] out = new Element_of_equation[in_length];
-        int j = -1;
-        int type=0;
-        int num=0;
-        int num2=0;
-        if (in_length == 1) {
-            out[0] = String_to_Element(temp_s);
-            j = 0;
-        }
-        else {
-            for (int i = 1; i < in_length; i++) {
 
-                if (i < in_length-1)
-                    temp_cp = in.charAt(i + 1);
-                else temp_cp = 0;
-                temp_cm = in.charAt(i - 1);
-                temp_c = in.charAt(i);
-                if (type == 0)
-                {
-                    temp_s = temp_cm+"";
-                    if(temp_cm=='@'|| '0'<=temp_cm && temp_cm <= '9' )
-                        type = 1;                                                                       //type = 1 is num
-                    else if ( 'A' <= temp_cm && temp_cm <= 'Z' )                                        //type = 2 is func
-                        type = 2;                                                                       //type = 3 is operator with more then one signs
-                    else if (temp_cm=='<' || temp_cm == '>' || temp_cm == '³')                                            //type = 0 is operator
-                        type = 3;
-                    else type = 0;
-                }
-                if (type==1&&(('0'<=temp_c&&temp_c<='9')||
-                        (temp_c=='E'&&(temp_cp=='-'||'0'<=temp_cp&&temp_cp<='9'||temp_cp=='@'))||
-                        (temp_cm=='@'&&'A'<=temp_c&&temp_c<='Z'||temp_c=='@')||
-                        (temp_c=='.'&&(temp_cp=='@'||('0'<=temp_cp&&temp_cp<='9'))))) {
-                    if (temp_c == '.') {
-                        num++;
-                        if (num > 1)
-                            return new Element_of_equation[]{new Element_of_equation("$too many dots  ")};
-                    }
-                    if (temp_c=='E'&& temp_cm != '@'){
-                        num2++;
-                        if (num2 > 1)
-                            return new Element_of_equation[]{new Element_of_equation("$too many E  ")};
-
-                    }
-                    temp_s = temp_s + temp_c;
-                    if(temp_cp==0) {
-                        j++;
-                        out[j] = String_to_Element(temp_s);
-                        if (out[j].type == Const.ERROR) return new Element_of_equation[]{out[j]};
-                    }
-                }
-                else if (type == 3&&((temp_c=='='&&(temp_cm == '<'||temp_cm == '>'))||(temp_c == '√'&&temp_cm == '³')))
-                {
-                    temp_s = temp_s + temp_c;
-                }
-                else if (type == 2&&( 'a' <= temp_c && temp_c <= 'z' || 'A' <= temp_c && temp_c <= 'Z'
-                                    || '0' <= temp_c && temp_c <= '9' || temp_c == '.')) {
-                    temp_s = temp_s + temp_c;
-                    if(temp_cp==0) {
-                        j++;
-                        out[j] = String_to_Element(temp_s);
-                        if (out[j].type == Const.ERROR) return new Element_of_equation[]{out[j]};
-                    }
-                }
-                else {
-                    j++;
-                    out[j] = String_to_Element(temp_s);
-                    if (out[j].type==Const.ERROR)return new Element_of_equation[]{out[j]};
-                    type = 0;
-                    num = 0;
-                    if(temp_cp==0) {
-                        j++;
-                        out[j] = String_to_Element(temp_c+"");
-                        if (out[j].type == Const.ERROR) return new Element_of_equation[]{out[j]};
-                    }
-                }
-            }
-        }
-
-
-
-
-        out = MyFunc.Take_part(out,0,j);
-
-        return out;
-    }
-
-
-    public static String Elementarr_to_String (Element_of_equation [] arrin)
-    {
-        String out = "";
-        for (int i = 0; i < arrin.length; i++)
-        {
-            if (arrin[i].type==Const.ERROR)
-            {
-                return "Error";
-            }
-            out = out + Element_to_String(arrin[i]);
-        }
-        return out;
-    }
 
 }
 

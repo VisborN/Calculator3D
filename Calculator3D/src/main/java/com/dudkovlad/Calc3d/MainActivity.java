@@ -43,7 +43,7 @@ public class MainActivity extends Activity
         setMainLay(mainFragment);
 
         setContentView(R.layout.main_activ_main_drawer);
-        Toast.makeText(this, "Have a nice day!!!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Hello World!", Toast.LENGTH_SHORT).show();
 	}
 
     public static void AddToEquation(String input)

@@ -182,7 +182,6 @@ public class EnteringFragment extends Fragment  {
 
 
 
-        Toast.makeText(context, "1", Toast.LENGTH_SHORT).show();
         return mainLay;
     }
 

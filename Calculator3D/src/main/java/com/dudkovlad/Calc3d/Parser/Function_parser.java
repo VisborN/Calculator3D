@@ -188,7 +188,7 @@ public class Function_parser {
                 }
                 else if (in1.type != Const.COMPLEX && in2.type == Const.COMPLEX){
                     in1.type = Const.COMPLEX;
-                    in1.comp = new Complex(in2.real);
+                    in1.comp = new Complex(in1.real);
                 }
                 switch (type) {
                     case Const.PLUS: in1.comp = in1.comp.plus(in2.comp);break;
