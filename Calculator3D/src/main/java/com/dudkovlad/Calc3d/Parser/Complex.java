@@ -4,8 +4,8 @@ package com.dudkovlad.Calc3d.Parser;
  * Created by vlad on 21.05.2014.
  */
 public class Complex {
-    double re;   // the real part
-    double im;   // the imaginary part
+    private double re;   // the real part
+    private double im;   // the imaginary part
 
     public Complex(double real) {
         re = real;
@@ -32,6 +32,10 @@ public class Complex {
         }
     }
 
+    public double Re(){return re;}
+    public double Im(){return im;}
+    public void Re(double in){ re = in;}
+    public void Im(double in){ im = in;}
     public double abs()   { return Math.hypot(re, im); }  // Math.sqrt(re*re + im*im)
     public double phase() { return Math.atan2(im, re); }  // between -pi and pi
 

@@ -69,78 +69,29 @@ public class MyCalc {
 
     void Result ()
     {
-
-        equation = equation_view.getText().toString();
         debugview.setText("");
-        long start = System.nanoTime();
-        result  = equation_parse.Result(equation);
-        long end = System.nanoTime();
+        equation = equation_view.getText().toString();
 
-        //debugview.setText(debugview.getText().toString() + "runtime: "+(end-start)+" ns or "+((end-start)/1000000)+" ms   " + 33333333/(end-start) + " iterations per frame");
-        if (result.equals("Error")) result = "";
+        result = equation_parse.INIT(equation);
+        if (!result.equals("0")) {
+            if(!result.equals(""))
+                debugview.setText(debugview.getText().toString() + "\nError: " + result);
+            result = "";
+        }else {
+            long start = System.nanoTime();
+            result = equation_parse.Result();
+            long end = System.nanoTime();
+            MainActivity.data_del.debugview.setText("runtime: " + (end - start) + " ns or " + ((end - start) / 1000000) + " ms   " + 33333333 / (end - start) + " iterations per frame");
+        }
+
+        if (!result.isEmpty()&&result.charAt(0)=='$') {
+            debugview.setText(debugview.getText().toString() + "\nError: " + result);
+            result = "";
+        }
         resultview.setText(result);
 
     }
 
 
-
-
-
-
-
-
-
-    
-
-
-
-
-
-/*
-    void saveText() {
-        sPref = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor ed = sPref.edit();
-        ed.putString(SAVED_TEXT, etText.getText().toString());
-        ed.commit();
-        Toast.makeText(this, "Text saved", Toast.LENGTH_SHORT).show();
-    }
-
-    void loadText() {
-        sPref = getPreferences(MODE_PRIVATE);
-        String savedText = sPref.getString(SAVED_TEXT, "");
-        Toast.makeText(this, "Text loaded", Toast.LENGTH_SHORT).show();
-    }*/
-/*
-    private void SaveButton (int page, int id)
-    {
-
-
-    }
-
-
-    private void LoadButton (int page, int id)
-    {
-
-
-
-    }
-
-
-    public int getNumPages ()
-    {
-
-    }
-
-    public int getNumButtons (int page)
-    {
-
-
-    }
-
-    public int getNumColumns (int page)
-    {
-
-    }
-*/
 
 }

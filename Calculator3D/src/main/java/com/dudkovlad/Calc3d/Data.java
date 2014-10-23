@@ -43,7 +43,7 @@ public class Data {
         }
         result_show_float = prefs.getBoolean("result_show_float", false);
 
-        del_but_show = prefs.getBoolean("del_but_show", false);
+        del_but_show = prefs.getBoolean("del_but_show", true);
         del_but_prcnt = prefs.getInt("del_but_prcnt", 25);
         del_but_color_up = prefs.getInt("del_but_color_up",     0x00B97A57);
         del_but_color_down = prefs.getInt("del_but_color_down", 0x009F6342);

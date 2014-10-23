@@ -95,11 +95,10 @@ public class EnteringFragment extends Fragment  {
         MainActivity.data_del = data_del;
 
         equation_view.setBackgroundColor(0xff372317);
-        equation_view.setTextIsSelectable(false);
-        equation_view.setMaxLines(1);
         equation_view.setHorizontallyScrolling(true);
         equation_view.setGravity(Gravity.END);
-        equation_view.setTextSize(45);
+        equation_view.setTextSize(20);
+        equation_view.setLines(2);
 
 
         delete_button.setImageDrawable(states);/*getResources().getDrawable(R.drawable.ic_for_redact)*/
@@ -119,13 +118,15 @@ public class EnteringFragment extends Fragment  {
                 0,LinearLayout.LayoutParams.MATCH_PARENT/*delete_button.getHeight()*/, 100-Data.del_but_prcnt));
         result_view.setHapticFeedbackEnabled(true);
         result_view.setBackgroundColor(0xff633F29);
-        result_view.setTextSize(30); //todo find how to calculate text size
+        result_view.setLines(2);
+        result_view.setTextSize(20); //todo find how to calculate text size
 
 
 
 
         debugview.setTextSize(10);
-        debugview.setBackgroundColor(0xff372317);
+        debugview.setBackgroundColor(0xff000000);
+        debugview.setLines(2);
 
 
 

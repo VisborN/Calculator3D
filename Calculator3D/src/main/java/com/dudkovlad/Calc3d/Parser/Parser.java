@@ -1,9 +1,12 @@
 package com.dudkovlad.Calc3d.Parser;
 
 
-import android.media.Image;
+
+import android.content.Context;
 
 import com.dudkovlad.Calc3d.MainActivity;
+
+import java.util.ArrayList;
 
 /**
  * Created by vlad on 04.05.2014.
@@ -12,7 +15,12 @@ public class Parser {
 
 
     String equation_string;
-    Equation equation;
+    ArrayList<Element_of_equation> equation;
+    int [] positions_of_X;
+    int [] positions_of_Y;
+    int [] positions_of_Z;
+    int [] positions_of_C;
+    int [] positions_of_T;
     Element_of_equation[][] equations;
     int[] signs;
     int num_of_variables;
@@ -20,88 +28,158 @@ public class Parser {
     public Parser ()
     {
 
-        INIT("Error");
-    }
-
-    public Parser (String equation)
-    {
-        INIT(equation);
+        INIT("0");//todo if here is error someting is wrong
     }
 
     public String Result (String equation_)
     {
-        INIT(equation_);
+        String out;
+
+        if ((out = INIT(equation_)).isEmpty()||out.charAt(0)=='$')
+        {
+            return out;
+        }
         return Result();
     }
 
-    private void INIT (String equation_)
+    public String INIT (String equation_)
     {
-        equation_string = equation_;
-        equation = new Equation(equation_string);
+        if (equation_.isEmpty())
+            return "";
+        try {
+            equation_string = equation_;
+            equation = Element_of_equation.getArrlistFrom(equation_);
+            return "0";
+
+        }catch (IllegalArgumentException e)
+        //}catch (Throwable e)
+        {
+            return "$" + e.toString();
+        }
     }
 
     public String Result ()
     {
-        long start = System.nanoTime();
-        Polynomial (equation,0,equation.Length());
-        long end = System.nanoTime();
-        MainActivity.data_del.debugview.setText(MainActivity.data_del.debugview.getText().toString() + "runtime: "+(end-start)+" ns or "+((end-start)/1000000)+" ms   " + 33333333/(end-start) + " iterations per frame");
 
+        try {
 
-
-        if (equation.Get(0).type == Const.LBR) {
-            equation.Delete(0);
-            equation.Delete(equation.Length()-1);
+            Polynomial(equation, 0, equation.size() - 1);
+        }catch (IllegalArgumentException e)
+        //}catch (Throwable e)
+        {
+            return "$" + e.toString();
         }
 
-        for (int i = 0; i < equation.Length(); i++)
-            if (equation.Get(i).type == Const.LBR)
-                equation.Get(i).type = Const.LPAR;
-            else if (equation.Get(i).type == Const.RBR)
-                equation.Get(i).type = Const.RPAR;
-
-        return equation.toString();
-    }
-
-
-/*
-    public Element_of_equation [] forLoop (double v1, double v2, double v3)
-    {
-        Element_of_equation[] equation_optim = equation_optim_;
-
-        for (int i = 0; i < equation_optim.length; i++)
-        {
-            switch (equation_optim[i].type) {
-                case Const.X: equation_optim[i].real = X;break;
-                case Const.Y: equation_optim[i].real = Y;break;
-                case Const.Z: equation_optim[i].real = Z;break;
-                case Const.ERROR: new Element_of_equation("$1");
+        if (equation.size()>1) {
+            if(equation.get(0).type == Const.LBR) {
+                equation.remove(0);
+                equation.remove(equation.size() - 1);
             }
         }
 
+        for (int i = 0; i < equation.size(); i++) // todo it will not work
+            if (equation.get(i).type == Const.LBR)
+                equation.get(i).type = Const.LPAR;
+            else if (equation.get(i).type == Const.RBR)
+                equation.get(i).type = Const.RPAR;
 
-
-
-        return Polynomial (equation_optim);
+        return Element_of_equation.Arr_toString(equation);
     }
-*/
 
-    private void Polynomial (Equation arr, int begin, int end)
+
+
+    public float forLoop (float X, float Y, float Z, float T)
+    {
+        ArrayList<Element_of_equation> equation_temp = (ArrayList<Element_of_equation>)equation.clone();
+
+        for (int elem_of_arr:positions_of_X)
+            equation_temp.set(elem_of_arr, new Element_of_equation (X));
+        for (int elem_of_arr:positions_of_Y)
+            equation_temp.set(elem_of_arr, new Element_of_equation (Y));
+        for (int elem_of_arr:positions_of_Z)
+            equation_temp.set(elem_of_arr, new Element_of_equation (Z));
+        for (int elem_of_arr:positions_of_T)
+            equation_temp.set(elem_of_arr, new Element_of_equation (T));
+
+
+        Polynomialf(equation_temp, 0, equation_temp.size() - 1);
+
+        if(equation_temp.get(0).type==Const.COMPLEX)
+            return equation_temp.get(0).compf.Re();
+        else
+            return equation_temp.get(0).realf;
+    }
+
+    public Complex64 forLoop (float X, float Y, float T)
+    {
+        ArrayList<Element_of_equation> equation_temp = (ArrayList<Element_of_equation>)equation.clone();
+
+        for (int elem_of_arr:positions_of_X)
+            equation_temp.set(elem_of_arr, new Element_of_equation (X));
+        for (int elem_of_arr:positions_of_Y)
+            equation_temp.set(elem_of_arr, new Element_of_equation (Y));
+        for (int elem_of_arr:positions_of_T)
+            equation_temp.set(elem_of_arr, new Element_of_equation (T));
+
+
+        Polynomialf(equation_temp, 0, equation_temp.size() - 1);
+
+        if(equation_temp.get(0).type==Const.COMPLEX)
+            return equation_temp.get(0).compf;
+        else
+            return new Complex64(equation_temp.get(0).realf);
+    }
+
+    public Complex64 forLoop (Complex64 X, float T)
+    {
+        ArrayList<Element_of_equation> equation_temp = (ArrayList<Element_of_equation>)equation.clone();
+
+        for (int elem_of_arr:positions_of_X)
+            equation_temp.set(elem_of_arr, new Element_of_equation(X));
+        for (int elem_of_arr:positions_of_T)
+            equation_temp.set(elem_of_arr, new Element_of_equation (T));
+
+
+        Polynomialf(equation_temp, 0, equation_temp.size() - 1);
+
+        return equation_temp.get(0).compf;
+    }
+
+
+    private int Polynomialf (ArrayList<Element_of_equation> arr, int begin, int end)
     {
 
+        int end_ = end;
+        /*
+        end+=Brackets_inarrf(arr, begin, end);
+        end+=Func_and_re_inarrf(arr, begin, end);
+        end+=OPERATORS_inarrf(arr, begin, end, 1 );
+        end+=OPERATORS_inarrf(arr, begin, end, 2 );
+        end+=OPERATORS_inarrf(arr, begin, end, 3);
+        *///todo uncomment when final functions
 
+        return end - end_;
+    }
 
-        Brackets_inarr(arr, begin, end);
-        Vlines_inarr(arr, begin, end);
-        Func_and_re_inarr(arr, begin, end);
-        OPERATORS_inarr(arr, begin, end, 1 );
-        OPERATORS_inarr(arr, begin, end, 2 );
-        OPERATORS_inarr(arr, begin, end, 3);
+    private int Polynomial (ArrayList<Element_of_equation> arr, int begin, int end)
+    {
 
-        if (arr.Length() != 1) {
-            arr.Add(new Element_of_equation(Const.LBR),0,false);
-            arr.Add(new Element_of_equation(Const.RBR),arr.Length()-1, true);
+        int end_ = end;
+
+        end+=Brackets_inarr(arr, begin, end);
+        end+=Vlines_inarr(arr, begin, end);
+        end+=Func_and_re_inarr(arr, begin, end);
+        end+=OPERATORS_inarr(arr, begin, end, 1 );
+        end+=OPERATORS_inarr(arr, begin, end, 2 );
+        end+=OPERATORS_inarr(arr, begin, end, 3);
+
+        if (end-begin > 0) {
+            arr.add(0,new Element_of_equation(Const.LBR));
+            arr.add(new Element_of_equation(Const.RBR));
+            end+=2;
         }
+
+        return end - end_;
     }
 
     //-------------------------------------------------------------------------------------------------------------
@@ -109,12 +187,13 @@ public class Parser {
 
 
 
-    private void Brackets_inarr (Equation arr, int begin, int end)
+    private int Brackets_inarr (ArrayList<Element_of_equation> arr, int begin, int end)
     {
+        int end_ = end;
         int b1 = 0;
         int b2 = 0;
-        for (short i = 0; i < arr.Length(); i++) {
-            switch (arr.Get(i).type) {
+        for (int i = begin; i <= end; i++) {
+            switch (arr.get(i).type) {
                 case Const.LPAR:
                     b1++;
                     break;
@@ -124,53 +203,43 @@ public class Parser {
             }
         }
 
-        if (b1!=b2) {
-            if (b1 > b2){
-                for(int i = b1-b2; i > 0; i--)
-                    arr.Add(new Element_of_equation(Const.RPAR),arr.Length()-1,true);
-            }else if (b2 > b1){
-                for(int i = b2-b1; i > 0; i--)
-                    arr.Add(new Element_of_equation(Const.LPAR),0,false);
+        if (b1!=b2)
+            if (b1 > b2)
+                for(int i = b1-b2; i > 0; i--){
+                    arr.add(end+1,new Element_of_equation(Const.RPAR));
+                    end++;
+                }
+            else if (b2 > b1){
+                for(int i = b2-b1; i > 0; i--) {
+                    arr.add(begin,new Element_of_equation(Const.LPAR));
+                    end++;
+                }
                 b1=b2;
             }
-            else{
-                arr.Replace(new Element_of_equation("$2"),0);
-                return;
-            }
-        }
+
         if (b1 !=0)
-            for (int j = 0, i = -1; j < arr.Length()&& b1 != 0; j++) {
-                switch (arr.Get(j).type) {
+            for (int j = begin, i = -1; j <=end&& b1 != 0; j++) {
+                switch (arr.get(j).type) {
                     case Const.LPAR:
                         i = j;
                         break;
                     case Const.RPAR:
-                        if (i == -1){
-                            arr.Replace(new Element_of_equation("$3"),0);
-                            return;
-                        }
+                        if (i == -1)
+                            throw new IllegalArgumentException("brackets in arr rpar without lpar");
                         else {
-                            if (i + 1 == j&&i > 0) {
-                                arr.Delete(i,j);
-                                break;
-                            } else
-                            if (i + 1 == j&&j < arr.Length()-1) {
-                                arr.Delete(i,j);
-                                break;
-                            } else
                             if (i + 1 == j) {
-                                arr.Replace(new Element_of_equation("$31"),0);
-                                return;
-                            } else {
-                                Polynomial(arr, i + 1, j - 1);
-                                arr.Delete(i);
-                                arr.Delete(j);
+                                arr.remove(j);
+                                arr.remove(i);
+                                end-=2;
+                                break;
+                            }
+                            else {
+                                arr.remove(j);
+                                arr.remove(i);
+                                end+=Polynomial(arr, i, j - 2);
+                                end-=2;
                             }
 
-                            if (arr.Get(i).type == Const.ERROR){
-                                arr.Replace(new Element_of_equation("$4"),0);
-                                return;
-                            }
                             i = -1;
                             j = -1;
                             b1--;
@@ -179,132 +248,166 @@ public class Parser {
                 }
             }
 
-        for (int i = 0; i < arr.Length(); i++)
-            if (arr.Get(i).type==Const.RPAR||arr.Get(i).type==Const.LPAR)
+        for (int i = begin; i <=end; i++)
+            if (arr.get(i).type==Const.RPAR||arr.get(i).type==Const.LPAR)
                 b1++;
-        if (b1 > 0)  arr.Replace(new Element_of_equation("$5"),0);
+        if (b1 > 0)  throw new IllegalArgumentException("brackets in arr don\'t all brackets used");
+
+        return end - end_;
+    }
 
 
+    private int Brackets_inarrf (ArrayList<Element_of_equation> arr, int begin, int end)
+    {
+        int end_ = end;
+
+        for (int j = begin, i = -1; j <=end; j++)
+            switch (arr.get(j).type) {
+                case Const.LPAR:
+                    i = j;
+                    break;
+                case Const.RPAR:
+                    arr.remove(j);
+                    arr.remove(i);
+                    end+=Polynomial(arr, i, j - 2);
+                    end-=2;
+
+                    i = -1;
+                    j = -1;
+                    break;
+            }
+        return end - end_;
     }
 
     //-------------------------------------------------------------------------------------------------------------
 
-    private void Vlines_inarr (Equation arr, int begin, int end) {
+    private int Vlines_inarr (ArrayList<Element_of_equation> arr, int begin, int end) {
+
         int bm  = 0;
         int bml = 0;
         int b = 0;
-/*
 
-        for (int i = 0; i < arr.Length(); i++) {
-            switch (arr.Get(i).type) {
-                case Const.VLINE:
-                    if (bml==0)
-                        bm++;
-                    break;
-                case Const.LBR:
-                case Const.LPAR:
-                    bml++;break;
-                case Const.RBR:
-                case Const.RPAR:
-                    bml--;break;
+        int end_ = end;
+        for (int i = begin; i <= end; i++) {
+            switch (arr.get(i).type) {
+                case Const.VLINE:if (bml==0)bm++;break;
+                case Const.LBR:  bml++;break;
+                case Const.LPAR: bml++;break;
+                case Const.RBR:  bml--;break;
+                case Const.RPAR: bml--;break;
+                default: break;
             }
         }
 
 
 
-        if (bm % 2 != 0) arr = MyFunc.Cut_put(arr, new Element_of_equation[]{arr.Get(arr.Length() - 1), new Element_of_equation(Const.VLINE)}, arr.Length() - 1, arr.Length() - 1);расширение;
-*/
+        if ((bm % 2 )== 1) {
+            arr.add(end+1, new Element_of_equation(Const.VLINE));
+            end++;
+            bm++;
+        }//todo wy it don't work
 
 
 
         bml = -1;
 
-        for (int i = 0, j = bm / 2; i < arr.Length() && j > 0; i++)
-            if (b == 0&&arr.Get(i).type == Const.VLINE) {
-                if (bml == -1 && i < arr.Length() - 1) {
-                    if (!((arr.Get(i + 1).stype == Const.OPER&& arr.Get(i + 1).type != Const.PLUS&& arr.Get(i + 1).type != Const.MINUS) ||
-                            arr.Get(i + 1).stype == Const.RBRACK  ||
-                            arr.Get(i+1).stype == Const.FUNCRE)) {
+        for (int i = begin, j = bm / 2; i <= end && j > 0; i++)
+            if (b == 0&&arr.get(i).type == Const.VLINE) {
+                if (bml == -1 && i < end) {
+                    if (!((arr.get(i + 1).stype == Const.OPER&& arr.get(i + 1).type != Const.PLUS&& arr.get(i + 1).type != Const.MINUS) ||
+                            arr.get(i + 1).stype == Const.RBRACK  ||
+                            arr.get(i+1).stype == Const.FUNCRE)) {
                         bml = i;
-                    } else  {
-                        arr.Replace(new Element_of_equation("$7"),0);
-                        return;
-                    }
-                } else if (i > 0 && !(arr.Get(i - 1).stype == Const.OPER
-                        ||  arr.Get(i - 1).stype == Const.LBRACK || arr.Get(i-1).stype == Const.FUNC)) {
-                    if (bml == i - 1) {
-                        if (bml > 0)
-                            arr.Replace(arr.Get(bml-1),bml-1, i);
-                        else if (i + 1 < arr.Length())
-                            arr.Replace(arr.Get(i+1),bml,i);
-                        else {
-                            arr.Replace(new Element_of_equation("$8"),0);
-                            return;
-                        }
-                    }
-                    arr.Replace(new Element_of_equation(Const.ABS), bml);
-                    Polynomial(arr, bml + 1, i - 1);
-                    arr.Delete(i);
+                    } else  throw new IllegalArgumentException("vlines in arr @1122");
+                } else if (i > 0 && !(arr.get(i - 1).stype == Const.OPER
+                        ||  arr.get(i - 1).stype == Const.LBRACK || arr.get(i-1).stype == Const.FUNC)) {
+                    if (bml == i - 1)
+                        throw new IllegalArgumentException("vlines in arr vlines are side by side");
+                    arr.remove(i);
+                    end--;
+                    arr.set(bml, new Element_of_equation(Const.ABS));
+                    end += Polynomial(arr, bml + 1, i - 1);
+
+
                     j--;
                     bml = -1;
                     i = -1;
 
-
-                } else if (i < arr.Length() - 1 && !
-                        ((arr.Get(i + 1).stype == Const.OPER&& arr.Get(i + 1).type != Const.PLUS&& arr.Get(i + 1).type != Const.MINUS) ||
-                        arr.Get(i + 1).stype == Const.RBRACK ||
-                        arr.Get(i+1).stype == Const.FUNCRE)) {
+                } else if (i < end && !
+                        ((arr.get(i + 1).stype == Const.OPER&& arr.get(i + 1).type != Const.PLUS&& arr.get(i + 1).type != Const.MINUS) ||
+                        arr.get(i + 1).stype == Const.RBRACK ||
+                        arr.get(i+1).stype == Const.FUNCRE)) {
                     bml = i;
-                } else {
-                    arr.Replace(new Element_of_equation("$9"),0);
-                    return;
-                }
+                } else
+                    throw new IllegalArgumentException("vlines in arr unreachable @1124");
             }
-            else if (arr.Get(i).stype == Const.LBRACK) b++;
-            else if (arr.Get(i).stype == Const.RBRACK) b--;
+            else if (arr.get(i).stype == Const.LBRACK) b++;
+            else if (arr.get(i).stype == Const.RBRACK) b--;
 
 
         bm = 0;
-        for (int i = 0; i < arr.Length(); i++)
-            if (arr.Get(i).type == Const.VLINE)
+        for (int i = begin; i <= end; i++)
+            if (arr.get(i).type == Const.VLINE)
                 bm++;
-        if (bm > 0) arr.Replace(new Element_of_equation("$10"),0);//well done
-
+        if (bm > 0) throw new IllegalArgumentException("vlines in arr not all vlines used");//well done
+        return end - end_;
     }
     //-------------------------------------------------------------------------------------------------------------
 
-    private void Func_and_re_inarr (Equation arr, int begin, int end)
+    private int Func_and_re_inarr (ArrayList<Element_of_equation> arr, int begin, int end)
     {
         int bm = 0;
-        for (int i = 0; i < arr.Length(); i++)
-            if (bm==0&& arr.Get(i).stype == Const.FUNC) {
-                if (i < arr.Length() - 1 && arr.Get(i + 1).stype == Const.NUM)
-                    arr.Replace(Function_parser.Run_func(arr.Get(i).type, arr.Get(i+1)), i, i + 1);
-                else if (i >= arr.Length() - 1 || arr.Get(i + 1).stype != Const.LBRACK &&
-                        arr.Get(i).stype != Const.FUNC && arr.Get(i + 1).type != Const.VAR) {
-                    arr.Replace(new Element_of_equation("$11"),0);
-                    return;
+        int end_ = end;
+        for (int i = begin; i <= end; i++)
+            if (bm==0&& arr.get(i).stype == Const.FUNC) {
+                if (i < end && arr.get(i + 1).stype == Const.NUM) {
+                    arr.set(i + 1, Function_parser.Run_func(arr.get(i).type, arr.get(i + 1)));
+                    arr.remove(i);
+                    end--;
                 }
-            } else if (bm==0&&arr.Get(i).stype == Const.FUNCRE ){
-                if (i > 0 && arr.Get(i - 1).stype == Const.NUM) {
-                    arr.Replace(Function_parser.Run_func(arr.Get(i).type, arr.Get(i - 1)), i - 1, i);
+                else if (i >= end || arr.get(i + 1).stype != Const.LBRACK &&
+                        arr.get(i).stype != Const.FUNC && arr.get(i + 1).type != Const.VAR)
+                    throw new IllegalArgumentException("func and re in arr @1244");
+            } else if (bm==0&&arr.get(i).stype == Const.FUNCRE ){
+                if (i > 0 && arr.get(i - 1).stype == Const.NUM) {
+                    arr.set(i, Function_parser.Run_func(arr.get(i).type, arr.get(i - 1)));
+                    arr.remove(i-1);
+                    end--;
                     i--;
                 }
-                else if (i <= 0 || arr.Get(i - 1).stype != Const.LBRACK &&
-                        arr.Get(i).stype !=Const.FUNCRE && arr.Get(i - 1).type != Const.VAR) {
-                    arr.Replace(new Element_of_equation("$12"),0);
-                    return;
-                }
+                else if (i <= 0 || arr.get(i - 1).stype != Const.LBRACK &&
+                        arr.get(i).stype !=Const.FUNCRE && arr.get(i - 1).type != Const.VAR)
+                    throw new IllegalArgumentException("func and re in arr @1245");
             }
-            else if (arr.Get(i).stype == Const.LBRACK) bm++;
-            else if (arr.Get(i).stype == Const.RBRACK) bm--;
+            else if (arr.get(i).stype == Const.LBRACK) bm++;
+            else if (arr.get(i).stype == Const.RBRACK) bm--;
 
+        return end - end_;
+    }
+
+    private int Func_and_re_inarrf (ArrayList<Element_of_equation> arr, int begin, int end)
+    {
+        int end_ = end;
+        for (int i = begin; i <= end; i++)
+            if (arr.get(i).stype == Const.FUNC) {
+                arr.set(i + 1, Function_parser.Run_func(arr.get(i).type, arr.get(i + 1)));
+                arr.remove(i);
+                end--;
+            } else if (arr.get(i).stype == Const.FUNCRE ){
+                arr.set(i, Function_parser.Run_func(arr.get(i).type, arr.get(i - 1)));
+                arr.remove(i-1);
+                end--;
+                i--;
+            }
+
+        return end - end_;
     }
 
     //-------------------------------------------------------------------------------------------------------------
 
-    private void OPERATORS_inarr (Equation arr, int begin, int end, int prioritet_level)
+    private int OPERATORS_inarr (ArrayList<Element_of_equation> arr, int begin, int end, int prioritet_level)
     {
+        int end_ = end;
         int bm = 0;
         int[] operator;
         switch (prioritet_level) {
@@ -313,48 +416,56 @@ public class Parser {
                 break;
             case 2:
                 for (int i = begin; i < end; i++)
-                    if (   (arr.Get(i).type  == Const.VAR||
-                            arr.Get(i).stype == Const.RBRACK ||
-                            arr.Get(i).stype == Const.FUNCRE ||
-                            arr.Get(i).stype == Const.NUM     )&&
-                           (arr.Get(i + 1).type  == Const.VAR ||
-                            arr.Get(i + 1).stype == Const.LBRACK ||
-                            arr.Get(i + 1).stype == Const.FUNC ||
-                            arr.Get(i + 1).stype == Const.NUM))
-                        arr.Add(new Element_of_equation(Const.MULT),i,true);
+                    if (   (arr.get(i).type  == Const.VAR||
+                            arr.get(i).stype == Const.RBRACK ||
+                            arr.get(i).stype == Const.FUNCRE ||
+                            arr.get(i).stype == Const.NUM     )&&
+                           (arr.get(i + 1).type  == Const.VAR ||
+                            arr.get(i + 1).stype == Const.LBRACK ||
+                            arr.get(i + 1).stype == Const.FUNC ||
+                            arr.get(i + 1).stype == Const.NUM)) {
+
+                        arr.add(i+1, new Element_of_equation(Const.MULT));
+                        end++;
+                    }
                 operator = new int[]{Const.MULT, Const.DIV};
                 break;
             case 3:
-                if (arr.Get(0).type == Const.MINUS || arr.Get(0).type == Const.PLUS)
-                    arr.Add(new Element_of_equation((double) 0), 0, false);
+                if (arr.get(begin).type == Const.MINUS || arr.get(begin).type == Const.PLUS) {
+                    arr.add( begin, new Element_of_equation((double) 0));
+                    end++;
+                }
                 operator = new int[]{Const.PLUS, Const.MINUS};
                 break;
             default:
-                operator = new int[]{Const.ERROR};
-                break;
+                throw new IllegalArgumentException("oper in arr prior level is illegal");
         }
-        for (int i = 1; i < arr.Length() - 1; i++)
+        for (int i = begin+1; i < end; i++)
             for (int j = 0; j < operator.length; j++)
-                if (bm == 0 && arr.Get(i).type == operator[j]) {
-                    if (arr.Get(i - 1).stype == Const.NUM && arr.Get(i + 1).stype == Const.NUM) {
-                        arr.Replace(Function_parser.Run_func2(arr.Get(i).type, arr.Get(i - 1), arr.Get(i + 1)),i - 1,i + 1);
+                if (bm == 0 && arr.get(i).type == operator[j]) {
+                    if (arr.get(i - 1).stype == Const.NUM && arr.get(i + 1).stype == Const.NUM) {
+                        arr.set(i + 1, Function_parser.Run_func2(arr.get(i).type, arr.get(i - 1), arr.get(i + 1)));
+                        arr.remove(i);
+                        arr.remove(i-1);
+
+                        end-=2;
                         i--;
-                    } else if ( arr.Get(i + 1).stype != Const.LBRACK &&
-                                arr.Get(i + 1).stype != Const.FUNC &&
-                                arr.Get(i - 1).stype != Const.LBRACK &&
-                                arr.Get(i - 1).stype != Const.FUNCRE &&
-                                arr.Get(i + 1).type  != Const.VAR &&
-                                arr.Get(i - 1).type  != Const.VAR) {
-                        arr.Replace(new Element_of_equation("$oper " + prioritet_level + " " + arr.Get(i + 1).type + " " + arr.Get(i - 1).type), 0);
-                        return;
-                    }
+                    } else if ( arr.get(i + 1).stype != Const.LBRACK &&
+                                arr.get(i + 1).stype != Const.FUNC &&
+                                arr.get(i - 1).stype != Const.LBRACK &&
+                                arr.get(i - 1).stype != Const.FUNCRE &&
+                                arr.get(i + 1).type  != Const.VAR &&
+                                arr.get(i - 1).type  != Const.VAR)
+                        throw new IllegalArgumentException("oper in arr near oper is  " +arr.get(i - 1).type + arr.get(i).type + arr.get(i + 1).type);
 
                 }
-                else if (arr.Get(i).stype == Const.LBRACK) bm++;
-                else if (arr.Get(i).stype == Const.RBRACK) bm--;
+                else if (arr.get(i).stype == Const.LBRACK) bm++;
+                else if (arr.get(i).stype == Const.RBRACK) bm--;
 
-        if (arr.Get(arr.Length()-1).stype == Const.OPER)
-            arr.Replace(new Element_of_equation("$14"),0);
+        if (arr.get(end).stype == Const.OPER)
+            throw new IllegalArgumentException("oper in arr last is oper");
+
+        return end-end_;
     }
 
 }
