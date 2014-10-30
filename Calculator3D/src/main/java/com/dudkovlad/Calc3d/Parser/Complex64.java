@@ -3,7 +3,7 @@ package com.dudkovlad.Calc3d.Parser;
 /**
  * Created by vlad on 12.10.2014.
  */
-public class Complex64 {
+public class Complex64 extends Complex{
     private float re;   // the real part
     private float im;   // the imaginary part
 
@@ -42,39 +42,56 @@ public class Complex64 {
     }
 
 
-    public float Re(){return re;}
-    public float Im(){return im;}
-    public void Re(float in){ re = in;}
-    public void Im(float in){ im = in;}
-    public float abs()   { return (float)Math.hypot(re, im); }  // Math.sqrt(re*re + im*im)
-    public float phase() { return (float)Math.atan2(im, re); }  // between -pi and pi
+    @Override
+    public double Re(){return re;}
 
-    public Complex64 plus(Complex64 b) {
-        b.re = re + b.re;
-        b.im = im + b.im;
-        return b;
+    @Override
+    public double Im(){return im;}
+
+    @Override
+    public void Re(double in){ re = (float)in;}
+
+    @Override
+    public void Im(double in){ im = (float)in;}
+
+    @Override
+    public double abs()   { return Math.hypot(re, im); }  // Math.sqrt(re*re + im*im)
+
+    @Override
+    public double phase() { return Math.atan2(im, re); }  // between -pi and pi
+
+    @Override
+    public Complex64 plus(Complex b) {
+        ((Complex64)b).re = re + ((Complex64)b).re;
+        ((Complex64)b).im = im + ((Complex64)b).im;
+        return ((Complex64)b);
     }
 
-    public Complex64 minus(Complex64 b) {
-        b.re = re - b.re;
-        b.im = im - b.im;
-        return b;
+    @Override
+    public Complex64 minus(Complex b) {
+        ((Complex64)b).re = re - ((Complex64)b).re;
+        ((Complex64)b).im = im - ((Complex64)b).im;
+        return ((Complex64)b);
     }
 
-    public Complex64 times(Complex64 b) {// return a new Complex64 object whose value is (this * b)
-        float real = re * b.re - im * b.im;
-        float imag = re * b.im + im * b.re;
-        b.re = real;
-        b.im = imag;
-        return b;
+    @Override
+    public Complex64 times(Complex b) {// return a new Complex64 object whose value is (this * b)
+        float real = re * ((Complex64)b).re - im * ((Complex64)b).im;
+        float imag = re * ((Complex64)b).im + im * ((Complex64)b).re;
+        ((Complex64)b).re = real;
+        ((Complex64)b).im = imag;
+        return ((Complex64)b);
     }
 
-    public Complex64 times(float alpha) {// return a new object whose value is (this * alpha)
+    @Override
+    public Complex64 times(double alpha) {// return a new object whose value is (this * alpha)
         return new Complex64(alpha * re, alpha * im);
     }
 
+    @Override
     public Complex64 conjugate() {  return new Complex64(re, -im); }
 
+    @Override
     public Complex64 reciprocal() {
         float scale = re*re + im*im;
         return new Complex64(re / scale, -im / scale);
@@ -82,76 +99,73 @@ public class Complex64 {
 
 
     // return a / b
-    public Complex64 divides(Complex64 b) {
+    @Override
+    public Complex64 divides(Complex b) {
         return this.times(b.reciprocal());
     }
 
     // return 1 / b
-    public static Complex64 divides1(Complex64 b) {
-        float scale = b.re*b.re + b.im*b.im;
-        b.re = b.re / scale;
-        b.re = -b.im / scale;
-        b.re = 1 * b.re;
-        b.im = 1 * b.im;
-        return b;
+    @Override
+    public Complex64 divides1() {
+        float scale = re*re + im*im;
+        re = re / scale;
+        re = -im / scale;
+        re = 1 * re;
+        im = 1 * im;
+        return this;
     }
 
     // return a new Complex64 object whose value is the complex exponential of this
+    @Override
     public Complex64 exp() {
         return new Complex64(Math.exp(re) * Math.cos(im), Math.exp(re) * Math.sin(im));
     }
 
     // return a new Complex64 object whose value is the complex sine of this
+    @Override
     public Complex64 sin() {
         return new Complex64(Math.sin(re) * Math.cosh(im), Math.cos(re) * Math.sinh(im));
     }
 
     // return a new Complex64 object whose value is the complex cosine of this
+    @Override
     public Complex64 cos() {
         return new Complex64(Math.cos(re) * Math.cosh(im), -Math.sin(re) * Math.sinh(im));
     }
 
     // return a new Complex64 object whose value is the complex tangent of this
+    @Override
     public Complex64 tan() {
         return sin().divides(cos());
     }
 
+    @Override
     public Complex64 log10() {
         return this.log(10);
     }
 
-    public Complex64 log(float base) {
+    @Override
+    public Complex64 log(double base) {
         if(base == 1 || base <= 0) return new Complex64(Float.NaN, Float.NaN); // even though base for complex logarithm, possibly, could be negative, I do not want to consider this case
         base = (float)Math.log(base);
         return new Complex64( Math.log(this.abs()) / base, this.phase() / base );
     }
 
+    @Override
     public Complex64 ln() {
         return new Complex64(Math.log(this.abs()),this.phase());
     }
 
-    public Complex64 pow( Complex64 power ) {
+    @Override
+    public Complex64 pow( Complex power ) {
         return (this.ln().times(power)).exp();
     }
 
-    public Complex64 pow( float power ) {
+    @Override
+    public Complex64 pow( double power ) {
         return (this.ln().times(power)).exp();
     }
 
-    public static Complex64 pow( Complex64 base, Complex64 power ) {
-        return (base.ln().times(power)).exp();
-    }//TODO optimize when  you will not lazy
-
-
-
-
-    // a static version of plus
-    public static Complex64 plus(Complex64 a, Complex64 b) {
-        a.re = a.re + b.re;
-        a.im = a.im + b.im;
-
-        return a;
-    }
 
 
 

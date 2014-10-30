@@ -1,9 +1,5 @@
 package com.dudkovlad.Calc3d;
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.view.HapticFeedbackConstants;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.dudkovlad.Calc3d.Parser.Parser;
@@ -14,7 +10,6 @@ import com.dudkovlad.Calc3d.Parser.Parser;
  */
 public class MyCalc {
 
-    Resources res;
     String equation;
     String result;
     TextView equation_view;
@@ -22,10 +17,8 @@ public class MyCalc {
     Parser equation_parse;
     public TextView debugview;
 
-    public MyCalc (Context mContext, TextView equation_view_, TextView resultview_, TextView debugview_ )
+    public MyCalc ( TextView equation_view_, TextView resultview_, TextView debugview_ )
     {
-        res = mContext.getResources();
-
        
 
         equation_parse = new Parser();
@@ -59,7 +52,6 @@ public class MyCalc {
     void DelAllFromEquation ()
     {
         equation_view.setText("");
-        resultview.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
 
         Result ();
 

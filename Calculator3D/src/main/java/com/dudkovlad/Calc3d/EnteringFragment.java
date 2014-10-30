@@ -4,25 +4,19 @@ import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Created by vlad on 12.09.2014.
@@ -91,7 +85,7 @@ public class EnteringFragment extends Fragment  {
         delete_button = (ImageButton)mainLay.findViewById(R.id.delete_button);
         settings_button = (ImageButton)mainLay.findViewById(R.id.settings_button);
 
-        data_del = new MyCalc(context,  equation_view, result_view, debugview);
+        data_del = new MyCalc(equation_view, result_view, debugview);
         MainActivity.data_del = data_del;
 
         equation_view.setBackgroundColor(0xff372317);
@@ -110,6 +104,7 @@ public class EnteringFragment extends Fragment  {
                     0,LinearLayout.LayoutParams.WRAP_CONTENT, 0));
 
         delete_button.setBackground(new ColorDrawable(0xff633F29));
+        result_view.setHapticFeedbackEnabled(true);
 
 
 
@@ -151,6 +146,7 @@ public class EnteringFragment extends Fragment  {
 
                 @Override
                 public boolean onLongClick(View v) {
+                    v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                     data_del.DelAllFromEquation();
                     return true;
                 }
@@ -172,6 +168,7 @@ public class EnteringFragment extends Fragment  {
 
                 @Override
                 public boolean onLongClick(View v) {
+                    v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                     data_del.DelAllFromEquation();
                     return true;
                 }

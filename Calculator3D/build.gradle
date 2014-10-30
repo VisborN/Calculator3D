@@ -7,13 +7,13 @@ def getVersion() {
 }
 
 android {
-    compileSdkVersion 20
+    compileSdkVersion 21
     buildToolsVersion "19.1.0"
 
     defaultConfig {
 
-        minSdkVersion 16
-        targetSdkVersion 20
+        minSdkVersion 15
+        targetSdkVersion 21
         versionCode 1                       //here changing version
         versionName getVersion()
         //applicationId "com.dudkovlad.Calc3d"
@@ -24,7 +24,7 @@ android {
 
     signingConfigs{
         release{
-            storeFile file ("keystore_.jks")
+            storeFile file ("./keystore_.jks")
             storePassword "fkjycbfkjycj"
             keyAlias "dudkovlad"
             keyPassword "fkjycbfkjycj"
@@ -74,7 +74,10 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v13:20.0.0'
+    compile 'com.android.support:support-v13:21.0.0'
+    //compile 'com.android.support:support-v4:21.0.0'
+    //compile 'com.android.support:appcompat-v7:21.0.0'
+
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 
