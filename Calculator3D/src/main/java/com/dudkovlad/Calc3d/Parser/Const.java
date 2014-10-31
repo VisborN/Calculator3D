@@ -31,6 +31,13 @@ public final class Const {
 
     public static final byte VAR            = 1;
 
+    public static final byte X              = -6;
+    public static final byte Y              = -5;
+    public static final byte Z              = -4;
+    public static final byte C              = -3;
+    public static final byte T              = -2;
+
+
     public static final byte NUM            = 2;
     public static final byte REAL           = 3;
     public static final byte COMPLEX        = 4;

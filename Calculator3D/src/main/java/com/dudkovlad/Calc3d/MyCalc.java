@@ -67,17 +67,27 @@ public class MyCalc {
         result = equation_parse.INIT(equation);
         if (!result.equals("0")) {
             if(!result.equals(""))
-                debugview.setText(debugview.getText().toString() + "\nError: " + result);
+                debugview.setText(debugview.getText().toString() + "\n" + result);
             result = "";
         }else {
-            long start = System.nanoTime();
             result = equation_parse.Result();
+            int count =100;
+            long start = System.nanoTime();
+            try {
+                for (int i = 0; i < count; i++)
+                    equation_parse.forLoop(1, 1, 1, 1, 1);
+
+                result = result + Float.toString(equation_parse.forLoop(1, 1, 1, 1, 1));
+            }catch(Throwable e)
+            {
+                debugview.setText(debugview.getText().toString()+ "\n" + e.toString());
+            }
             long end = System.nanoTime();
-            MainActivity.data_del.debugview.setText("runtime: " + (end - start) + " ns or " + ((end - start) / 1000000) + " ms   " + 33333333 / (end - start) + " iterations per frame");
+            MainActivity.data_del.debugview.setText("runtime: " + (end - start)/count + " ns or " + ((end - start) / 1000000 / count) + " ms   " + 33333333 / ((end - start)/count) + " iterations per frame");
         }
 
         if (!result.isEmpty()&&result.charAt(0)=='$') {
-            debugview.setText(debugview.getText().toString() + "\nError: " + result);
+            debugview.setText(debugview.getText().toString() + "\n" + result);
             result = "";
         }
         resultview.setText(result);

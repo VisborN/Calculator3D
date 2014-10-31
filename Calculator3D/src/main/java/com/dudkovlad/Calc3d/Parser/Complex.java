@@ -8,6 +8,8 @@ public abstract class Complex {
 
     public abstract String toString();
 
+
+    public abstract Complex64 toComplex64();
     public abstract double Re();
     public abstract double Im();
     public abstract void Re(double in);

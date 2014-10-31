@@ -8,31 +8,29 @@ import java.util.ArrayList;
 public class Equation {
 
 
-    public static String toString (ArrayList<Element_of_equation> arrlist)
+    public static String toString (ArrayList<Token> arrlist)
     {
         String out = "";
-        for (Element_of_equation elem : arrlist)
+        for (Token elem : arrlist)
             out += elem.toString();
         return out;
     }
 
 
-    public static ArrayList<Element_of_equation> toPolishNot(ArrayList<Element_of_equation> arrayList)
+    public static ArrayList<Token> toPolishNot(ArrayList<Token> arrayList)
     {
-        ArrayList<Element_of_equation> stack = new ArrayList<Element_of_equation>(arrayList.size());
-        ArrayList<Element_of_equation> out = new ArrayList<Element_of_equation>(arrayList.size());
+        ArrayList<Token> stack = new ArrayList<Token>(arrayList.size());
+        ArrayList<Token> out = new ArrayList<Token>(arrayList.size());
 
-        for (Element_of_equation current :arrayList/*int i = 0; i < arrayList.size();i++*/)
+        for (Token current :arrayList)
         {
-            switch (current.stype)
+            switch (current.Stype())
             {
                 case Const.VAR:
                 case Const.NUM: out.add(current);break;
                 case Const.FUNC: stack.add(current);break;
-                /*Until the token at the top of the stack is a left parenthesis, pop operators off the stack onto
-                the output queue. If no left parentheses are encountered, either the separator was misplaced or parentheses were mismatched.*/
                 case Const.COMMA:
-                    for(int j = stack.size()-1;j>=0&&stack.get(j).stype!= Const.LBR;j--)
+                    for(int j = stack.size()-1;j>=0&&stack.get(j).Stype()!= Const.LBR;j--)
                     {
                         if (j==0)
                             throw new IllegalArgumentException("toPolishNot 1missed left parenthesis");
@@ -40,39 +38,27 @@ public class Equation {
                     }
                     break;
                 case Const.LBR:stack.add(current);break;
-                /*If the token is a right parenthesis:
-            Until the token at the top of the stack is a left parenthesis, pop operators off the stack onto the output queue.
-                Pop the left parenthesis from the stack, but not onto the output queue.
-                    If the token at the top of the stack is a function token, pop it onto the output queue.
-                    If the stack runs out without finding a left parenthesis, then there are mismatched parentheses.*/
                 case Const.RBR:
-                    for(int j = stack.size()-1;j>=0&&stack.get(j).stype!= Const.LBR;j--)
+                    for(int j = stack.size()-1;j>=0&&stack.get(j).Stype()!= Const.LBR;j--)
                     {
                         if(j==0)
                             throw new IllegalArgumentException("toPolishNot 2missed left parenthesis");
                         out.add(stack.remove(j));
                     }
                     stack.remove(stack.size()-1);
-                    if (stack.size()>0&&stack.get(stack.size()-1).stype==Const.FUNC) {
+                    if (stack.size()>0&&stack.get(stack.size()-1).Stype()==Const.FUNC) {
                         out.add(stack.remove(stack.size()-1));
                     }
                     break;
-                    /*
-                If the token is an operator, o1, then:
-                while there is an operator token, o2, at the top of the stack, and
-                either o1 is left-associative and its precedence is less than or equal to that of o2,
-                or o1 has precedence less than that of o2,
-                pop o2 off the stack, onto the output queue;
-                push o1 onto the stack.*/
                 case Const.OPER:
                 case Const.COMPARE:
                 case Const.SET:
                     for(int j = stack.size()-1; j>=0; j--)
                     {
-                        if (stack.get(j).stype!= Const.LBR)
-                            if(current.type== Const.POW&&current.priority>=stack.get(j).priority)
+                        if (stack.get(j).Stype()!= Const.LBR)
+                            if(current.Type()== Const.POW&&current.Priority()>=stack.get(j).Priority())
                                 break;
-                        if(current.priority>stack.get(j).priority)
+                        if(current.Priority()>stack.get(j).Priority())
                             break;
                         out.add(stack.remove(j));
                     }
@@ -81,7 +67,7 @@ public class Equation {
             }
         }
         for(int i = stack.size()-1; i>=0; i--)
-            if(stack.get(i).type==Const.LBR)
+            if(stack.get(i).Type()==Const.LBR)
                 throw new IllegalArgumentException("toPolishNot 2missed left parenthesis");
             else
                 out.add(stack.get(i));
@@ -184,7 +170,7 @@ public class Equation {
     }
 */
 
-    public static ArrayList<Element_of_equation> Create (String in)
+    public static ArrayList<Token> Create (String in)
     {
 
         if (in.isEmpty())
@@ -192,12 +178,12 @@ public class Equation {
         String temp_s = in.charAt(0)+"";
         char temp_c, temp_cm, temp_cp;
         int in_length  = in.length();
-        ArrayList<Element_of_equation> equation = new ArrayList<Element_of_equation>();
+        ArrayList<Token> equation = new ArrayList<Token>();
         int type=0;
         int num=0;
         int num2=0;
         if (in_length == 1) {
-            equation.add(Element_of_equation.String_to_Element(temp_s));
+            equation.add(new Token_d(temp_s));
         }
         else {
             for (int i = 1; i < in_length; i++) {
@@ -218,7 +204,7 @@ public class Equation {
                         type = 3;
                     else if (temp_cm==' ') {
                         if(temp_cp==0) {
-                            equation.add(Element_of_equation.String_to_Element(temp_c+""));
+                            equation.add(new Token_d(temp_c+""));
                         }
                         continue;
                     }
@@ -241,7 +227,7 @@ public class Equation {
                     }
                     temp_s = temp_s + temp_c;
                     if(temp_cp==0) {
-                        equation.add(Element_of_equation.String_to_Element(temp_s));
+                        equation.add(new Token_d(temp_s));
                     }
                 }
                 else if (type == 3&&((temp_c=='='&&(temp_cm == '<'||temp_cm == '>'))||(temp_c == '√'&&temp_cm == '³')))
@@ -252,15 +238,15 @@ public class Equation {
                         || '0' <= temp_c && temp_c <= '9' || temp_c == '.')) {
                     temp_s = temp_s + temp_c;
                     if(temp_cp==0) {
-                        equation.add(Element_of_equation.String_to_Element(temp_s));
+                        equation.add(new Token_d(temp_s));
                     }
                 }
                 else {
-                    equation.add(Element_of_equation.String_to_Element(temp_s));
+                    equation.add(new Token_d(temp_s));
                     type = 0;
                     num = 0;
                     if(temp_cp==0) {
-                        equation.add(Element_of_equation.String_to_Element(temp_c+""));
+                        equation.add(new Token_d(temp_c+""));
                     }
                 }
             }

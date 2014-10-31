@@ -26,6 +26,12 @@ public class Complex64 extends Complex{
         im = (float)imag;
     }
 
+    @Override
+    public Complex64 toComplex64()
+    {
+        return new Complex64(re,im);
+    }
+    @Override
     public String toString() {
         if (im == 0) return MyFunc.Float_to_String(re);
         if (im != 1&& im != -1) {

@@ -121,7 +121,7 @@ public class EnteringFragment extends Fragment  {
 
         debugview.setTextSize(10);
         debugview.setBackgroundColor(0xff000000);
-        debugview.setLines(2);
+        debugview.setLines(3);
 
 
 

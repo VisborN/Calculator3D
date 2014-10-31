@@ -18,6 +18,12 @@ public class Complex128 extends Complex {
     }
 
     @Override
+    public Complex64 toComplex64()
+    {
+        return new Complex64(re,im);
+    }
+
+    @Override
     public String toString() {
         if (im == 0) return MyFunc.Double_to_String(re);
         if (im != 1&& im != -1) {
