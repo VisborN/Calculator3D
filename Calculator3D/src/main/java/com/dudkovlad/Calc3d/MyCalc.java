@@ -77,10 +77,9 @@ public class MyCalc {
                 for (int i = 0; i < count; i++)
                     equation_parse.forLoop(1, 1, 1, 1, 1);
 
-                result = result + Float.toString(equation_parse.forLoop(1, 1, 1, 1, 1));
             }catch(Throwable e)
             {
-                debugview.setText(debugview.getText().toString()+ "\n" + e.toString());
+                debugview.setText(debugview.getText().toString()+"2 err" + e.toString());
             }
             long end = System.nanoTime();
             MainActivity.data_del.debugview.setText("runtime: " + (end - start)/count + " ns or " + ((end - start) / 1000000 / count) + " ms   " + 33333333 / ((end - start)/count) + " iterations per frame");

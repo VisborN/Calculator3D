@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -46,28 +45,16 @@ public class EnteringFragment extends Fragment  {
         Data.Load_Data (context.getSharedPreferences("main_prefs", 0));
 
 
-        Bitmap icon_bmp_up =  BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_for_redact_new_changed_to_min);
+        StateListDrawable del_but_states = Create_state_list_drawable_from_colors_and_image(
+                BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_for_redact_new_changed_to_min),
+                Data.del_but_color_up, 0x00372317
+        );
 
-        int [] pix_arr_up = new int [icon_bmp_up.getHeight()*icon_bmp_up.getWidth()];
-        icon_bmp_up.getPixels(pix_arr_up,0,icon_bmp_up.getWidth(),0,0,icon_bmp_up.getWidth(),icon_bmp_up.getHeight());
-        int [] pix_arr_down = pix_arr_up.clone();
-        for(int i = 0; i < pix_arr_up.length; i++)
-        {
-            pix_arr_up[i]= pix_arr_up[i] | Data.del_but_color_up;
-            pix_arr_down [i] = pix_arr_down[i] | Data.del_but_color_down;
-        }
+        StateListDrawable settings_but_states = Create_state_list_drawable_from_colors_and_image(
+                BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_settings),
+                0x00633F29, 0x00000000
+        );
 
-        Bitmap icon_bmp_down = Bitmap.createBitmap(icon_bmp_up.getWidth(),icon_bmp_up.getHeight(),Bitmap.Config.ARGB_8888);
-        icon_bmp_down.setPixels(pix_arr_down, 0, icon_bmp_up.getWidth(), 0, 0,icon_bmp_up.getWidth(), icon_bmp_up.getHeight());
-        icon_bmp_up = Bitmap.createBitmap(icon_bmp_up.getWidth(),icon_bmp_up.getHeight(),Bitmap.Config.ARGB_8888);
-        icon_bmp_up.setPixels(pix_arr_up, 0,  icon_bmp_up.getWidth(), 0, 0,icon_bmp_up.getWidth(), icon_bmp_up.getHeight());
-
-        StateListDrawable states = new StateListDrawable();
-        states.addState(new int[] {android.R.attr.state_pressed},
-                new BitmapDrawable(getResources(),icon_bmp_down));/*
-        states.addState(new int[] {android.R.attr.state_focused},
-                getResources().getDrawable(R.drawable.focused));*/
-        states.addState(new int[] { },new BitmapDrawable(getResources(),icon_bmp_up));
 
 
         mainLay = (LinearLayout)inflater.inflate(R.layout.main_fragment, container, false);
@@ -85,6 +72,7 @@ public class EnteringFragment extends Fragment  {
         delete_button = (ImageButton)mainLay.findViewById(R.id.delete_button);
         settings_button = (ImageButton)mainLay.findViewById(R.id.settings_button);
 
+
         data_del = new MyCalc(equation_view, result_view, debugview);
         MainActivity.data_del = data_del;
 
@@ -95,7 +83,10 @@ public class EnteringFragment extends Fragment  {
         equation_view.setLines(2);
 
 
-        delete_button.setImageDrawable(states);/*getResources().getDrawable(R.drawable.ic_for_redact)*/
+        settings_button.setImageDrawable(settings_but_states); //todo make color changing
+        settings_button.setBackgroundColor(0xff372317);
+
+        delete_button.setImageDrawable(del_but_states);/*getResources().getDrawable(R.drawable.ic_for_redact)*/
         if (Data.del_but_show)
             delete_button.setLayoutParams(new LinearLayout.LayoutParams(
                 0,LinearLayout.LayoutParams.WRAP_CONTENT, Data.del_but_prcnt));
@@ -103,15 +94,15 @@ public class EnteringFragment extends Fragment  {
             delete_button.setLayoutParams(new LinearLayout.LayoutParams(
                     0,LinearLayout.LayoutParams.WRAP_CONTENT, 0));
 
-        delete_button.setBackground(new ColorDrawable(0xff633F29));
-        result_view.setHapticFeedbackEnabled(true);
+        delete_button.setBackgroundColor(0xff633F29);
+        //result_view.setHapticFeedbackEnabled(true);
 
 
 
 
         result_view.setLayoutParams(new LinearLayout.LayoutParams(
                 0,LinearLayout.LayoutParams.MATCH_PARENT/*delete_button.getHeight()*/, 100-Data.del_but_prcnt));
-        result_view.setHapticFeedbackEnabled(true);
+        //result_view.setHapticFeedbackEnabled(true);
         result_view.setBackgroundColor(0xff633F29);
         result_view.setLines(2);
         result_view.setTextSize(20); //todo find how to calculate text size
@@ -121,7 +112,7 @@ public class EnteringFragment extends Fragment  {
 
         debugview.setTextSize(10);
         debugview.setBackgroundColor(0xff000000);
-        debugview.setLines(3);
+        debugview.setLines(2);
 
 
 
@@ -177,12 +168,48 @@ public class EnteringFragment extends Fragment  {
         }
 
 
+        settings_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+
+
+        });//todo make edittext
+
+
 
 
 
         return mainLay;
     }
 
+
+    private StateListDrawable Create_state_list_drawable_from_colors_and_image (Bitmap image, int color_up, int color_down)
+    {
+        int [] pix_arr_up = new int [image.getHeight()*image.getWidth()];
+        image.getPixels(pix_arr_up,0,image.getWidth(),0,0,image.getWidth(),image.getHeight());
+        int [] pix_arr_down = pix_arr_up.clone();
+        for(int i = 0; i < pix_arr_up.length; i++)
+        {
+            pix_arr_up[i]= pix_arr_up[i] | color_up;
+            pix_arr_down [i] = pix_arr_down[i] | color_down;
+        }
+
+        Bitmap icon_bmp_down = Bitmap.createBitmap(image.getWidth(),image.getHeight(),Bitmap.Config.ARGB_8888);
+        icon_bmp_down.setPixels(pix_arr_down, 0, image.getWidth(), 0, 0,image.getWidth(), image.getHeight());
+        image = Bitmap.createBitmap(image.getWidth(),image.getHeight(),Bitmap.Config.ARGB_8888);
+        image.setPixels(pix_arr_up, 0,  image.getWidth(), 0, 0,image.getWidth(), image.getHeight());
+
+        StateListDrawable states = new StateListDrawable();
+        states.addState(new int[] {android.R.attr.state_pressed},
+                new BitmapDrawable(getResources(),icon_bmp_down));/*
+        states.addState(new int[] {android.R.attr.state_focused},
+                getResources().getDrawable(R.drawable.focused));*/
+        states.addState(new int[] { },new BitmapDrawable(getResources(),image));
+
+        return states;
+
+    }
 
 }
 
