@@ -71,18 +71,18 @@ public class MyCalc {
             result = "";
         }else {
             result = equation_parse.Result();
-            int count =100;
-            long start = System.nanoTime();
-            try {
-                for (int i = 0; i < count; i++)
-                    equation_parse.forLoop(1, 1, 1, 1, 1);
-
-            }catch(Throwable e)
-            {
-                debugview.setText(debugview.getText().toString()+"2 err" + e.toString());
-            }
-            long end = System.nanoTime();
-            MainActivity.data_del.debugview.setText("runtime: " + (end - start)/count + " ns or " + ((end - start) / 1000000 / count) + " ms   " + 33333333 / ((end - start)/count) + " iterations per frame");
+//            int count =100;
+//            long start = System.nanoTime();
+//            try {
+//                for (int i = 0; i < count; i++)
+//                    equation_parse.forLoop(1, 1, 1, 1, 1);
+//
+//            }catch(Throwable e)
+//            {
+//                debugview.setText(debugview.getText().toString()+"2 err" + e.toString());
+//            }
+//            long end = System.nanoTime();
+//            MainActivity.data_del.debugview.setText("runtime: " + (end - start)/count + " ns or " + ((end - start) / 1000000 / count) + " ms   " + 33333333 / ((end - start)/count) + " iterations per frame");
         }
 
         if (!result.isEmpty()&&result.charAt(0)=='$') {

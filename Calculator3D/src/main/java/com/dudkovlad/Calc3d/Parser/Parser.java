@@ -45,11 +45,11 @@ public class Parser {
             equation_string = equation_;
             equation = Equation.Create(equation_);
             S_M_A_R_T(equation,0,equation.size()-1);
-            equation = Equation.toPolishNot(equation);
+            //equation = Equation.toPolishNot(equation);
             return "0";
 
-        }catch (IllegalArgumentException e)
-        //}catch (Throwable e)
+            //}catch (IllegalArgumentException e)
+        }catch (Throwable e)
             //}catch (Error e)
         {
             return "$" + e.toString();
@@ -60,14 +60,14 @@ public class Parser {
     {
         try {
 
-            equation = Calculate_op_and_func(equation,false);
-            setPositions_Arrays();
+            //equation = Calculate_op_and_func(equation,false);
+            //setPositions_Arrays();
             String out = Equation.toString(equation);
             Convert_to_Float();
             return out;
 
-        }catch (IllegalArgumentException e)
-        //}catch (Throwable e)
+            //}catch (IllegalArgumentException e)
+        }catch (Throwable e)
             //}catch (Error e)
         {
             return "$" + e.toString();
@@ -225,19 +225,7 @@ public class Parser {
             arr.add(begin, new Token_d(0d));
             end++;
         }
-        for (int i = begin; i < end; i++)
-            if (   (arr.get(i).Stype()  == Const.VAR||
-                    arr.get(i).Stype() == Const.RBR ||
-                    arr.get(i).Type() == Const.FACTORIAL ||       //todo I hope that factorial is the only function with prefix argument
-                    arr.get(i).Stype() == Const.NUM     )&&
-                    (arr.get(i + 1).Stype()  == Const.VAR ||
-                            arr.get(i + 1).Stype() == Const.LBR ||
-                            arr.get(i + 1).Stype() == Const.FUNC ||
-                            arr.get(i + 1).Stype() == Const.NUM)) {
 
-                arr.add(i+1, new Token_d(Const.MULT));
-                end++;
-            }
 
         int b1 = 0;
         int b2 = 0;
@@ -263,49 +251,12 @@ public class Parser {
                     arr.add(begin,new Token_d(Const.LBR));
                     end++;
                 }
-                b1=b2;
             }
 
-        if (b1 !=0)
-            for (int j = begin, i = -1; j <=end&& b1 != 0; j++) {
-                switch (arr.get(j).Type()) {
-                    case Const.LBR:
-                        i = j;
-                        break;
-                    case Const.RBR:
-                        if (i == -1)
-                            throw new IllegalArgumentException("brackets in arr rpar without lpar");
-                        else {
-                            if (i + 1 == j) {
-                                arr.remove(j);
-                                arr.remove(i);
-                                end-=2;
-                                break;
-                            }
-                            else {
-                                arr.remove(j);
-                                arr.remove(i);
-                                end+=S_M_A_R_T(arr, i, j - 2);
-                                end-=2;
-                            }
-
-                            i = -1;
-                            j = -1;
-                            b1--;
-                            break;
-                        }
-                }
-            }
-
-        for (int i = begin; i <=end; i++)
-            if (arr.get(i).Type()==Const.RBR||arr.get(i).Type()==Const.LBR)
-                b1++;
-        if (b1 > 0)  throw new IllegalArgumentException("brackets in arr don\'t all brackets used");
 
 
         int bm  = 0;
         int bml = 0;
-        int b = 0;
         for (int i = begin; i <= end; i++) {
             switch (arr.get(i).Type()) {
                 case Const.ABSBR:if (bml==0)bm++;break;
@@ -326,9 +277,11 @@ public class Parser {
 
 
         bml = -1;
+        b1 = -1;
+        b2 = 0;
 
-        for (int i = begin, j = bm / 2; i <= end && j > 0; i++)
-            if (b == 0&&arr.get(i).Type() == Const.ABSBR) {
+        for (int i = begin; i <= end; i++)
+            if (b2 == 0&&arr.get(i).Type() == Const.ABSBR) {
                 if (bml == -1 && i < end) {
                     if (!((arr.get(i + 1).Stype() == Const.OPER&& arr.get(i + 1).Type() != Const.PLUS&& arr.get(i + 1).Type() != Const.MINUS) ||
                             arr.get(i + 1).Stype() == Const.RBR  ||
@@ -339,15 +292,14 @@ public class Parser {
                         ||  arr.get(i - 1).Stype() == Const.LBR || arr.get(i-1).Stype() == Const.FUNC)) {
                     if (bml == i - 1)
                         throw new IllegalArgumentException("vlines in arr vlines are side by side");
-                    arr.remove(i);
-                    end--;
                     arr.set(bml, new Token_d(Const.ABS));
-                    end += S_M_A_R_T(arr, bml + 1, i - 1);
+                    arr.set(i, new Token_d(Const.RBR));
+                    arr.add(bml+1, new Token_d(Const.LBR));
+                    end++;
+                    end += S_M_A_R_T(arr, bml + 2, i);
 
 
-                    j--;
                     bml = -1;
-                    i = -1;
 
                 } else if (i < end && !
                         ((arr.get(i + 1).Stype() == Const.OPER&& arr.get(i + 1).Type() != Const.PLUS&& arr.get(i + 1).Type() != Const.MINUS) ||
@@ -357,8 +309,33 @@ public class Parser {
                 } else
                     throw new IllegalArgumentException("vlines in arr unreachable @1124");
             }
-            else if (arr.get(i).Stype() == Const.LBR) b++;
-            else if (arr.get(i).Stype() == Const.RBR) b--;
+            else if ( arr.get(i).Stype() == Const.LBR) {
+                if (b2 == 0)
+                    b1 = i;
+                b2++;
+            }
+            else if (arr.get(i).Stype() == Const.RBR){
+                if (b2 == 1){
+                    if (b1 == -1)
+                        throw new IllegalArgumentException("brackets in arr rpar without lpar");
+                    else {
+                        int k;
+                        if (b1 + 1 == i) {
+                            arr.remove(i);
+                            arr.remove(b1);
+                            end -= 2;
+                            i -= 2;
+                        } else {
+                            k = S_M_A_R_T(arr, b1 + 1, i - 1);
+                            end += k;
+                            i += k;
+                        }
+                        b1 = -1;
+                    }
+                }
+                b2--;
+            }
+
 
 
         bm = 0;
@@ -366,6 +343,21 @@ public class Parser {
             if (arr.get(i).Type() == Const.ABSBR)
                 bm++;
         if (bm > 0) throw new IllegalArgumentException("vlines in arr not all vlines used");//well done
+
+        for (int i = begin; i < end; i++)
+            if (   (arr.get(i).Stype()  == Const.VAR||
+                    arr.get(i).Stype() == Const.RBR ||
+                    arr.get(i).Type() == Const.FACTORIAL ||       //todo I hope that factorial is the only function with prefix argument
+                    arr.get(i).Stype() == Const.NUM     )&&
+                    (arr.get(i + 1).Stype()  == Const.VAR ||
+                            arr.get(i + 1).Stype() == Const.LBR ||
+                            arr.get(i + 1).Stype() == Const.FUNC ||
+                            arr.get(i + 1).Stype() == Const.NUM)) {
+
+                arr.add(i+1, new Token_d(Const.MULT));
+                end++;
+            }
+
         return end - end_;
     }
 

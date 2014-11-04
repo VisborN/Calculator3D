@@ -22,9 +22,11 @@ public class MainActivity extends Activity
 
 
     EnteringFragment mainFragment;
+    GraphicsFragment graphicsFragment;
     DrawerLayout drawerlayout;
     ListView historylist;
     public static FragmentManager fm;
+    private int where;
 
 	@Override
 	public void onCreate (Bundle savedInstanceState)
@@ -38,9 +40,11 @@ public class MainActivity extends Activity
         context = this;
 
 
-        mainFragment = new EnteringFragment();
+        mainFragment = EnteringFragment.newInstance(this);
         CreateNavDrawer();
-        setMainLay(mainFragment);
+        //graphicsFragment = GraphicsFragment.newInstance(this);
+        setMainFragment(mainFragment);
+        where = 0;
 
         setContentView(R.layout.main_activ_main_drawer);
         Toast.makeText(this, "Hello World!", Toast.LENGTH_SHORT).show();
@@ -58,23 +62,55 @@ public class MainActivity extends Activity
         historylist = (ListView) findViewById(R.id.left_drawer);//todo fill list view
     }
 
-    void setMainLay (Fragment fragmen)
+    void setMainFragment (Fragment fragmen)
     {
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragmen).commit();
+
+    }
+
+    public void go_to_graphics_fragment()
+    {
+        if (graphicsFragment == null)
+            graphicsFragment = GraphicsFragment.newInstance(this);
+        setMainFragment(graphicsFragment);
+        where = 1;
+        mainFragment.onDestroy();
+        mainFragment = null;
     }
 
 
     @Override
     public void onPause()
     {
-        super.onPause();
         Data.Save();
+        super.onPause();
+
     }
 
 
+    @Override
+    public void onBackPressed()
+    {
 
+
+        if (where == 1) {
+            mainFragment = EnteringFragment.newInstance(this);
+            setMainFragment(mainFragment);
+            graphicsFragment.onDestroy();
+            graphicsFragment = null;
+
+        }
+        else
+            if(where == 0)
+                where = -1;
+        else
+            super.onBackPressed();
+
+
+
+    }
 
 
 

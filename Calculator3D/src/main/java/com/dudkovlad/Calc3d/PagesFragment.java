@@ -18,14 +18,10 @@ public class PagesFragment extends Fragment {
 
 
 
-    static Context context;
-    static ButtonsAdapter mButtonsAdapter;
-
-    public PagesFragment ()
-    {
+    Context context;
+    ButtonsAdapter mButtonsAdapter;
 
 
-    }
 
 
     static PagesFragment newInstance(int page, Context _context) {
@@ -33,7 +29,7 @@ public class PagesFragment extends Fragment {
         Bundle arguments = new Bundle();
         arguments.putInt(ARGUMENT_PAGE_NUMBER, page);
         pageFragment.setArguments(arguments);
-        context = _context;
+        pageFragment.context = _context;
 
 
 

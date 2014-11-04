@@ -33,9 +33,16 @@ public class EnteringFragment extends Fragment  {
     ImageButton settings_button, delete_button;
     Context context;
 
-    public EnteringFragment ()
-    {
-        context = MainActivity.context;
+
+
+    static EnteringFragment newInstance(Context _context) {
+        EnteringFragment thisfragment = new EnteringFragment();
+
+        thisfragment.context = _context;
+
+
+
+        return thisfragment;
     }
 
 
@@ -171,6 +178,7 @@ public class EnteringFragment extends Fragment  {
         settings_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ((MainActivity)context).go_to_graphics_fragment();
             }
 
 
