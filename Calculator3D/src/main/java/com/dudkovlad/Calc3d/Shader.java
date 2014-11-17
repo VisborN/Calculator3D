@@ -87,40 +87,83 @@ public class Shader {
                 a_color_Handle, 4, GLES20.GL_FLOAT, false, 0, colorBuffer);
     }
 
-    //метод, который связывает матрицу модели-вида-проекции
-// modelViewProjectionMatrix с униформой u_modelViewProjectionMatrix
-    public void linkModelViewProjectionMatrix(float [] modelViewProjectionMatrix){
-        //устанавливаем активную программу
-        GLES20.glUseProgram(program_Handle);
-        //получаем ссылку на униформу u_modelViewProjectionMatrix
-        int u_modelViewProjectionMatrix_Handle =
-                GLES20.glGetUniformLocation(program_Handle, "u_modelViewProjectionMatrix");
-        //связываем массив modelViewProjectionMatrix
-        //с униформой u_modelViewProjectionMatrix
-        GLES20.glUniformMatrix4fv(
-                u_modelViewProjectionMatrix_Handle, 1, false, modelViewProjectionMatrix, 0);
+    public void linkVertex_ALLINONE_Buffer(FloatBuffer colorBuffer) {
     }
 
-    // метод, который связывает координаты камеры с униформой u_camera
-    public void linkCamera (float xCamera, float yCamera, float zCamera){
-        //устанавливаем активную программу
-        GLES20.glUseProgram(program_Handle);
-        //получаем ссылку на униформу u_camera
-        int u_camera_Handle=GLES20.glGetUniformLocation(program_Handle, "u_camera");
-        // связываем координаты камеры с униформой u_camera
-        GLES20.glUniform3f(u_camera_Handle, xCamera, yCamera, zCamera);
-    }
+    public void linkArrayAsUniform(float [] array, String uniformName, int type){
 
-    // метод, который связывает координаты источника света
-// с униформой u_lightPosition
-    public void linkLightSource (float xLightPosition, float yLightPosition, float zLightPosition){
-        //устанавливаем активную программу
         GLES20.glUseProgram(program_Handle);
-        //получаем ссылку на униформу u_lightPosition
-        int u_lightPosition_Handle=GLES20.glGetUniformLocation(program_Handle, "u_lightPosition");
-        // связываем координаты источника света с униформой u_lightPosition
-        GLES20.glUniform3f(u_lightPosition_Handle, xLightPosition, yLightPosition, zLightPosition);
+        int uniform_handle =
+                GLES20.glGetUniformLocation(program_Handle, uniformName);
+        switch (type) {
+            case 16:
+                GLES20.glUniformMatrix4fv(
+                    uniform_handle, 1, false, array, 0);break;
+            case 3:
+                GLES20.glUniform3fv(uniform_handle, 1, array, 0);
+
+
+        }
     }
+    public static int loadShader(int type, String shaderCode){
+
+        // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
+        // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
+        int shaderHandle = GLES20.glCreateShader(type);
+
+        // add the source code to the shader and compile it
+        GLES20.glShaderSource(shaderHandle, shaderCode);
+        GLES20.glCompileShader(shaderHandle);
+
+        return shaderHandle;
+    }
+//
+//    public void linkModelMatrix(float [] modelMatrix){
+//        //устанавливаем активную программу
+//        GLES20.glUseProgram(program_Handle);
+//        //получаем ссылку на униформу u_modelViewProjectionMatrix
+//        int u_modelViewProjectionMatrix_Handle =
+//                GLES20.glGetUniformLocation(program_Handle, "u_modelMatrix");
+//        //связываем массив modelViewProjectionMatrix
+//        //с униформой u_modelViewProjectionMatrix
+//        GLES20.glUniformMatrix4fv(
+//                u_modelViewProjectionMatrix_Handle, 1, false, modelMatrix, 0);
+//    }
+//
+//    //метод, который связывает матрицу модели-вида-проекции
+//// modelViewProjectionMatrix с униформой u_modelViewProjectionMatrix
+//    public void linkViewProjectionMatrix(float [] ViewProjectionMatrix){
+//        //устанавливаем активную программу
+//        GLES20.glUseProgram(program_Handle);
+//        //получаем ссылку на униформу u_modelViewProjectionMatrix
+//        int u_modelViewProjectionMatrix_Handle =
+//                GLES20.glGetUniformLocation(program_Handle, "u_ViewProjectionMatrix");
+//        //связываем массив modelViewProjectionMatrix
+//        //с униформой u_modelViewProjectionMatrix
+//        GLES20.glUniformMatrix4fv(
+//                u_modelViewProjectionMatrix_Handle, 1, false, ViewProjectionMatrix, 0);
+//    }
+//
+//    // метод, который связывает координаты камеры с униформой u_camera
+//    public void linkCamera (float xCamera, float yCamera, float zCamera){
+//        //устанавливаем активную программу
+//        GLES20.glUseProgram(program_Handle);
+//        //получаем ссылку на униформу u_camera
+//        int u_camera_Handle=GLES20.glGetUniformLocation(program_Handle, "u_camera");
+//        // связываем координаты камеры с униформой u_camera
+//        GLES20.glUniform3f(u_camera_Handle, xCamera, yCamera, zCamera);
+//    }
+//
+//    // метод, который связывает координаты источника света
+//// с униформой u_lightPosition
+//    public void linkLightSource (float xLightPosition, float yLightPosition, float zLightPosition){
+//        //устанавливаем активную программу
+//        GLES20.glUseProgram(program_Handle);
+//        //получаем ссылку на униформу u_lightPosition
+//        int u_lightPosition_Handle=GLES20.glGetUniformLocation(program_Handle, "u_lightPosition");
+//        // связываем координаты источника света с униформой u_lightPosition
+//        GLES20.glUniform3f(u_lightPosition_Handle, xLightPosition, yLightPosition, zLightPosition);
+//    }
 
     // метод, который делает шейдерную программу данного класса активной
     public void useProgram(){

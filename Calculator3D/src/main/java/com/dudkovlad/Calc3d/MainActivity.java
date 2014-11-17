@@ -98,9 +98,8 @@ public class MainActivity extends Activity
         if (where == 1) {
             mainFragment = EnteringFragment.newInstance(this);
             setMainFragment(mainFragment);
-            graphicsFragment.onDestroy();
             graphicsFragment = null;
-
+            where = 0;
         }
         else
             if(where == 0)

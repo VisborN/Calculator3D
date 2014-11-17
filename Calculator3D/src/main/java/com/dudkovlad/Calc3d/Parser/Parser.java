@@ -45,7 +45,7 @@ public class Parser {
             equation_string = equation_;
             equation = Equation.Create(equation_);
             S_M_A_R_T(equation,0,equation.size()-1);
-            //equation = Equation.toPolishNot(equation);
+            equation = Equation.toPolishNot(equation);
             return "0";
 
             //}catch (IllegalArgumentException e)
@@ -58,10 +58,10 @@ public class Parser {
 
     public String Result ()
     {
-        try {
 
-            //equation = Calculate_op_and_func(equation,false);
-            //setPositions_Arrays();
+        try {
+            equation = Calculate_op_and_func(equation,false);
+            setPositions_Arrays();
             String out = Equation.toString(equation);
             Convert_to_Float();
             return out;

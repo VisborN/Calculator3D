@@ -3,6 +3,7 @@ package com.dudkovlad.Calc3d;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.os.SystemClock;
 import android.util.Log;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -18,8 +19,18 @@ public class GraphicsRenderer implements GLSurfaceView.Renderer {
     Triangle mTriangle;
     float [] mProjectionMatrix = new float [16];
     float [] mViewMatrix = new float [16];
-    float [] mMVPMatrix = new float [16];
-    private final float[] mRotationMatrix = new float[16];
+    float [] mVPMatrix = new float [16];
+    float [] mViewLookVertex = new float []{0,0,-1,1};
+    float [] mVLVRotated = new float []{-1,-1,-1,1};
+    float [] mViewPosVertex = new float []{6,6,6,1};
+    float [] mMMatrix = new float [16];
+    float [] mMMatrix1 = new float [16];
+    float [] mMMatrix2 = new float [16];
+    public volatile float mAnglex = 45;
+    public volatile float mAngley = -30;
+    float ViewLookSensetivityK = 180.0f / 360 * 0.34f; //0.17
+    float[] move = new float []{0,0,0,1};
+    long timep = SystemClock.uptimeMillis();
 
 
     @Override
@@ -30,6 +41,8 @@ public class GraphicsRenderer implements GLSurfaceView.Renderer {
         GLES20.glClearColor(0.2f, 0.2f, 0.2f, 0.2f);
 
         mTriangle = new Triangle();
+
+
     }
 
     @Override
@@ -37,13 +50,21 @@ public class GraphicsRenderer implements GLSurfaceView.Renderer {
         // Redraw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
-        Matrix.setLookAtM(mViewMatrix, 0, 0.6f, 5.4f, 3f, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
-
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+        float time = SystemClock.uptimeMillis();
 
 
 
-        mTriangle.draw(mMVPMatrix);
+        Matrix.setLookAtM(  mViewMatrix, 0, mViewPosVertex[0], mViewPosVertex[1], mViewPosVertex[2],
+                            mViewPosVertex[0] + mVLVRotated[0],
+                            mViewPosVertex[1] + mVLVRotated[1],
+                            mViewPosVertex[2] + mVLVRotated[2],
+                            0f, 1.0f, 0.0f);
+
+        Matrix.multiplyMM(mVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+
+
+
+        mTriangle.draw(mVPMatrix,  mViewPosVertex, new float [] {3f, 3f, 3f});
     }
 
     @Override
@@ -55,22 +76,36 @@ public class GraphicsRenderer implements GLSurfaceView.Renderer {
 
         // this projection matrix is applied to object coordinates
         // in the onDrawFrame() method
-        Matrix.frustumM(mProjectionMatrix, 0, 0.055f*(-ratio), 0.055f*ratio, -0.055f, 0.055f, 0.1f, 10);
+        Matrix.frustumM(mProjectionMatrix, 0, 0.055f*(-ratio), 0.055f*ratio, -0.055f, 0.055f, 0.1f, 1000);
 
     }
 
-    public static int loadShader(int type, String shaderCode){
 
-        // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
-        // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
-        int shaderHandle = GLES20.glCreateShader(type);
+    public void addAngleAndAddMoveAcceleration(float dx1, float dy1, float dx2, float dy2 )
+    {
+        mAnglex += -dx2*ViewLookSensetivityK;
+        mAngley += -dy2*ViewLookSensetivityK;
 
-        // add the source code to the shader and compile it
-        GLES20.glShaderSource(shaderHandle, shaderCode);
-        GLES20.glCompileShader(shaderHandle);
+        if(mAngley < -89.999/*- Math.PI / 2*/)
+            mAngley = - 89.999f;
+        if(mAngley > 89.999f)
+            mAngley = 89.999f;
 
-        return shaderHandle;
+        Matrix.setRotateM(mMMatrix1, 0, mAnglex, 0, 1, 0);
+        Matrix.setRotateM(mMMatrix2, 0, mAngley, 1, 0, 0);
+        Matrix.multiplyMM(mMMatrix, 0, mMMatrix1, 0, mMMatrix2, 0);
+
+        Matrix.multiplyMV(mVLVRotated, 0, mMMatrix,0, mViewLookVertex, 0);
+
+        mViewPosVertex[0] = mViewPosVertex[0] + mVLVRotated[0]*(-dy1)*0.01f;
+        mViewPosVertex[1] = mViewPosVertex[1] + mVLVRotated[1]*(-dy1)*0.01f;
+        mViewPosVertex[2] = mViewPosVertex[2] + mVLVRotated[2]*(-dy1)*0.01f;
+
+
     }
+
+
+
 
     public static void checkGlError(String glOperation) {
         int error;

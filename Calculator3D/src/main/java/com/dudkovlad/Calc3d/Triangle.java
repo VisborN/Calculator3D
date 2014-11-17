@@ -5,6 +5,7 @@ import android.opengl.GLES20;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 
 /**
  * Created by vlad on 31.10.2014.
@@ -16,29 +17,218 @@ public class Triangle {
     private FloatBuffer normalBuffer;
     private FloatBuffer colorBuffer;
     private Shader mShader;
+    private float [] verticesDATA;
+    private short [] verticesINDEX;
 
 
-    static float [] normalArray = {   // in counterclockwise order:
-            0.0f, 1.0f, 0.0f, // top
-            0.0f, 1.0f, 0.0f, // bottom left
-            0.0f, 1.0f, 0.0f  // bottom right
+
+    static float [] normalArray = {
+
+            0f, 0f, 1f,
+            0f, 0f, 1f,
+            0f, 0f, 1f,
+
+            0f, 0f, 1f,
+            0f, 0f, 1f,
+            0f, 0f, 1f,
+
+            0f, 1f, 0f,
+            0f, 1f, 0f,
+            0f, 1f, 0f,
+
+            0f, 1f, 0f,
+            0f, 1f, 0f,
+            0f, 1f, 0f,
+
+            0f, 0f, -1f,
+            0f, 0f, -1f,
+            0f, 0f, -1f,
+
+            0f, 0f, -1f,
+            0f, 0f, -1f,
+            0f, 0f, -1f,
+
+            0f, -1f, 0f,
+            0f, -1f, 0f,
+            0f, -1f, 0f,
+
+            0f, -1f, 0f,
+            0f, -1f, 0f,
+            0f, -1f, 0f,
+
+            1f, 0f, 0f,
+            1f, 0f, 0f,
+            1f, 0f, 0f,
+
+            1f, 0f, 0f,
+            1f, 0f, 0f,
+            1f, 0f, 0f,
+
+            -1f, 0f, 0f,
+            -1f, 0f, 0f,
+            -1f, 0f, 0f,
+
+            -1f, 0f, 0f,
+            -1f, 0f, 0f,
+            -1f, 0f, 0f
+
     };
 
+
+float colorArray [] = {
+            0f, 0f, 1f, 1,
+            1f, 0f, 1f, 1,
+            0f, 1f, 1f, 1,
+            0f, 1f, 1f, 1,
+            1f, 0f, 1f, 1,
+            1f, 1f, 1f, 1,
+            0f, 1f, 1f, 1,
+            1f, 1f, 1f, 1,
+            0f, 1f, 0f, 1,
+            0f, 1f, 0f, 1,
+            1f, 1f, 1f, 1,
+            1f, 1f, 0f, 1,
+            0f, 1f, 0f, 1,
+            1f, 1f, 0f, 1,
+            0f, 0f, 0f, 1,
+            0f, 0f, 0f, 1,
+            1f, 1f, 0f, 1,
+            1f, 0f, 0f, 1,
+            0f, 0f, 0f, 1,
+            1f, 0f, 0f, 1,
+            0f, 0f, 1f, 1,
+            0f, 0f, 1f, 1,
+            1f, 0f, 0f, 1,
+            1f, 0f, 1f, 1,
+            1f, 0f, 1f, 1,
+            1f, 0f, 0f, 1,
+            1f, 1f, 1f, 1,
+            1f, 1f, 1f, 1,
+            1f, 0f, 0f, 1,
+            1f, 1f, 0f, 1,
+            0f, 0f, 1f, 1,
+            0f, 1f, 1f, 1,
+            0f, 0f, 0f, 1,
+            0f, 0f, 0f, 1,
+            0f, 1f, 1f, 1,
+            0f, 1f, 0f, 1
+    };
+/*
     float colorArray [] = {
-            1, 0, 0, 1,
-            0, 1, 0, 1,
-            0, 0, 1, 1,
+            0f, 0f, 1f, 1,
+            0f, 0f, 1f, 1,
+            0f, 0f, 1f, 1,
+            0f, 0f, 1f, 1,
+            0f, 0f, 1f, 1,
+            0f, 0f, 1f, 1,
+            0f, 1f, 0f, 1,
+            0f, 1f, 0f, 1,
+            0f, 1f, 0f, 1,
+            0f, 1f, 0f, 1,
+            0f, 1f, 0f, 1,
+            0f, 1f, 0f, 1,
+            1f, 0f, 0f, 1,
+            1f, 0f, 0f, 1,
+            1f, 0f, 0f, 1,
+            1f, 0f, 0f, 1,
+            1f, 0f, 0f, 1,
+            1f, 0f, 0f, 1,
+            1f, 1f, 0f, 1,
+            1f, 1f, 0f, 1,
+            1f, 1f, 0f, 1,
+            1f, 1f, 0f, 1,
+            1f, 1f, 0f, 1,
+            1f, 1f, 0f, 1,
+            1f, 0f, 1f, 1,
+            1f, 0f, 1f, 1,
+            1f, 0f, 1f, 1,
+            1f, 0f, 1f, 1,
+            1f, 0f, 1f, 1,
+            1f, 0f, 1f, 1,
+            0f, 1f, 1f, 1,
+            0f, 1f, 1f, 1,
+            0f, 1f, 1f, 1,
+            0f, 1f, 1f, 1,
+            0f, 1f, 1f, 1,
+            0f, 1f, 1f, 1
     };
 
 
     static float [] triangleCoords = {   // in counterclockwise order:
-            -2f,  0f, -2f, // top
-            -2f, 0f, 2f, // bottom left
-            2f, 0f, 0f  // bottom right
+            -1f, -1f, 1f,
+            1f, -1f, 1f,
+            -1f, 1f, 1f,
+            1f, 1f, 1f,
+            -1f, 1f, -1f,
+            1f, 1f, -1f,
+            -1f, -1f, -1f,
+            1f, -1f, -1f,
+            -1f, -1f, 1f,
+            1f, -1f, 1f,
+            1f, -1f, 1f,
+            1f, -1f, -1f,
+            1f, 1f, 1f,
+            1f, 1f, -1f,
+            -1f, -1f, 1f,
+            -1f, 1f, 1f,
+            -1f, -1f, -1f,
+            -1f, 1f, -1f
+    };
+*/
+
+
+    static float [] triangleCoords = {   // in counterclockwise order:
+            -1f, -1f, 1f,
+            1f, -1f, 1f,
+            -1f, 1f, 1f,
+
+            -1f, 1f, 1f,
+            1f, -1f, 1f,
+            1f, 1f, 1f,
+
+            -1f, 1f, 1f,
+            1f, 1f, 1f,
+            -1f, 1f, -1f,
+
+            -1f, 1f, -1f,
+            1f, 1f, 1f,
+            1f, 1f, -1f,
+
+            -1f, 1f, -1f,
+            1f, 1f, -1f,
+            -1f, -1f, -1f,
+
+            -1f, -1f, -1f,
+            1f, 1f, -1f,
+            1f, -1f, -1f,
+
+            -1f, -1f, -1f,
+            1f, -1f, -1f,
+            -1f, -1f, 1f,
+
+            -1f, -1f, 1f,
+            1f, -1f, -1f,
+            1f, -1f, 1f,
+
+            1f, -1f, 1f,
+            1f, -1f, -1f,
+            1f, 1f, 1f,
+
+            1f, 1f, 1f,
+            1f, -1f, -1f,
+            1f, 1f, -1f,
+
+            -1f, -1f, 1f,
+            -1f, 1f, 1f,
+            -1f, -1f, -1f,
+
+            -1f, -1f, -1f,
+            -1f, 1f, 1f,
+            -1f, 1f, -1f
     };
 
     private final String vertexShaderCode =
-            "uniform mat4 u_modelViewProjectionMatrix;"+
+            "uniform mat4 u_ViewProjectionMatrix;"+
             "attribute vec3 a_vertex;"+
             "attribute vec3 a_normal;"+
             "attribute vec4 a_color;"+
@@ -50,7 +240,7 @@ public class Triangle {
             "    vec3 n_normal=normalize(a_normal);"+
             "    v_normal=n_normal;"+
             "    v_color=a_color;"+
-            "    gl_Position = u_modelViewProjectionMatrix * vec4(a_vertex,1.0);"+
+            "    gl_Position = u_ViewProjectionMatrix * vec4(a_vertex,1.0);"+
             "}";
 
     private final String fragmentShaderCode =
@@ -69,12 +259,17 @@ public class Triangle {
                 "float k_specular=0.4;"+
                 "float diffuse = k_diffuse * max(dot(n_normal, lightvector), 0.0);"+
                 "vec3 reflectvector = reflect(-lightvector, n_normal);"+
-                "float specular = k_specular * pow( max(dot(lookvector,reflectvector),0.0), 40.0 );"+
-                "gl_FragColor = (ambient+diffuse+specular)*v_color;"+
+                "float specular = k_specular * pow( max(dot(lookvector,reflectvector),0.0), 10.0 );"+
+                "gl_FragColor = (ambient+diffuse+specular)*v_color;"+//
             "}";
 
 
     public Triangle() {
+
+
+
+
+
         ByteBuffer bb = ByteBuffer.allocateDirect(triangleCoords.length * 4);
         bb.order(ByteOrder.nativeOrder());
         vertexBuffer = bb.asFloatBuffer();
@@ -96,6 +291,24 @@ public class Triangle {
         colorBuffer.put(colorArray);
         colorBuffer.position(0);
 
+
+        verticesDATA = new float[triangleCoords.length/3*10];
+
+        verticesINDEX = new short[triangleCoords.length/3];
+
+        CreateCub(verticesDATA,verticesINDEX,new float[]{0,0,0},1);
+
+
+        final FloatBuffer heightMapVertexDataBuffer = ByteBuffer
+                .allocateDirect(verticesDATA.length * 4).order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+        heightMapVertexDataBuffer.put(verticesDATA).position(0);
+
+        final ShortBuffer heightMapIndexDataBuffer = ByteBuffer
+                .allocateDirect(verticesINDEX.length * 2).order(ByteOrder.nativeOrder())
+                .asShortBuffer();
+        heightMapIndexDataBuffer.put(verticesINDEX).position(0);
+
         mShader=new Shader(vertexShaderCode, fragmentShaderCode);
         //свяжем буфер вершин с атрибутом a_vertex в вершинном шейдере
         mShader.linkVertexBuffer(vertexBuffer);
@@ -105,18 +318,46 @@ public class Triangle {
         mShader.linkColorBuffer(colorBuffer);
     }
 
-    public void draw(float[] mvpMatrix) {
-        mShader.linkModelViewProjectionMatrix(mvpMatrix);
+    public void draw(float[] vpMatrix, float[] cam, float[] lightsource) {
+        mShader.linkArrayAsUniform(vpMatrix,"u_ViewProjectionMatrix",(byte)16);
         //передаем в шейдерный объект координаты камеры
-        mShader.linkCamera(0.6f, 5.4f, 3f);
+        mShader.linkArrayAsUniform(cam, "u_camera", 3);
         //передаем в шейдерный объект координаты источника света
-        mShader.linkLightSource(0, 0.6f, 0);
+        mShader.linkArrayAsUniform(cam, "u_lightPosition", 3);
         //делаем шейдерную программу активной
         mShader.useProgram();
         //рисуем квадрат
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 36);
+
+    }
+
+    private void CreateCub(float [] vertices, short [] index_array,float[] coords_center, float size)
+    {
+
+        for (int i = 0, j = 0; i < triangleCoords.length/3;i++)
+        {
+            vertices[j++] = triangleCoords [i*3]*0.5f*size + coords_center[0];
+            vertices[j++] = triangleCoords [i*3+1]*0.5f*size + coords_center[1];
+            vertices[j++] = triangleCoords [i*3+2]*0.5f*size + coords_center[2];
+
+
+            vertices[j++] = normalArray [i*3];
+            vertices[j++] = normalArray [i*3+1];
+            vertices[j++] = normalArray [i*3+2];
+
+            vertices[j++] = colorArray [i*4];
+            vertices[j++] = colorArray [i*4+1];
+            vertices[j++] = colorArray [i*4+2];
+            vertices[j++] = colorArray [i*4+3];
+
+            index_array [i] = (short)i;
+        }
+
+
 
 
 
     }
+
+
 }
