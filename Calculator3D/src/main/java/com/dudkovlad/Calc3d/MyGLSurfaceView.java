@@ -12,7 +12,6 @@ public class MyGLSurfaceView extends GLSurfaceView {
     GraphicsRenderer mRenderer;
     float[][] mPreviousCoord = new float[2][2];
     float[] CoordOnStart = new float [2];
-    int mPreviousCount = 0;
     int [] mPreviousID = new int [] {-1,-1};
 
 
@@ -28,7 +27,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
         setRenderer(mRenderer);
 
         // Render the view only when there is a change in the drawing data
-        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
 
         requestRender();
     }
@@ -37,10 +36,12 @@ public class MyGLSurfaceView extends GLSurfaceView {
     @Override
     public boolean onTouchEvent(MotionEvent e) {
         int count = e.getPointerCount();
-
-
+        float[][] coord = new float [2][2];
         int [] ID = new int [count];
         int [] index = new int []{-1,-1};
+
+
+
         for(int i =0; i < count; i++) {
             ID[i] = e.getPointerId(i);
             if (ID[i] == mPreviousID[0]) {
@@ -50,61 +51,63 @@ public class MyGLSurfaceView extends GLSurfaceView {
             }
         }
 
-        if (mPreviousCount<count){
-            if(index[0]==index[1])
-            {
-                if (e.getX(0)<300) {
-                    index[0] = 0;
-                    ID[0] = e.getPointerId(0);
+        switch (e.getActionMasked())
+        {
+            case MotionEvent.ACTION_DOWN:
+                if (e.getX(0)<this.getWidth()/2) {
+                    index[0] = e.getActionIndex();
+                    ID[0] = e.getPointerId(index[0]);
+                    mPreviousID[0] = ID[0];
                     CoordOnStart [0] = e.getX(0);
-                    CoordOnStart [1] = e.getY(0);
+                    CoordOnStart [1] = e.getY(0)+100;
                 }else {
-                    index[1] = 0;
-                    ID[0] = e.getPointerId(0);
-                }
-            }else
-            if (index[0]==-1)
-            {
-                if (index [1]==0) {
-                    index[0] = 1;
-                    ID[1] = e.getPointerId(1);
+
+                    index[1] = e.getActionIndex();
+                    ID[0] = e.getPointerId(index[1]);
+                    mPreviousID[1] = ID[0];
+                    mPreviousCoord[1][0] = e.getX(index[1]);
+                    mPreviousCoord[1][1] = e.getY(index[1]);
+                }break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                if (index[0]==-1)
+                {
+                    index[0] = e.getActionIndex();
+                    ID[1] = e.getPointerId(index[0]);
+                    mPreviousID[0] = ID[1];
                     CoordOnStart [0] = e.getX(1);
-                    CoordOnStart [1] = e.getY(1);
+                    CoordOnStart [1] = e.getY(1)+100;
 
                 }else
-                if (index [1]==1) {
-                    index[0] = 0;
-                    ID[0] = e.getPointerId(0);
-                    CoordOnStart [0] = e.getX(0);
-                    CoordOnStart [1] = e.getY(0);
-                }
-            }else
-            if (index[1]==-1)
-            {
-                if (index [0]==0) {
-                    index[1] = 1;
-                    ID[1] = e.getPointerId(1);
+                if (index[1]==-1)
+                {
+                    index[1] = e.getActionIndex();
+                    ID[1] = e.getPointerId(index[1]);
+                    mPreviousID[0] = ID[1];
+                    mPreviousCoord[1][0] = e.getX(index[1]);
+                    mPreviousCoord[1][1] = e.getY(index[1]);
+                }break;
+            case MotionEvent.ACTION_POINTER_UP:
+                if (mPreviousID[0]==e.getPointerId(e.getActionIndex()))
+                {
+                    coord[0][0] = CoordOnStart[0];
+                    coord[0][1] = CoordOnStart[1];
+                    index [0] = -1;
+                    mPreviousID[0] = -1;
+
                 }else
-                if (index [0]==1) {
-                    index[1] = 0;
-                    ID[0] = e.getPointerId(0);
-                }
-            }
+                if (mPreviousID[1]==e.getPointerId(e.getActionIndex()))
+                {
+                    index [1] = -1;
+                    mPreviousID[1] = -1;
+                }break;
+            case MotionEvent.ACTION_UP:
+                mPreviousID[0] = -1;
+                mPreviousID [1] = -1;
+                index[0] = -1;
+                index[1] = -1;
         }
 
 
-        float[][] coord = new float [2][2];
-
-        if (mPreviousCount>count){
-            if (index[0]==-1)
-            {
-                coord[0][0] = CoordOnStart[0];
-                coord[0][1] = CoordOnStart[1];
-            }else
-            if (index[1]==-1)
-            {
-            }
-        }
 
 
         for(int i =0; i < index.length; i++)
@@ -127,35 +130,33 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
 
 
+        if(index [0]!= -1&&index [1]!= -1)
+            mRenderer.addAngleAndAddMoveAcceleration(
+                    coord[0][0] - CoordOnStart[0],
+                    coord[0][1] - CoordOnStart[1],
+                    coord[1][0] - mPreviousCoord[1][0],
+                    coord[1][1] - mPreviousCoord[1][1]);
+        else if (index [0] == -1&& index [1]!=-1)
+            mRenderer.addAngleAndAddMoveAcceleration(
+                    0,
+                    0,
+                    coord[1][0] - mPreviousCoord[1][0],
+                    coord[1][1] - mPreviousCoord[1][1]);
+        else if (index [0] != -1&& index [1] ==-1)
+            mRenderer.addAngleAndAddMoveAcceleration(
+                    coord[0][0] - CoordOnStart[0],
+                    coord[0][1] - CoordOnStart[1],
+                    0,
+                    0);
+        else if (index [0] == -1&& index [1] ==-1)
+            mRenderer.addAngleAndAddMoveAcceleration(
+                    0,
+                    0,
+                    0,
+                    0);
 
-        switch (e.getAction()) {
-            case MotionEvent.ACTION_MOVE:
 
 
-
-                if(index [0]!= -1&&index [1]!= -1)
-                    mRenderer.addAngleAndAddMoveAcceleration(
-                            coord[0][0] - CoordOnStart[0],
-                            coord[0][1] - CoordOnStart[1],
-                            coord[1][0] - mPreviousCoord[1][0],
-                            coord[1][1] - mPreviousCoord[1][1]);
-                else if (index [0] == -1&& index [1]!=-1)
-                    mRenderer.addAngleAndAddMoveAcceleration(
-                            0,
-                            0,
-                            coord[1][0] - mPreviousCoord[1][0],
-                            coord[1][1] - mPreviousCoord[1][1]);
-                else if (index [0] != -1&& index [1] ==-1)
-                    mRenderer.addAngleAndAddMoveAcceleration(
-                            coord[0][0] - CoordOnStart[0],
-                            coord[0][1] - CoordOnStart[1],
-                            0,
-                            0);
-
-                requestRender();
-                //throw new IllegalArgumentException("" + (coord[1][0] - mPreviousCoord[1][0]) + "  " + (coord[1][1] - mPreviousCoord[1][1]) );
-
-        }
 
         for(int i =0; i < 2; i++)
         {
@@ -170,7 +171,6 @@ public class MyGLSurfaceView extends GLSurfaceView {
                 mPreviousCoord[i][1] = 0;
             }
         }
-        mPreviousCount = count;
         return true;
     }
 }

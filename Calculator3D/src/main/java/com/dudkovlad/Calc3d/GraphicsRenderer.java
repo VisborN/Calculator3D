@@ -20,9 +20,11 @@ public class GraphicsRenderer implements GLSurfaceView.Renderer {
     float [] mProjectionMatrix = new float [16];
     float [] mViewMatrix = new float [16];
     float [] mVPMatrix = new float [16];
+    float [] mLightVertex = new float [4];
     float [] mViewLookVertex = new float []{0,0,-1,1};
     float [] mVLVRotated = new float []{-1,-1,-1,1};
     float [] mViewPosVertex = new float []{6,6,6,1};
+    float [] mAccelerationVertex = new float[]{0,0,0,1};
     float [] mMMatrix = new float [16];
     float [] mMMatrix1 = new float [16];
     float [] mMMatrix2 = new float [16];
@@ -52,6 +54,10 @@ public class GraphicsRenderer implements GLSurfaceView.Renderer {
 
         float time = SystemClock.uptimeMillis();
 
+        mViewPosVertex[0] = mViewPosVertex[0] + mAccelerationVertex[0]*time/1000f;
+        mViewPosVertex[1] = mViewPosVertex[1] + mAccelerationVertex[1]*time/1000f;
+        mViewPosVertex[2] = mViewPosVertex[2] + mAccelerationVertex[2]*time/1000f;
+
 
 
         Matrix.setLookAtM(  mViewMatrix, 0, mViewPosVertex[0], mViewPosVertex[1], mViewPosVertex[2],
@@ -62,9 +68,10 @@ public class GraphicsRenderer implements GLSurfaceView.Renderer {
 
         Matrix.multiplyMM(mVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
+        Matrix.multiplyMV(mLightVertex, 0,mVPMatrix, 0, new float [] {0f, 0f, 0f, 1}, 0);
 
 
-        mTriangle.draw(mVPMatrix,  mViewPosVertex, new float [] {3f, 3f, 3f});
+        mTriangle.draw(mVPMatrix,  mViewPosVertex, mLightVertex);
     }
 
     @Override
@@ -97,9 +104,9 @@ public class GraphicsRenderer implements GLSurfaceView.Renderer {
 
         Matrix.multiplyMV(mVLVRotated, 0, mMMatrix,0, mViewLookVertex, 0);
 
-        mViewPosVertex[0] = mViewPosVertex[0] + mVLVRotated[0]*(-dy1)*0.01f;
-        mViewPosVertex[1] = mViewPosVertex[1] + mVLVRotated[1]*(-dy1)*0.01f;
-        mViewPosVertex[2] = mViewPosVertex[2] + mVLVRotated[2]*(-dy1)*0.01f;
+        mAccelerationVertex[0] = mVLVRotated[0]*(-dy1)*0.0000001f;
+        mAccelerationVertex[1] = mVLVRotated[1]*(-dy1)*0.0000001f;
+        mAccelerationVertex[2] = mVLVRotated[2]*(-dy1)*0.0000001f;
 
 
     }
