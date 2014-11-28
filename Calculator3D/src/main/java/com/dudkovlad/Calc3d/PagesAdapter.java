@@ -12,14 +12,13 @@ import android.support.v13.app.FragmentPagerAdapter;
 public class PagesAdapter   extends FragmentPagerAdapter
                            // implements ViewPager.OnPageChangeListener
 {
-    private final Context mContext;
+    Context mContext;
     PagesFragment mPagesFragment;
 
 
-    public PagesAdapter (Context activity, FragmentManager fm) {
+    public PagesAdapter (Context context, FragmentManager fm) {
         super(fm);
-        mContext = activity;
-        mPagesFragment = new PagesFragment();
+        mContext = context;
     }
 
     @Override

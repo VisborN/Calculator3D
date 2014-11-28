@@ -40,13 +40,13 @@ public class Parser {
     public String INIT (String equation_)
     {
         if (equation_.isEmpty())
-            return "";
+            return "equation is empty";
         try {
             equation_string = equation_;
             equation = Equation.Create(equation_);
             S_M_A_R_T(equation,0,equation.size()-1);
             equation = Equation.toPolishNot(equation);
-            return "0";
+            return "all is ok";
 
             //}catch (IllegalArgumentException e)
         }catch (Throwable e)
@@ -62,9 +62,9 @@ public class Parser {
         try {
             equation = Calculate_op_and_func(equation,false);
             setPositions_Arrays();
-            String out = Equation.toString(equation);
+            equation_string = Equation.toString(equation);
             Convert_to_Float();
-            return out;
+            return equation_string;
 
             //}catch (IllegalArgumentException e)
         }catch (Throwable e)

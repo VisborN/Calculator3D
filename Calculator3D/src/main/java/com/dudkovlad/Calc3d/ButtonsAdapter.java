@@ -1,6 +1,8 @@
 package com.dudkovlad.Calc3d;
 
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +39,7 @@ public class ButtonsAdapter extends BaseAdapter
 
     @Override
     public long getItemId(int position) {
-        return position;
+        return position*tab_position;
     }
 
     // create a new ImageView for each item referenced by the Adapter
@@ -51,18 +53,22 @@ public class ButtonsAdapter extends BaseAdapter
             button_ = convertView;
         }
         ((Button)button_.findViewById(R.id.button_in_button_for_adapter)).setText(Data.pages_button_value[tab_position][position]);
+
         ((Button)button_.findViewById(R.id.button_in_button_for_adapter))
                 .setHeight(parent.getHeight() / (Data.pages_columnline_count[tab_position][1]));
 
+        StateListDrawable states = new StateListDrawable();
+        states.addState(new int[]{android.R.attr.state_pressed},
+                new ColorDrawable(Data.colors[Data.color_theme][7]));
+        states.addState(new int[]{}, new ColorDrawable(Data.colors[Data.color_theme][9]));
+
+        button_.findViewById(R.id.button_in_button_for_adapter).
+                setBackgroundDrawable(states);
 
 
-        ((Button)button_.findViewById(R.id.button_in_button_for_adapter)).
-                setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        MainActivity.AddToEquation(((Button)v).getText().toString());
-                    }
-                });
+        button_.findViewById(R.id.button_in_button_for_adapter).
+                setOnClickListener(((MainActivity)mContext).myClickListener );
+        button_.setId(position*tab_position);
         return button_;
     }
 

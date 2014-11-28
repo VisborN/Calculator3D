@@ -172,7 +172,7 @@ public class Function_parser {
                     case Const.FACTORIAL:throw new IllegalArgumentException("Run_func factorial of complex value"); //todo add factorial of complex
                     default:            throw new IllegalArgumentException("Run_func type isn\'t function1 "+type);
                 }
-                if (Math.abs(in1.getc().Re()) < 0.000000000001) in1.getc().Re(0d);//todo check how it work
+                if (Math.abs(in1.getc().Re()) < 0.000000000001) in1.getc().Re(0d);
                 if (Math.abs(in1.getc().Im()) < 0.000000000001) in1.getc().Im(0d);
             }
         }
@@ -216,12 +216,12 @@ public class Function_parser {
                                 in1.set(0f);
                         else
                             if (in1.getf() ==0)
-                                in1.set(Float.POSITIVE_INFINITY);//todo may be you whant replace it whith negative infinity
+                                in1.set(Float.POSITIVE_INFINITY);//todo may be you whont replace it whith negative infinity
                         else in1.set(Float.POSITIVE_INFINITY);
                         break;
                     case Const.DIFF:
                         if (in1.getf()==0&&in2.getf()==0)
-                            in1.set(Float.POSITIVE_INFINITY);//todo may be you whant replace it whith negative infinity
+                            in1.set(Float.POSITIVE_INFINITY);//todo may be you whont replace it whith negative infinity
                         break;
                     case Const.POW:
                         out = (float)Math.pow(in1.getf(), in2.getf());

@@ -16,8 +16,11 @@ public class Triangle {
     private FloatBuffer vertexBuffer;
     private FloatBuffer normalBuffer;
     private FloatBuffer colorBuffer;
+    private ShortBuffer IndexDataBuffer;
     private Shader mShader;
-    private float [] verticesDATA;
+    private float [] verticesCoord;
+    private float [] verticesNormal;
+    private float [] verticesColor;
     private short [] verticesINDEX;
 
 
@@ -27,153 +30,160 @@ public class Triangle {
             0f, 0f, 1f,
             0f, 0f, 1f,
             0f, 0f, 1f,
-
-            0f, 0f, 1f,
-            0f, 0f, 1f,
-            0f, 0f, 1f,
-
+                0f, 0f, 1f,
+                0f, 0f, 1f,
+                0f, 0f, 1f,
             0f, 1f, 0f,
             0f, 1f, 0f,
             0f, 1f, 0f,
-
-            0f, 1f, 0f,
-            0f, 1f, 0f,
-            0f, 1f, 0f,
-
+                0f, 1f, 0f,
+                0f, 1f, 0f,
+                0f, 1f, 0f,
             0f, 0f, -1f,
             0f, 0f, -1f,
             0f, 0f, -1f,
-
-            0f, 0f, -1f,
-            0f, 0f, -1f,
-            0f, 0f, -1f,
-
+                0f, 0f, -1f,
+                0f, 0f, -1f,
+                0f, 0f, -1f,
             0f, -1f, 0f,
             0f, -1f, 0f,
             0f, -1f, 0f,
-
-            0f, -1f, 0f,
-            0f, -1f, 0f,
-            0f, -1f, 0f,
-
+                0f, -1f, 0f,
+                0f, -1f, 0f,
+                0f, -1f, 0f,
             1f, 0f, 0f,
             1f, 0f, 0f,
             1f, 0f, 0f,
-
-            1f, 0f, 0f,
-            1f, 0f, 0f,
-            1f, 0f, 0f,
-
+                1f, 0f, 0f,
+                1f, 0f, 0f,
+                1f, 0f, 0f,
             -1f, 0f, 0f,
             -1f, 0f, 0f,
             -1f, 0f, 0f,
-
-            -1f, 0f, 0f,
-            -1f, 0f, 0f,
-            -1f, 0f, 0f
+                -1f, 0f, 0f,
+                -1f, 0f, 0f,
+                -1f, 0f, 0f
 
     };
 
 
-float colorArray [] = {
-            0f, 0f, 1f, 1,
-            1f, 0f, 1f, 1,
-            0f, 1f, 1f, 1,
-            0f, 1f, 1f, 1,
-            1f, 0f, 1f, 1,
-            1f, 1f, 1f, 1,
-            0f, 1f, 1f, 1,
-            1f, 1f, 1f, 1,
-            0f, 1f, 0f, 1,
-            0f, 1f, 0f, 1,
-            1f, 1f, 1f, 1,
-            1f, 1f, 0f, 1,
-            0f, 1f, 0f, 1,
-            1f, 1f, 0f, 1,
-            0f, 0f, 0f, 1,
-            0f, 0f, 0f, 1,
-            1f, 1f, 0f, 1,
-            1f, 0f, 0f, 1,
-            0f, 0f, 0f, 1,
-            1f, 0f, 0f, 1,
-            0f, 0f, 1f, 1,
-            0f, 0f, 1f, 1,
-            1f, 0f, 0f, 1,
-            1f, 0f, 1f, 1,
-            1f, 0f, 1f, 1,
-            1f, 0f, 0f, 1,
-            1f, 1f, 1f, 1,
-            1f, 1f, 1f, 1,
-            1f, 0f, 0f, 1,
-            1f, 1f, 0f, 1,
-            0f, 0f, 1f, 1,
-            0f, 1f, 1f, 1,
-            0f, 0f, 0f, 1,
-            0f, 0f, 0f, 1,
-            0f, 1f, 1f, 1,
-            0f, 1f, 0f, 1
-    };
-/*
     float colorArray [] = {
-            0f, 0f, 1f, 1,
-            0f, 0f, 1f, 1,
-            0f, 0f, 1f, 1,
-            0f, 0f, 1f, 1,
-            0f, 0f, 1f, 1,
-            0f, 0f, 1f, 1,
-            0f, 1f, 0f, 1,
-            0f, 1f, 0f, 1,
-            0f, 1f, 0f, 1,
-            0f, 1f, 0f, 1,
-            0f, 1f, 0f, 1,
-            0f, 1f, 0f, 1,
-            1f, 0f, 0f, 1,
-            1f, 0f, 0f, 1,
-            1f, 0f, 0f, 1,
-            1f, 0f, 0f, 1,
-            1f, 0f, 0f, 1,
-            1f, 0f, 0f, 1,
-            1f, 1f, 0f, 1,
-            1f, 1f, 0f, 1,
-            1f, 1f, 0f, 1,
-            1f, 1f, 0f, 1,
-            1f, 1f, 0f, 1,
-            1f, 1f, 0f, 1,
-            1f, 0f, 1f, 1,
-            1f, 0f, 1f, 1,
-            1f, 0f, 1f, 1,
-            1f, 0f, 1f, 1,
-            1f, 0f, 1f, 1,
-            1f, 0f, 1f, 1,
-            0f, 1f, 1f, 1,
-            0f, 1f, 1f, 1,
-            0f, 1f, 1f, 1,
-            0f, 1f, 1f, 1,
-            0f, 1f, 1f, 1,
-            0f, 1f, 1f, 1
+            0.4f, 0.4f, 0.7f, 1,
+            0.4f, 0.4f, 0.7f, 1,
+            0.4f, 0.4f, 0.7f, 1,
+            0.4f, 0.4f, 0.7f, 1,
+            0.4f, 0.4f, 0.7f, 1,
+            0.4f, 0.4f, 0.7f, 1,
+                0.4f, 0.7f, 0.4f, 1,
+                0.4f, 0.7f, 0.4f, 1,
+                0.4f, 0.7f, 0.4f, 1,
+                0.4f, 0.7f, 0.4f, 1,
+                0.4f, 0.7f, 0.4f, 1,
+                0.4f, 0.7f, 0.4f, 1,
+            0.4f, 0.4f, 0.7f, 1,
+            0.4f, 0.4f, 0.7f, 1,
+            0.4f, 0.4f, 0.7f, 1,
+            0.4f, 0.4f, 0.7f, 1,
+            0.4f, 0.4f, 0.7f, 1,
+            0.4f, 0.4f, 0.7f, 1,
+                0.4f, 0.7f, 0.4f, 1,
+                0.4f, 0.7f, 0.4f, 1,
+                0.4f, 0.7f, 0.4f, 1,
+                0.4f, 0.7f, 0.4f, 1,
+                0.4f, 0.7f, 0.4f, 1,
+                0.4f, 0.7f, 0.4f, 1,
+            0.7f, 0.4f, 0.4f, 1,
+            0.7f, 0.4f, 0.4f, 1,
+            0.7f, 0.4f, 0.4f, 1,
+            0.7f, 0.4f, 0.4f, 1,
+            0.7f, 0.4f, 0.4f, 1,
+            0.7f, 0.4f, 0.4f, 1,
+                0.7f, 0.4f, 0.4f, 1,
+                0.7f, 0.4f, 0.4f, 1,
+                0.7f, 0.4f, 0.4f, 1,
+                0.7f, 0.4f, 0.4f, 1,
+                0.7f, 0.4f, 0.4f, 1,
+                0.7f, 0.4f, 0.4f, 1
+    };
+
+/*float colorArray [] = {
+            0f, 0f, 1f, 0.5f,
+            1f, 0f, 1f, 0.5f,
+            0f, 1f, 1f, 0.5f,
+            0f, 1f, 1f, 0.5f,
+            1f, 0f, 1f, 0.5f,
+            1f, 1f, 1f, 0.5f,
+            0f, 1f, 1f, 0.5f,
+            1f, 1f, 1f, 0.5f,
+            0f, 1f, 0f, 0.5f,
+            0f, 1f, 0f, 0.5f,
+            1f, 1f, 1f, 0.5f,
+            1f, 1f, 0f, 0.5f,
+            0f, 1f, 0f, 0.5f,
+            1f, 1f, 0f, 0.5f,
+            0f, 0f, 0f, 0.5f,
+            0f, 0f, 0f, 0.5f,
+            1f, 1f, 0f, 0.5f,
+            1f, 0f, 0f, 0.5f,
+            0f, 0f, 0f, 0.5f,
+            1f, 0f, 0f, 0.5f,
+            0f, 0f, 1f, 0.5f,
+            0f, 0f, 1f, 0.5f,
+            1f, 0f, 0f, 0.5f,
+            1f, 0f, 1f, 0.5f,
+            1f, 0f, 1f, 0.5f,
+            1f, 0f, 0f, 0.5f,
+            1f, 1f, 1f, 0.5f,
+            1f, 1f, 1f, 0.5f,
+            1f, 0f, 0f, 0.5f,
+            1f, 1f, 0f, 0.5f,
+            0f, 0f, 1f, 0.5f,
+            0f, 1f, 1f, 0.5f,
+            0f, 0f, 0f, 0.5f,
+            0f, 0f, 0f, 0.5f,
+            0f, 1f, 1f, 0.5f,
+            0f, 1f, 0f, 0.5f
+    };
+    float colorArray [] = {
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1,
+            0.7f, 0.7f, 0.7f, 1
     };
 
 
-    static float [] triangleCoords = {   // in counterclockwise order:
-            -1f, -1f, 1f,
-            1f, -1f, 1f,
-            -1f, 1f, 1f,
-            1f, 1f, 1f,
-            -1f, 1f, -1f,
-            1f, 1f, -1f,
-            -1f, -1f, -1f,
-            1f, -1f, -1f,
-            -1f, -1f, 1f,
-            1f, -1f, 1f,
-            1f, -1f, 1f,
-            1f, -1f, -1f,
-            1f, 1f, 1f,
-            1f, 1f, -1f,
-            -1f, -1f, 1f,
-            -1f, 1f, 1f,
-            -1f, -1f, -1f,
-            -1f, 1f, -1f
-    };
 */
 
 
@@ -181,50 +191,39 @@ float colorArray [] = {
             -1f, -1f, 1f,
             1f, -1f, 1f,
             -1f, 1f, 1f,
-
-            -1f, 1f, 1f,
-            1f, -1f, 1f,
-            1f, 1f, 1f,
-
+                -1f, 1f, 1f,
+                1f, -1f, 1f,
+                1f, 1f, 1f,
             -1f, 1f, 1f,
             1f, 1f, 1f,
             -1f, 1f, -1f,
-
-            -1f, 1f, -1f,
-            1f, 1f, 1f,
-            1f, 1f, -1f,
-
+                -1f, 1f, -1f,
+                1f, 1f, 1f,
+                1f, 1f, -1f,
             -1f, 1f, -1f,
             1f, 1f, -1f,
             -1f, -1f, -1f,
-
-            -1f, -1f, -1f,
-            1f, 1f, -1f,
-            1f, -1f, -1f,
-
+                -1f, -1f, -1f,
+                1f, 1f, -1f,
+                1f, -1f, -1f,
             -1f, -1f, -1f,
             1f, -1f, -1f,
             -1f, -1f, 1f,
-
-            -1f, -1f, 1f,
-            1f, -1f, -1f,
-            1f, -1f, 1f,
-
+                -1f, -1f, 1f,
+                1f, -1f, -1f,
+                1f, -1f, 1f,
             1f, -1f, 1f,
             1f, -1f, -1f,
             1f, 1f, 1f,
-
-            1f, 1f, 1f,
-            1f, -1f, -1f,
-            1f, 1f, -1f,
-
+                1f, 1f, 1f,
+                1f, -1f, -1f,
+                1f, 1f, -1f,
             -1f, -1f, 1f,
             -1f, 1f, 1f,
             -1f, -1f, -1f,
-
-            -1f, -1f, -1f,
-            -1f, 1f, 1f,
-            -1f, 1f, -1f
+                -1f, -1f, -1f,
+                -1f, 1f, 1f,
+                -1f, 1f, -1f
     };
 
     private final String vertexShaderCode =
@@ -266,94 +265,151 @@ float colorArray [] = {
 
     public Triangle() {
 
+        int numofcubs = 18*9 + 1;
+        float spacing = 0.01f;
+        float z = 4;
+
+
+        verticesCoord = new float[triangleCoords.length*numofcubs];
+        verticesNormal = new float[triangleCoords.length*numofcubs];
+        verticesColor = new float[triangleCoords.length/3*4*numofcubs];
+
+        verticesINDEX = new short[triangleCoords.length/3*numofcubs];
+
+        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{0,             0+z,            0}, 0);
+        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{3+spacing,     -3-spacing+z,   0}, 648);
+        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{0,             -3-spacing+z,   0}, 648*2);
+        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{-3-spacing,    -3 - spacing+z, 0}, 648*3);
+        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{3+spacing,     -6-spacing*2+z, 0}, 648*4);
+        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{0,             -6-spacing*2+z, 0}, 648*5);
+        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{-3-spacing,    -6-spacing*2+z, 0}, 648*6);
+        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{6+spacing*2,   -6-spacing*2+z, 0}, 648*7);
+        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{-6-spacing*2,  -6-spacing*2+z, 0}, 648*8);
+
+        AddCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{6,6,6},0.05f, 648*9);
 
 
 
 
-        ByteBuffer bb = ByteBuffer.allocateDirect(triangleCoords.length * 4);
+        ByteBuffer bb = ByteBuffer.allocateDirect(verticesCoord.length * 4);
         bb.order(ByteOrder.nativeOrder());
         vertexBuffer = bb.asFloatBuffer();
         vertexBuffer.position(0);
-        vertexBuffer.put(triangleCoords);
+        vertexBuffer.put(verticesCoord);
         vertexBuffer.position(0);
 
-        ByteBuffer bnormal = ByteBuffer.allocateDirect(normalArray.length*4);
+        ByteBuffer bnormal = ByteBuffer.allocateDirect(verticesNormal.length*4);
         bnormal.order(ByteOrder.nativeOrder());
         normalBuffer = bnormal.asFloatBuffer();
         normalBuffer.position(0);
-        normalBuffer.put(normalArray);
+        normalBuffer.put(verticesNormal);
         normalBuffer.position(0);
 
-        ByteBuffer bcolor = ByteBuffer.allocateDirect(colorArray.length*4);
+
+        ByteBuffer bcolor = ByteBuffer.allocateDirect(verticesColor.length*4);
         bcolor.order(ByteOrder.nativeOrder());
         colorBuffer = bcolor.asFloatBuffer();
         colorBuffer.position(0);
-        colorBuffer.put(colorArray);
+        colorBuffer.put(verticesColor);
         colorBuffer.position(0);
 
 
-        verticesDATA = new float[triangleCoords.length/3*10];
-
-        verticesINDEX = new short[triangleCoords.length/3];
-
-        CreateCub(verticesDATA,verticesINDEX,new float[]{0,0,0},1);
 
 
-        final FloatBuffer heightMapVertexDataBuffer = ByteBuffer
-                .allocateDirect(verticesDATA.length * 4).order(ByteOrder.nativeOrder())
-                .asFloatBuffer();
-        heightMapVertexDataBuffer.put(verticesDATA).position(0);
-
-        final ShortBuffer heightMapIndexDataBuffer = ByteBuffer
+        IndexDataBuffer = ByteBuffer
                 .allocateDirect(verticesINDEX.length * 2).order(ByteOrder.nativeOrder())
                 .asShortBuffer();
-        heightMapIndexDataBuffer.put(verticesINDEX).position(0);
+        IndexDataBuffer.put(verticesINDEX).position(0);
+
 
         mShader=new Shader(vertexShaderCode, fragmentShaderCode);
-        //свяжем буфер вершин с атрибутом a_vertex в вершинном шейдере
+
         mShader.linkVertexBuffer(vertexBuffer);
-        //свяжем буфер нормалей с атрибутом a_normal в вершинном шейдере
         mShader.linkNormalBuffer(normalBuffer);
-        //свяжем буфер цветов с атрибутом a_color в вершинном шейдере
         mShader.linkColorBuffer(colorBuffer);
+    }
+
+    public void UpdateData( float [] vertices, float [] normals, float [] colors, short [] indecies)
+    {
+
+
+        vertexBuffer.put(vertices).position(0);
+
+
+        normalBuffer.put(normals).position(0);
+
+
+        colorBuffer.put(colors).position(0);
+
+
+        verticesINDEX = indecies;
+        IndexDataBuffer.put(indecies).position(0);
+
     }
 
     public void draw(float[] vpMatrix, float[] cam, float[] lightsource) {
         mShader.linkArrayAsUniform(vpMatrix,"u_ViewProjectionMatrix",(byte)16);
-        //передаем в шейдерный объект координаты камеры
+
         mShader.linkArrayAsUniform(cam, "u_camera", 3);
-        //передаем в шейдерный объект координаты источника света
-        mShader.linkArrayAsUniform(cam, "u_lightPosition", 3);
-        //делаем шейдерную программу активной
+
+        mShader.linkArrayAsUniform(lightsource, "u_lightPosition", 3);
+
         mShader.useProgram();
-        //рисуем квадрат
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 36);
+
+
+        GLES20.glDrawElements(
+                GLES20.GL_TRIANGLES, verticesINDEX.length,
+                GLES20.GL_UNSIGNED_SHORT, IndexDataBuffer);
 
     }
 
-    private void CreateCub(float [] vertices, short [] index_array,float[] coords_center, float size)
+    private void AddCub(float [] vertices, float [] normal, float [] color, short [] index_array,float[] coords_center, float size, int index)
     {
 
-        for (int i = 0, j = 0; i < triangleCoords.length/3;i++)
-        {
-            vertices[j++] = triangleCoords [i*3]*0.5f*size + coords_center[0];
-            vertices[j++] = triangleCoords [i*3+1]*0.5f*size + coords_center[1];
-            vertices[j++] = triangleCoords [i*3+2]*0.5f*size + coords_center[2];
+        for (int i = index; i - index  < triangleCoords.length/3;i++)
+            {
+            vertices[i*3] = triangleCoords [(i-index)*3]*0.5f*size + coords_center[0];
+            vertices[i*3+1] = triangleCoords [(i-index)*3+1]*0.5f*size + coords_center[1];
+            vertices[i*3+2] = triangleCoords [(i-index)*3+2]*0.5f*size + coords_center[2];
 
 
-            vertices[j++] = normalArray [i*3];
-            vertices[j++] = normalArray [i*3+1];
-            vertices[j++] = normalArray [i*3+2];
+            normal[i*3] = normalArray [(i-index)*3];
+            normal[i*3+1] = normalArray [(i-index)*3+1];
+            normal[i*3+2] = normalArray [(i-index)*3+2];
 
-            vertices[j++] = colorArray [i*4];
-            vertices[j++] = colorArray [i*4+1];
-            vertices[j++] = colorArray [i*4+2];
-            vertices[j++] = colorArray [i*4+3];
+            color[i*4] = colorArray [(i-index)*4];
+            color[i*4+1] = colorArray [(i-index)*4+1];
+            color[i*4+2] = colorArray [(i-index)*4+2];
+            color[i*4+3] = colorArray [(i-index)*4+3];
+
 
             index_array [i] = (short)i;
         }
+    }
 
+    private void AddHiperCub(float [] vertices, float [] normal, float [] color, short [] index_array,float[] coords_center, int index)
+    {
 
+        AddCub(vertices,normal,color,index_array,new float[]{coords_center[0] +-1,coords_center[1] + 0,coords_center[2] + 0},1, index);
+        AddCub(vertices,normal,color,index_array,new float[]{coords_center[0] +-1,coords_center[1] + 0,coords_center[2] +-1},1, index + 36);
+        AddCub(vertices,normal,color,index_array,new float[]{coords_center[0] +-1,coords_center[1] + 0,coords_center[2] + 1},1, index + 36*2);
+        AddCub(vertices,normal,color,index_array,new float[]{coords_center[0] + 0,coords_center[1] + 0,coords_center[2] +-1},1, index + 36*3);
+        AddCub(vertices,normal,color,index_array,new float[]{coords_center[0] + 0,coords_center[1] + 0,coords_center[2] + 1},1, index + 36*4);
+        AddCub(vertices,normal,color,index_array,new float[]{coords_center[0] + 1,coords_center[1] + 0,coords_center[2] +-1},1, index + 36*5);
+        AddCub(vertices,normal,color,index_array,new float[]{coords_center[0] + 1,coords_center[1] + 0,coords_center[2] + 0},1, index + 36*6);
+        AddCub(vertices,normal,color,index_array,new float[]{coords_center[0] + 1,coords_center[1] + 0,coords_center[2] + 1},1, index + 36*7);
+
+        AddCub(vertices,normal,color,index_array,new float[]{coords_center[0] + 0,coords_center[1] +-1,coords_center[2] + 0},1, index + 36*8);
+        AddCub(vertices,normal,color,index_array,new float[]{coords_center[0] + 0,coords_center[1] +-1,coords_center[2] +-1},1, index + 36*9);
+        AddCub(vertices,normal,color,index_array,new float[]{coords_center[0] + 0,coords_center[1] +-1,coords_center[2] + 1},1, index + 36*10);
+        AddCub(vertices,normal,color,index_array,new float[]{coords_center[0] + 0,coords_center[1] + 1,coords_center[2] + 0},1, index + 36*11);
+        AddCub(vertices,normal,color,index_array,new float[]{coords_center[0] + 0,coords_center[1] + 1,coords_center[2] +-1},1, index + 36*12);
+        AddCub(vertices,normal,color,index_array,new float[]{coords_center[0] + 0,coords_center[1] + 1,coords_center[2] + 1},1, index + 36*13);
+
+        AddCub(vertices,normal,color,index_array,new float[]{coords_center[0] + 1,coords_center[1] +-1,coords_center[2] + 0},1, index + 36*14);
+        AddCub(vertices,normal,color,index_array,new float[]{coords_center[0] + 1,coords_center[1] + 1,coords_center[2] + 0},1, index + 36*15);
+        AddCub(vertices,normal,color,index_array,new float[]{coords_center[0] +-1,coords_center[1] +-1,coords_center[2] + 0},1, index + 36*16);
+        AddCub(vertices,normal,color,index_array,new float[]{coords_center[0] +-1,coords_center[1] + 1,coords_center[2] + 0},1, index + 36*17);
 
 
 

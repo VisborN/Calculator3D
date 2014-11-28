@@ -6,8 +6,11 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -16,50 +19,99 @@ import android.widget.Toast;
  */
 public class MainActivity extends Activity
 {
+    Context context;
+    FragmentManager fm;
 
-    public static Context context;
-    public static MyCalc data_del;
+
+    Handler mHandler = new Handler() {
+
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case ThreadForCalculating.LOG_TEXT:
+                    if (debugview != null)
+                        debugview.setText(msg.obj.toString()+
+                                debugview.getText());
+                    break;
+                case ThreadForCalculating.SHOW_RESULT:
+                    if (mainFragment != null && debugview != null && mainFragment.result_view != null) {
+                        debugview.setText("");
+                        String result = msg.obj.toString();
+                        if (!result.isEmpty() && result.charAt(0) == '$') {
+                            debugview.setText(
+                                    debugview.getText().toString() + "\n" + result);
+                            result = "";
+                        }
+                        mainFragment.result_view.setText(result);
+                    }
+                    break;
+
+                default:Toast.makeText(context, "unusual message " + msg.obj.toString(),
+                        Toast.LENGTH_SHORT).show();break;
+            }
+        }
+    };
+    public ThreadForCalculating threadFC = new ThreadForCalculating(mHandler);;
 
 
+    TextView debugview;
+    MyClickListener myClickListener;
     EnteringFragment mainFragment;
     GraphicsFragment graphicsFragment;
     DrawerLayout drawerlayout;
     ListView historylist;
-    public static FragmentManager fm;
+    HistoryListAdapter histAdapter;
     private int where;
 
 	@Override
 	public void onCreate (Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+        setContentView(R.layout.main_activ_main_drawer);
+        Data.Load_Data (getSharedPreferences("main_prefs", 0));
 /*
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             this.setTheme();
         }*/
+        myClickListener = new MyClickListener(this);
         fm = getFragmentManager();
         context = this;
 
+        debugview = (TextView)findViewById(R.id.debugview);
+
+        debugview.setTextSize(10);
+        //debugview.setBackgroundColor(Data.colors[Data.color_theme][4]);
+        debugview.setTextColor(0x99ffffff);
+        debugview.setLines(2);
+
+
+        CreateNavDrawer();
+
 
         mainFragment = EnteringFragment.newInstance(this);
-        CreateNavDrawer();
-        //graphicsFragment = GraphicsFragment.newInstance(this);
+        graphicsFragment = GraphicsFragment.newInstance(this);
         setMainFragment(mainFragment);
         where = 0;
 
-        setContentView(R.layout.main_activ_main_drawer);
-        Toast.makeText(this, "Hello World!", Toast.LENGTH_SHORT).show();
-	}
+        threadFC.Result(Data.history_items.get(0).getHistory_src());
 
-    public static void AddToEquation(String input)
-    {
-        data_del.AddToEquation(input);
-    }
+        Toast.makeText(this, "Hello World!", Toast.LENGTH_SHORT).show();
+
+
+	}
 
     void CreateNavDrawer ()
     {
+
         drawerlayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        historylist = (ListView) findViewById(R.id.left_drawer);//todo fill list view
+        historylist = (ListView)findViewById(R.id.left_drawer);//todo fill list view
+
+
+        histAdapter = new HistoryListAdapter(this, R.layout.history_item, Data.history_items);
+
+        historylist.setAdapter(histAdapter);
+
+
     }
 
     void setMainFragment (Fragment fragmen)
@@ -109,6 +161,11 @@ public class MainActivity extends Activity
 
 
 
+    }
+
+    protected void onDestroy() {
+        threadFC.interrupt();
+        super.onDestroy();
     }
 
 

@@ -9,7 +9,6 @@ import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
-import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,12 +22,10 @@ import android.widget.TextView;
 public class EnteringFragment extends Fragment  {
 
 
-    MyCalc data_del;
     PagesAdapter mPagesAdapter;
     ViewPager mViewPager;
     TextView equation_view;
     TextView result_view;
-    TextView debugview;
     LinearLayout mainLay, equationLay, resultLay;
     ImageButton settings_button, delete_button;
     Context context;
@@ -49,23 +46,22 @@ public class EnteringFragment extends Fragment  {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        Data.Load_Data (context.getSharedPreferences("main_prefs", 0));
+
 
 
         StateListDrawable del_but_states = Create_state_list_drawable_from_colors_and_image(
                 BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_for_redact_new_changed_to_min),
-                Data.del_but_color_up, 0x00372317
+                Data.colors[Data.color_theme][9], Data.colors[Data.color_theme][7]
         );
 
         StateListDrawable settings_but_states = Create_state_list_drawable_from_colors_and_image(
                 BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_settings),
-                0x00633F29, 0x00000000
+                Data.colors[Data.color_theme][8], Data.colors[Data.color_theme][4]
         );
 
 
-
         mainLay = (LinearLayout)inflater.inflate(R.layout.main_fragment, container, false);
-        mainLay.setBackgroundColor(0x633F29);
+        mainLay.setBackgroundColor(Data.colors[Data.color_theme][9]);
 
         equationLay = (LinearLayout)mainLay.findViewById(R.id.equationlay);
         resultLay   = (LinearLayout)mainLay.findViewById(R.id.resultlay);
@@ -73,25 +69,24 @@ public class EnteringFragment extends Fragment  {
         mViewPager =    (ViewPager) mainLay.findViewById(R.id.mviewpager);
 
 
-        equation_view = (TextView)mainLay.findViewById(R.id.equation_view);
+        equation_view = (TextView)mainLay.findViewById(R.id.equation_view);//todo make edittext
         result_view = (TextView)mainLay.findViewById(R.id.resultview);
-        debugview = (TextView)mainLay.findViewById(R.id.debugview);
         delete_button = (ImageButton)mainLay.findViewById(R.id.delete_button);
         settings_button = (ImageButton)mainLay.findViewById(R.id.settings_button);
 
 
-        data_del = new MyCalc(equation_view, result_view, debugview);
-        MainActivity.data_del = data_del;
 
-        equation_view.setBackgroundColor(0xff372317);
+        equation_view.setBackgroundColor(Data.colors[Data.color_theme][6]);
         equation_view.setHorizontallyScrolling(true);
         equation_view.setGravity(Gravity.END);
         equation_view.setTextSize(20);
+        equation_view.setTextColor(0x99000000);
         equation_view.setLines(2);
+        equation_view.setText(Data.history_items.get(0).getHistory_src());
 
 
         settings_button.setImageDrawable(settings_but_states); //todo make color changing
-        settings_button.setBackgroundColor(0xff372317);
+        settings_button.setBackgroundColor(Data.colors[Data.color_theme][6]);
 
         delete_button.setImageDrawable(del_but_states);/*getResources().getDrawable(R.drawable.ic_for_redact)*/
         if (Data.del_but_show)
@@ -101,7 +96,7 @@ public class EnteringFragment extends Fragment  {
             delete_button.setLayoutParams(new LinearLayout.LayoutParams(
                     0,LinearLayout.LayoutParams.WRAP_CONTENT, 0));
 
-        delete_button.setBackgroundColor(0xff633F29);
+        delete_button.setBackgroundColor(Data.colors[Data.color_theme][8]);
         //result_view.setHapticFeedbackEnabled(true);
 
 
@@ -110,16 +105,13 @@ public class EnteringFragment extends Fragment  {
         result_view.setLayoutParams(new LinearLayout.LayoutParams(
                 0,LinearLayout.LayoutParams.MATCH_PARENT/*delete_button.getHeight()*/, 100-Data.del_but_prcnt));
         //result_view.setHapticFeedbackEnabled(true);
-        result_view.setBackgroundColor(0xff633F29);
+        result_view.setBackgroundColor(Data.colors[Data.color_theme][8]);
         result_view.setLines(2);
         result_view.setTextSize(20); //todo find how to calculate text size
 
 
 
 
-        debugview.setTextSize(10);
-        debugview.setBackgroundColor(0xff000000);
-        debugview.setLines(2);
 
 
 
@@ -131,58 +123,20 @@ public class EnteringFragment extends Fragment  {
 
 
         if (!Data.del_but_show) {
-            result_view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    data_del.DelFromEquation();
-                }
 
+            result_view.setOnClickListener(((MainActivity)context).myClickListener);
 
-            });//todo make edittext
-
-            result_view.setOnLongClickListener(new View.OnLongClickListener() {
-
-                @Override
-                public boolean onLongClick(View v) {
-                    v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-                    data_del.DelAllFromEquation();
-                    return true;
-                }
-
-            });//todo make edittext
+            result_view.setOnLongClickListener(((MainActivity)context).myClickListener);
         }
         else
         {
-            delete_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    data_del.DelFromEquation();
-                }
+            delete_button.setOnClickListener(((MainActivity)context).myClickListener);
 
-
-            });//todo make edittext
-
-            delete_button.setOnLongClickListener(new View.OnLongClickListener() {
-
-                @Override
-                public boolean onLongClick(View v) {
-                    v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-                    data_del.DelAllFromEquation();
-                    return true;
-                }
-
-            });//todo make edittext
+            delete_button.setOnLongClickListener(((MainActivity)context).myClickListener);
         }
 
 
-        settings_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((MainActivity)context).go_to_graphics_fragment();
-            }
-
-
-        });//todo make edittext
+        settings_button.setOnClickListener(((MainActivity)context).myClickListener);
 
 
 
@@ -197,6 +151,8 @@ public class EnteringFragment extends Fragment  {
         int [] pix_arr_up = new int [image.getHeight()*image.getWidth()];
         image.getPixels(pix_arr_up,0,image.getWidth(),0,0,image.getWidth(),image.getHeight());
         int [] pix_arr_down = pix_arr_up.clone();
+        color_up = color_up - 0xFF000000;
+        color_down = color_down - 0xFF000000;
         for(int i = 0; i < pix_arr_up.length; i++)
         {
             pix_arr_up[i]= pix_arr_up[i] | color_up;

@@ -12,7 +12,6 @@
         android:id="@+id/button_in_button_for_adapter"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/std_button"
         android:textColor="#FFFFFF"
         android:textSize="40sp"
 

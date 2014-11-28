@@ -23,7 +23,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
         // Set the Renderer for drawing on the GLSurfaceView
 
-        mRenderer = new GraphicsRenderer();
+        mRenderer = new GraphicsRenderer((MainActivity)context);
         setRenderer(mRenderer);
 
         // Render the view only when there is a change in the drawing data

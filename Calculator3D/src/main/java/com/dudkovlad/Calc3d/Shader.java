@@ -57,7 +57,7 @@ public class Shader {
     //связываем буфер координат вершин vertexBuffer с атрибутом a_vertex
     GLES20.glVertexAttribPointer(
     a_vertex_Handle, 3, GLES20.GL_FLOAT, false, 0,vertexBuffer);
-}
+    }
 
     //метод, который связывает
 //буфер координат векторов нормалей normalBuffer с атрибутом a_normal
@@ -87,8 +87,33 @@ public class Shader {
                 a_color_Handle, 4, GLES20.GL_FLOAT, false, 0, colorBuffer);
     }
 
-    public void linkVertex_ALLINONE_Buffer(FloatBuffer colorBuffer) {
+    public void linkVertex_ALLINONE_Buffer(FloatBuffer Buffer) {
+        GLES20.glUseProgram(program_Handle);
+
+        int a_vertex_Handle = GLES20.glGetAttribLocation(program_Handle, "a_vertex");
+        //включаем использование атрибута a_vertex
+        GLES20.glEnableVertexAttribArray(a_vertex_Handle);
+        //связываем буфер координат вершин vertexBuffer с атрибутом a_vertex
+        GLES20.glVertexAttribPointer(
+                a_vertex_Handle, 3, GLES20.GL_FLOAT, false, 2,Buffer);
+
+        int a_normal_Handle = GLES20.glGetAttribLocation(program_Handle, "a_normal");
+        //включаем использование атрибута a_normal
+        GLES20.glEnableVertexAttribArray(a_normal_Handle);
+        //связываем буфер нормалей normalBuffer с атрибутом a_normal
+        GLES20.glVertexAttribPointer(
+                a_normal_Handle, 3, GLES20.GL_FLOAT, false, 2,Buffer);
+
+        //получаем ссылку на атрибут a_color
+        int a_color_Handle = GLES20.glGetAttribLocation(program_Handle, "a_color");
+        //включаем использование атрибута a_color
+        GLES20.glEnableVertexAttribArray(a_color_Handle);
+        //связываем буфер нормалей colorBuffer с атрибутом a_color
+        GLES20.glVertexAttribPointer(
+                a_color_Handle, 4, GLES20.GL_FLOAT, false, 3, Buffer);
     }
+
+
 
     public void linkArrayAsUniform(float [] array, String uniformName, int type){
 
