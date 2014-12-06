@@ -265,29 +265,7 @@ public class Triangle {
 
     public Triangle() {
 
-        int numofcubs = 18*9 + 1;
-        float spacing = 0.01f;
-        float z = 4;
-
-
-        verticesCoord = new float[triangleCoords.length*numofcubs];
-        verticesNormal = new float[triangleCoords.length*numofcubs];
-        verticesColor = new float[triangleCoords.length/3*4*numofcubs];
-
-        verticesINDEX = new short[triangleCoords.length/3*numofcubs];
-
-        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{0,             0+z,            0}, 0);
-        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{3+spacing,     -3-spacing+z,   0}, 648);
-        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{0,             -3-spacing+z,   0}, 648*2);
-        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{-3-spacing,    -3 - spacing+z, 0}, 648*3);
-        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{3+spacing,     -6-spacing*2+z, 0}, 648*4);
-        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{0,             -6-spacing*2+z, 0}, 648*5);
-        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{-3-spacing,    -6-spacing*2+z, 0}, 648*6);
-        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{6+spacing*2,   -6-spacing*2+z, 0}, 648*7);
-        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{-6-spacing*2,  -6-spacing*2+z, 0}, 648*8);
-
-        AddCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{6,6,6},0.05f, 648*9);
-
+        setMegaFigure();
 
 
 
@@ -332,18 +310,26 @@ public class Triangle {
     public void UpdateData( float [] vertices, float [] normals, float [] colors, short [] indecies)
     {
 
+        if (indecies.length < 2)
+            setMegaFigure();
+        else {
 
-        vertexBuffer.put(vertices).position(0);
+            verticesCoord = vertices;
+            verticesNormal = normals;
+            verticesColor = colors;
+            verticesINDEX = indecies;
+        }
+
+        vertexBuffer.put(verticesCoord).position(0);
 
 
-        normalBuffer.put(normals).position(0);
+        normalBuffer.put(verticesNormal).position(0);
 
 
-        colorBuffer.put(colors).position(0);
+        colorBuffer.put(verticesColor).position(0);
 
 
-        verticesINDEX = indecies;
-        IndexDataBuffer.put(indecies).position(0);
+        IndexDataBuffer.put(verticesINDEX).position(0);
 
     }
 
@@ -360,6 +346,34 @@ public class Triangle {
         GLES20.glDrawElements(
                 GLES20.GL_TRIANGLES, verticesINDEX.length,
                 GLES20.GL_UNSIGNED_SHORT, IndexDataBuffer);
+
+    }
+
+    private void setMegaFigure()
+    {
+
+        int numofcubs = 18*9 + 1;
+        float spacing = 0.01f;
+        float z = 4;
+
+
+        verticesCoord = new float[triangleCoords.length*numofcubs];
+        verticesNormal = new float[triangleCoords.length*numofcubs];
+        verticesColor = new float[triangleCoords.length/3*4*numofcubs];
+
+        verticesINDEX = new short[triangleCoords.length/3*numofcubs];
+
+        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{0,             0+z,            0}, 0);
+        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{3+spacing,     -3-spacing+z,   0}, 648);
+        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{0,             -3-spacing+z,   0}, 648*2);
+        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{-3-spacing,    -3 - spacing+z, 0}, 648*3);
+        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{3+spacing,     -6-spacing*2+z, 0}, 648*4);
+        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{0,             -6-spacing*2+z, 0}, 648*5);
+        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{-3-spacing,    -6-spacing*2+z, 0}, 648*6);
+        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{6+spacing*2,   -6-spacing*2+z, 0}, 648*7);
+        AddHiperCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{-6-spacing*2,  -6-spacing*2+z, 0}, 648*8);
+
+        AddCub(verticesCoord,verticesNormal,verticesColor,verticesINDEX,new float[]{6,6,6},0.05f, 648*9);
 
     }
 
@@ -386,6 +400,8 @@ public class Triangle {
             index_array [i] = (short)i;
         }
     }
+
+
 
     private void AddHiperCub(float [] vertices, float [] normal, float [] color, short [] index_array,float[] coords_center, int index)
     {

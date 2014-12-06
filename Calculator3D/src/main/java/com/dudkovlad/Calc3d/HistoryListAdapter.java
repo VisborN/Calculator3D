@@ -40,12 +40,12 @@ public class HistoryListAdapter extends ArrayAdapter<HistoryItem> {
     public String getItem(int position) {
         return Data.history_src.get(position);
     }
-
+*/
 
     @Override
     public long getItemId(int position) {
         return position;
-    }*/
+    }
 
     // create a new ImageView for each item referenced by the Adapter
     @Override
@@ -59,8 +59,18 @@ public class HistoryListAdapter extends ArrayAdapter<HistoryItem> {
         }
         ((TextView)item.findViewById(R.id.history_src)).setText(objects.get(position).getHistory_src());
         ((TextView)item.findViewById(R.id.history_result)).setText(objects.get(position).getHistory_result());
-        ((TextView)item.findViewById(R.id.history_degrees_radians)).setText(((Boolean)objects.get(position).getHistory_degrees()).toString());
-        ((TextView)item.findViewById(R.id.history_num_system)).setText(objects.get(position).getHistory_num_sys() + "");
+        if (objects.get(position).getHistory_degrees())
+            ((TextView)item.findViewById(R.id.history_degrees_radians)).setText("degrees");
+        else
+            ((TextView)item.findViewById(R.id.history_degrees_radians)).setText("radians");
+        switch (objects.get(position).getHistory_num_sys())
+        {
+            case 2: ((TextView)item.findViewById(R.id.history_num_system)).setText("bin");break;
+            case 8: ((TextView)item.findViewById(R.id.history_num_system)).setText("oct");break;
+            case 10: ((TextView)item.findViewById(R.id.history_num_system)).setText("dec");break;
+            case 16: ((TextView)item.findViewById(R.id.history_num_system)).setText("hex");break;
+            default: ((TextView)item.findViewById(R.id.history_num_system)).setText(objects.get(position).getHistory_num_sys() + "");break;
+        }
 
 
         StateListDrawable states = new StateListDrawable();

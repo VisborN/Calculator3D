@@ -45,11 +45,11 @@ public class Parser {
             equation_string = equation_;
             equation = Equation.Create(equation_);
             S_M_A_R_T(equation,0,equation.size()-1);
-            equation = Equation.toPolishNot(equation);
+            //equation = Equation.toPolishNot(equation);
             return "all is ok";
 
             //}catch (IllegalArgumentException e)
-        }catch (Throwable e)
+            }catch (Throwable e)
             //}catch (Error e)
         {
             return "$" + e.toString();
@@ -60,14 +60,14 @@ public class Parser {
     {
 
         try {
-            equation = Calculate_op_and_func(equation,false);
-            setPositions_Arrays();
+            //equation = Calculate_op_and_func(equation,false);
+            //setPositions_Arrays();
             equation_string = Equation.toString(equation);
-            Convert_to_Float();
+            //Convert_to_Float();
             return equation_string;
 
             //}catch (IllegalArgumentException e)
-        }catch (Throwable e)
+            }catch (Throwable e)
             //}catch (Error e)
         {
             return "$" + e.toString();
@@ -268,11 +268,13 @@ public class Parser {
 
 
 
+
         if ((bm % 2 )== 1) {
             arr.add(end+1, new Token_d(Const.ABSBR));
             end++;
             bm++;
         }
+
 
 
 
@@ -292,17 +294,21 @@ public class Parser {
                         ||  arr.get(i - 1).Stype() == Const.LBR || arr.get(i-1).Stype() == Const.FUNC)) {
                     if (bml == i - 1)
                         throw new IllegalArgumentException("vlines in arr vlines are side by side");
+                    if (bml == -1)
+                        throw new IllegalArgumentException("vlines in arr right vline without left");
                     arr.set(bml, new Token_d(Const.ABS));
                     arr.set(i, new Token_d(Const.RBR));
                     arr.add(bml+1, new Token_d(Const.LBR));
                     end++;
                     end += S_M_A_R_T(arr, bml + 2, i);
-
+                    i=begin-1;
+                    b1 = -1;
+                    b2 = 0;
 
                     bml = -1;
 
-                } else if (i < end && !
-                        ((arr.get(i + 1).Stype() == Const.OPER&& arr.get(i + 1).Type() != Const.PLUS&& arr.get(i + 1).Type() != Const.MINUS) ||
+                } else if (i < end &&
+                        !((arr.get(i + 1).Stype() == Const.OPER&& arr.get(i + 1).Type() != Const.PLUS&& arr.get(i + 1).Type() != Const.MINUS) ||
                                 arr.get(i + 1).Stype() == Const.RBR ||
                                 arr.get(i+1).Type() == Const.FACTORIAL)) {
                     bml = i;
@@ -335,7 +341,6 @@ public class Parser {
                 }
                 b2--;
             }
-
 
 
         bm = 0;

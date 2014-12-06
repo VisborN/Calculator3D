@@ -28,16 +28,17 @@ public class Data {
         prefs = __prefs;
 
         boolean first_run = prefs.getBoolean("first_run", true);
-        int history_count = prefs.getInt("history_count",1);
+        int history_count = prefs.getInt("history_count",2);
         history_items = new ArrayList<HistoryItem>(history_count);
-        String tmp;
+        HistoryItem histitem;
         for(int i = 0; i < history_count; i++)
         {
-            tmp = String.valueOf(i);
-            history_items.add(new HistoryItem(prefs.getString("history_src"     +tmp, "2+2"),
-                    prefs.getString("history_result"  +tmp, "4"),
-                    prefs.getInt("history_num_sys"    +tmp, 10),
-                    prefs.getBoolean("history_degrees"+tmp, true)));
+            histitem = new HistoryItem(
+                    prefs.getString("history_src"     +i, "2+"+i),
+                    prefs.getString("history_result"  +i, "4"),
+                    prefs.getInt("history_num_sys"    +i, 10),
+                    prefs.getBoolean("history_degrees"+i, false));
+            history_items.add(histitem);
         }
         result_show_float = prefs.getBoolean("result_show_float", false);
 
@@ -46,7 +47,7 @@ public class Data {
         del_but_show = prefs.getBoolean("del_but_show", true);
         del_but_prcnt = prefs.getInt("del_but_prcnt", 25);
 
-        pages_vertical_slide = prefs.getBoolean("pages_count", false);
+        pages_vertical_slide = prefs.getBoolean("pages_vertical_slide", false);
         pages_count = prefs.getInt("pages_count", 3);
         pages_columnline_count = new int [pages_count][2];
         pages_mainpage = prefs.getInt("pages_mainpage", 2);
@@ -54,9 +55,8 @@ public class Data {
         int max=0;
         for (int i = 0; !first_run&&i < pages_count; i++)
         {
-            tmp = String.valueOf(i);
-            pages_columnline_count[i][0] = prefs.getInt("pages_columnline_count"+tmp+"/"+"0", 4);
-            pages_columnline_count[i][1] = prefs.getInt("pages_columnline_count"+tmp+"/"+"1", 4);
+            pages_columnline_count[i][0] = prefs.getInt("pages_columnline_count"+i+"/"+"0", 4);
+            pages_columnline_count[i][1] = prefs.getInt("pages_columnline_count"+i+"/"+"1", 4);
             if(pages_columnline_count[i][0]*pages_columnline_count[i][1]>max)
                 max = pages_columnline_count[i][0]*pages_columnline_count[i][1];
         }
@@ -66,10 +66,9 @@ public class Data {
 
         for (int i = 0; !first_run&&i < pages_count; i++)
         {
-            tmp = String.valueOf(i);
             for (int j = 0; j < pages_columnline_count[i][0] * pages_columnline_count[i][1]; j++) {
                 pages_button_value[i][j] =
-                        prefs.getString("pages_button_value" + tmp + "/" + String.valueOf(j), "");
+                        prefs.getString("pages_button_value" + i + "/" + String.valueOf(j), "");
             }
         }
 
@@ -98,7 +97,7 @@ public class Data {
                                     "∩","∪","∆","\\",
                                     "bin","oct","5 + ((1 + 2) × 4) - 3","Cos(1+3/4^2)+(8+2×5)÷(1+3×2-4)",
                                     "A","B","(8+2×5)÷(1+3×2-4)","³√",
-                                    "D","E","F","X^2+Y^2=Z"
+                                    "D","E","5+|5+5|+5|","X^2+Y^2=Z"
                             }
                     };
 
@@ -106,6 +105,54 @@ public class Data {
 
 
     }
+
+    public static void Save ()
+    {
+
+
+        SharedPreferences.Editor editor = prefs.edit();
+
+        editor.putBoolean("first_run", false);
+
+
+
+        editor.putInt("history_count", history_items.size());
+        for(int i = 0; i < history_items.size(); i++)
+        {
+            editor.putString("history_src"     +i, history_items.get(i).getHistory_src());
+            editor.putString("history_result"     +i, history_items.get(i).getHistory_result());
+            editor.putInt("history_num_sys"     +i, history_items.get(i).getHistory_num_sys());
+            editor.putBoolean("history_degrees"     +i, history_items.get(i).getHistory_degrees());
+        }
+
+        editor.putBoolean("result_show_float", result_show_float);
+
+
+        editor.putInt("color_theme", color_theme);
+
+
+        editor.putBoolean("del_but_show", del_but_show);
+        editor.putInt("del_but_prcnt", del_but_prcnt);
+
+        editor.putBoolean("pages_vertical_slide", pages_vertical_slide);
+        editor.putInt("pages_count", pages_count);
+        editor.putInt("pages_mainpage", pages_mainpage);
+
+        for (int i = 0; i < pages_count; i++)
+        {
+            editor.putInt("pages_columnline_count"+i+"/"+"0", pages_columnline_count[i][0]);
+            editor.putInt("pages_columnline_count"+i+"/"+"1", pages_columnline_count[i][1]);
+
+            for (int j = 0; j < pages_columnline_count[i][0] * pages_columnline_count[i][1]; j++)
+                editor.putString("pages_button_value" + i + "/" + String.valueOf(j), pages_button_value[i][j]);
+
+        }
+
+
+
+        editor.apply();
+    }
+
 
     public static int RED           = 0;
     public static int PINK          = 1;
@@ -156,15 +203,5 @@ public class Data {
             };
 
 
-    public static void Save ()
-    {
-
-/*
-        SharedPreferences.Editor editor = prefs.edit();
-
-        editor.putBoolean("first_run", false);
-
-        editor.apply();*/
-    }
 
 }

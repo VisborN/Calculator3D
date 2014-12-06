@@ -62,8 +62,7 @@ public class ButtonsAdapter extends BaseAdapter
                 new ColorDrawable(Data.colors[Data.color_theme][7]));
         states.addState(new int[]{}, new ColorDrawable(Data.colors[Data.color_theme][9]));
 
-        button_.findViewById(R.id.button_in_button_for_adapter).
-                setBackgroundDrawable(states);
+        //button_.findViewById(R.id.button_in_button_for_adapter).setBackgroundDrawable(states);
 
 
         button_.findViewById(R.id.button_in_button_for_adapter).

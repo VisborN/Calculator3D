@@ -30,7 +30,7 @@ public class MyClickListener implements View.OnClickListener, View.OnLongClickLi
             case R.id.resultview:
                 if (save_if_delete&&!eq_now.isEmpty()){
 
-                    Data.history_items.add(0, new HistoryItem(eq_now,
+                    Data.history_items.add(new HistoryItem(eq_now,
                             ((MainActivity)context).mainFragment.result_view.getText().toString(),
                             10,
                             false));
@@ -56,13 +56,25 @@ public class MyClickListener implements View.OnClickListener, View.OnLongClickLi
                         ((MainActivity)context).mainFragment.equation_view.getText().toString()+
                                 ((Button)v).getText().toString());
 
-                ((MainActivity)context).threadFC.Result(
-                        ((MainActivity)context).mainFragment.equation_view.getText().toString());
+                if (((MainActivity)context).mainFragment.equation_view.getText().toString().equals("Die"))
+                {
+                    ((MainActivity)context).debugview.setBackgroundColor(0xff0000aa);
+                    ((MainActivity)context).debugview.setText(
+                            "\n\n\nAn error has occurred. To Continue:\n" +
+                            "Press Enter to return to Android, or\n" +
+                            "Press CTRL+ALT+DEL to restart your computer.\n" +
+                            "If you do this, you will lose any unsaved information in all open applications.\n" +
+                            "Error: 0E : 016F : BFF9B3D4\n" +
+                            "               Press any key to continue\n");
+                }
+                else
+                    ((MainActivity)context).threadFC.Result(
+                            ((MainActivity)context).mainFragment.equation_view.getText().toString());
                 break;
             case R.id.history_item:
                 if (!eq_now.isEmpty()&&save_if_delete)
                 {
-                    Data.history_items.add(0, new HistoryItem(eq_now,
+                    Data.history_items.add(new HistoryItem(eq_now,
                             ((MainActivity)context).mainFragment.result_view.getText().toString(),
                             10,
                             false));
@@ -89,7 +101,7 @@ public class MyClickListener implements View.OnClickListener, View.OnLongClickLi
                 v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                 if (save_if_delete&&!eq_now.isEmpty()){
 
-                    Data.history_items.add(0, new HistoryItem(eq_now,
+                    Data.history_items.add(new HistoryItem(eq_now,
                             ((MainActivity)context).mainFragment.result_view.getText().toString(),
                             10,
                             false));
@@ -98,7 +110,6 @@ public class MyClickListener implements View.OnClickListener, View.OnLongClickLi
 
 
                 ((MainActivity)context).mainFragment.equation_view.setText("");
-                //todo make saving to history
 
                 ((MainActivity)context).threadFC.Result(
                         ((MainActivity)context).mainFragment.equation_view.getText().toString());
@@ -106,7 +117,7 @@ public class MyClickListener implements View.OnClickListener, View.OnLongClickLi
             case R.id.history_item:
                 if (!eq_now.isEmpty()&&save_if_delete)
                 {
-                    Data.history_items.add(0, new HistoryItem(eq_now,
+                    Data.history_items.add(new HistoryItem(eq_now,
                             ((MainActivity)context).mainFragment.result_view.getText().toString(),
                             10,
                             false));

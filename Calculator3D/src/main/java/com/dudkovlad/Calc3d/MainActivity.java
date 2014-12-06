@@ -29,24 +29,22 @@ public class MainActivity extends Activity
             switch (msg.what) {
                 case ThreadForCalculating.LOG_TEXT:
                     if (debugview != null)
-                        debugview.setText(msg.obj.toString()+
-                                debugview.getText());
+                        debugview.setText(msg.obj.toString());
                     break;
                 case ThreadForCalculating.SHOW_RESULT:
+                    debugview.setText("");
                     if (mainFragment != null && debugview != null && mainFragment.result_view != null) {
-                        debugview.setText("");
                         String result = msg.obj.toString();
                         if (!result.isEmpty() && result.charAt(0) == '$') {
-                            debugview.setText(
-                                    debugview.getText().toString() + "\n" + result);
+                            debugview.setText(result);
                             result = "";
                         }
                         mainFragment.result_view.setText(result);
                     }
                     break;
 
-                default:Toast.makeText(context, "unusual message " + msg.obj.toString(),
-                        Toast.LENGTH_SHORT).show();break;
+                default:
+                    debugview.setText("unusual message " + msg.obj.toString());
             }
         }
     };
@@ -81,7 +79,6 @@ public class MainActivity extends Activity
         debugview.setTextSize(10);
         //debugview.setBackgroundColor(Data.colors[Data.color_theme][4]);
         debugview.setTextColor(0x99ffffff);
-        debugview.setLines(2);
 
 
         CreateNavDrawer();
@@ -97,6 +94,10 @@ public class MainActivity extends Activity
         Toast.makeText(this, "Hello World!", Toast.LENGTH_SHORT).show();
 
 
+        Toast.makeText(this, Data.history_items.get(0).getHistory_src(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, Data.history_items.get(1).getHistory_src(), Toast.LENGTH_SHORT).show();
+
+
 	}
 
     void CreateNavDrawer ()
@@ -104,7 +105,7 @@ public class MainActivity extends Activity
 
         drawerlayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        historylist = (ListView)findViewById(R.id.left_drawer);//todo fill list view
+        historylist = (ListView)findViewById(R.id.left_drawer);
 
 
         histAdapter = new HistoryListAdapter(this, R.layout.history_item, Data.history_items);

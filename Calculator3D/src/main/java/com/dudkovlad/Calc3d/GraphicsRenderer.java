@@ -36,6 +36,9 @@ public class GraphicsRenderer implements GLSurfaceView.Renderer {
     float camLookSensK = 180.0f / 360 * 0.22f; //0.17
     float[] move = new float []{0,0,0,1};
     float timep = SystemClock.uptimeMillis()/1000;
+
+    int countofframes = 0;
+    float timeofthisframes = 0;
 //    float m = 1;
 //    float k = 1;
 
@@ -66,9 +69,13 @@ public class GraphicsRenderer implements GLSurfaceView.Renderer {
 
         float time = SystemClock.uptimeMillis()/1000f- timep;
 
-
-
-/*
+        countofframes++;
+        timeofthisframes+=time;
+        if (countofframes>5) {
+            mainactivity.threadFC.LOG(((Float)(countofframes / timeofthisframes)).intValue() + "");
+            countofframes = 0;
+            timeofthisframes = 0;
+        }
 
         if (mainactivity.threadFC.isGraphic_updated()&&!mainactivity.threadFC.isBusygraphic()) {
             mainactivity.threadFC.setBusygraphic(true);
@@ -80,7 +87,6 @@ public class GraphicsRenderer implements GLSurfaceView.Renderer {
             mainactivity.threadFC.setGraphic_updated(false);
         }
 
-*/
 
 
 
@@ -141,7 +147,7 @@ public class GraphicsRenderer implements GLSurfaceView.Renderer {
         if (dy2>1||dy2<-1)
             camAngley += -dy2*camLookSensK;
 
-        if(camAngley < -89.999/*- Math.PI / 2*/)
+        if(camAngley < -89.999)
             camAngley = - 89.999f;
         if(camAngley > 89.999f)
             camAngley = 89.999f;
