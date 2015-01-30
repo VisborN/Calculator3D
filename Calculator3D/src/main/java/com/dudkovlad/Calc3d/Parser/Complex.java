@@ -5,7 +5,6 @@ package com.dudkovlad.Calc3d.Parser;
  */
 public abstract class Complex {
 
-
     public abstract String toString();
 
 
@@ -40,11 +39,33 @@ public abstract class Complex {
     // return a new Complex object whose value is the complex sine of this
     public abstract Complex sin();
 
+    public abstract Complex arcsin();
+
     // return a new Complex object whose value is the complex cosine of this
     public abstract Complex cos();
 
+    public abstract Complex arccos();
+
     // return a new Complex object whose value is the complex tangent of this
     public abstract Complex tan();
+
+    public abstract Complex arctan();
+
+    public abstract Complex cotan();
+
+    public abstract Complex arccotan();
+
+    public abstract Complex sinh();
+
+    public abstract Complex cosh();
+
+    public abstract Complex tanh();
+
+    public abstract Complex arcsinh();
+
+    public abstract Complex arccosh();
+
+    public abstract Complex arctanh();
 
     public abstract Complex log10();
 

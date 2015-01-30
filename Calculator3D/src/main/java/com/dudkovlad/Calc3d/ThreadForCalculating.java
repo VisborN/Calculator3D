@@ -29,6 +29,8 @@ public class ThreadForCalculating extends Thread{
     private boolean [][][][]    PointsRights;
     float xmin, xmax, ymin, ymax, zmin, zmax, step;
     private String equation, result;
+    private int num_system;
+    private boolean radians;
     private Handler mHandler;
     private Parser equation_parse;
     private Message msg;
@@ -61,7 +63,7 @@ public class ThreadForCalculating extends Thread{
                 if (result_requested)
                 {
 
-                    result = equation_parse.INIT(equation);
+                    result = equation_parse.INIT(equation, num_system, radians);
                     if (!result.equals("all is ok")) {
                         if(result.equals("equation is empty"))
                             result = "";
@@ -260,9 +262,11 @@ public class ThreadForCalculating extends Thread{
 
 
 
-    void Result (String equation)
+    void Result (String equation, int num_system, boolean radians)
     {
         result_requested = true;
+        this.radians = radians;
+        this.num_system = num_system;
         this.equation = equation;
     }
 

@@ -29,18 +29,8 @@ public class HistoryListAdapter extends ArrayAdapter<HistoryItem> {
         lInflater = (LayoutInflater) mContext
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
-/*
-    @Override
-    public int getCount() {
-        return objects.size();
-    }
 
 
-    @Override
-    public String getItem(int position) {
-        return Data.history_src.get(position);
-    }
-*/
 
     @Override
     public long getItemId(int position) {
@@ -59,16 +49,26 @@ public class HistoryListAdapter extends ArrayAdapter<HistoryItem> {
         }
         ((TextView)item.findViewById(R.id.history_src)).setText(objects.get(position).getHistory_src());
         ((TextView)item.findViewById(R.id.history_result)).setText(objects.get(position).getHistory_result());
-        if (objects.get(position).getHistory_degrees())
+        if (!objects.get(position).getHistory_radians())
             ((TextView)item.findViewById(R.id.history_degrees_radians)).setText("degrees");
         else
             ((TextView)item.findViewById(R.id.history_degrees_radians)).setText("radians");
+
         switch (objects.get(position).getHistory_num_sys())
         {
+            case 1: ((TextView)item.findViewById(R.id.history_num_system)).setText("unary");break;
             case 2: ((TextView)item.findViewById(R.id.history_num_system)).setText("bin");break;
-            case 8: ((TextView)item.findViewById(R.id.history_num_system)).setText("oct");break;
+            case 3: ((TextView)item.findViewById(R.id.history_num_system)).setText("tern");break;
+            case 4: ((TextView)item.findViewById(R.id.history_num_system)).setText("quatern");break;
+            case 5: ((TextView)item.findViewById(R.id.history_num_system)).setText("quinary");break;
+            case 6: ((TextView)item.findViewById(R.id.history_num_system)).setText("senary");break;
+            case 7: ((TextView)item.findViewById(R.id.history_num_system)).setText("septenary");break;
+            case 8: ((TextView)item.findViewById(R.id.history_num_system)).setText("octal");break;
+            case 9: ((TextView)item.findViewById(R.id.history_num_system)).setText("nonary");break;
             case 10: ((TextView)item.findViewById(R.id.history_num_system)).setText("dec");break;
             case 16: ((TextView)item.findViewById(R.id.history_num_system)).setText("hex");break;
+            case 24: ((TextView)item.findViewById(R.id.history_num_system)).setText("quadrivigesimal");break;
+            case 60: ((TextView)item.findViewById(R.id.history_num_system)).setText("sexagesimal");break;
             default: ((TextView)item.findViewById(R.id.history_num_system)).setText(objects.get(position).getHistory_num_sys() + "");break;
         }
 
@@ -83,6 +83,8 @@ public class HistoryListAdapter extends ArrayAdapter<HistoryItem> {
 
         item.setOnClickListener(((MainActivity) mContext).myClickListener);
         item.setOnLongClickListener(((MainActivity) mContext).myClickListener);
+        ((TextView)item.findViewById(R.id.history_src)).setHint(((Integer)position).toString()); //это костыль для onClickListener чтобы он понимал с каким элементом списка работает
+
         return item;
     }
 

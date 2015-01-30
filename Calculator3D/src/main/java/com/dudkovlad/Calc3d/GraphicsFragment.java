@@ -1,6 +1,6 @@
 package com.dudkovlad.Calc3d;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;

@@ -110,7 +110,7 @@ public class Complex64 extends Complex{
         return this.times(b.reciprocal());
     }
 
-    // return 1 / b
+    // return 1 / a
     @Override
     public Complex64 divides1() {
         float scale = re*re + im*im;
@@ -143,6 +143,80 @@ public class Complex64 extends Complex{
     @Override
     public Complex64 tan() {
         return sin().divides(cos());
+    }
+
+
+    @Override
+    public Complex arcsin()
+    {
+        return pow(2).times(new Complex64(-1f)).plus(new Complex64(1f)).pow(0.5)
+                .plus(times(new Complex64(0f, 1f))).ln().times(new Complex64(0f, -1f));
+    }
+
+    @Override
+    public Complex arccos()
+    {
+        return pow(2).times(new Complex64(-1f)).plus(new Complex64(1f)).pow(0.5)
+                .plus(times(new Complex64(0f, 1f))).ln().times(new Complex64(0f, -1f))
+                .plus(new Complex64(Math.PI / 2));
+    }
+
+    @Override
+    public Complex arctan()
+    {
+        return times(new Complex64(0f, -1f)).plus(new Complex64(1f)).ln()
+                .minus(times(new Complex64(0f, 1f)).plus(new Complex64(1f)).ln())
+                .times(new Complex64(0f, 0.5f));
+    }
+
+    @Override
+    public Complex arccotan()
+    {
+        return minus(new Complex64(0f, 1f)).divides(this).ln()
+                .minus(plus(new Complex64(0f, 1f)).divides(this).ln())
+                .times(new Complex64(0f, 0.5f));
+    }
+
+    @Override
+    public Complex cotan()
+    {
+        return cos().divides(sin());
+    }
+
+    @Override
+    public Complex sinh()
+    {
+        return times(new Complex64(0f, 1f)).sin().times(new Complex64(0f, -1f));
+    }
+
+    @Override
+    public Complex cosh()
+    {
+        return times(new Complex64(0f, 1f)).cos();
+    }
+
+    @Override
+    public Complex tanh()
+    {
+        return times(new Complex64(0f, 1f)).tan().times(new Complex64(0f, -1f));
+    }
+
+    @Override
+    public Complex arcsinh()
+    {
+        return times(new Complex64(0f, -1f)).arcsin().times(new Complex64(0f, -1f));
+    }
+
+    @Override
+    public Complex arccosh()
+    {
+        return times(new Complex64(0f, -1f)).arccos();
+    }
+
+    @Override
+    public Complex arctanh()
+    {
+        return times(new Complex64(0f, -1f)).tan().times(new Complex64(0f, -1f));
     }
 
     @Override

@@ -11,8 +11,11 @@ public class Parser {
 
 
     String equation_string;
-    ArrayList<Token> equation;
-    ArrayList<Token> equation_temp;
+    ArrayList<Token> equation_arr_list;
+    Token [] equation_arr;
+    Token [] stack;
+    int size_of_stack=0;
+    Token[] equation_temp;
     int [] positions_of_X;
     int [] positions_of_Y;
     int [] positions_of_Z;
@@ -23,29 +26,33 @@ public class Parser {
     public Parser ()
     {
 
-        INIT("0");//todo if here is error someting is wrong
+        INIT("0", 10, true);//todo if here is error someting is wrong
     }
 
-    public String Result (String equation_)
+    public String Result (String equation_, int num_system, boolean radians)
     {
         String out;
 
-        if ((out = INIT(equation_)).isEmpty()||out.charAt(0)=='$')
+        if ((out = INIT(equation_, num_system, radians)).isEmpty()||out.charAt(0)=='$')
         {
             return out;
         }
         return Result();
     }
 
-    public String INIT (String equation_)
+    public String INIT (String equation_, int num_system, boolean radians)
     {
         if (equation_.isEmpty())
             return "equation is empty";
         try {
             equation_string = equation_;
-            equation = Equation.Create(equation_);
-            S_M_A_R_T(equation,0,equation.size()-1);
-            //equation = Equation.toPolishNot(equation);
+            equation_arr_list = Equation.Create(equation_, num_system, radians);
+            S_M_A_R_T(equation_arr_list,0,equation_arr_list.size()-1);
+            equation_arr_list = Equation.toPolishNot(equation_arr_list);
+            equation_arr = new Token[equation_arr_list.size()];
+            equation_arr_list.toArray(equation_arr);
+            stack = new Token[equation_arr.length];
+            size_of_stack = 0;
             return "all is ok";
 
             //}catch (IllegalArgumentException e)
@@ -60,10 +67,14 @@ public class Parser {
     {
 
         try {
-            //equation = Calculate_op_and_func(equation,false);
-            //setPositions_Arrays();
-            equation_string = Equation.toString(equation);
-            //Convert_to_Float();
+            Calculate_op_and_func(equation_arr,false);
+            equation_arr = new Token[size_of_stack];
+            System.arraycopy(stack,0,equation_arr,0,size_of_stack);
+            stack = new Token[equation_arr.length];
+            size_of_stack = 0;
+            setPositions_Arrays();
+            equation_string = Equation.toString(equation_arr);
+            Convert_to_Float();
             return equation_string;
 
             //}catch (IllegalArgumentException e)
@@ -77,28 +88,31 @@ public class Parser {
 
     public float forLoop (float X, float Y, float Z, float C, float T)
     {
-        equation_temp = equation;
+        equation_temp = equation_arr;
         for (int elem_of_arr:positions_of_X)
-            equation_temp.set(elem_of_arr, new Token_f(X));
+            equation_temp[elem_of_arr] = new Token_f(X);
         for (int elem_of_arr:positions_of_Y)
-            equation_temp.set(elem_of_arr, new Token_f(Y));
+            equation_temp[elem_of_arr] = new Token_f(Y);
         for (int elem_of_arr:positions_of_Z)
-            equation_temp.set(elem_of_arr, new Token_f(Z));
+            equation_temp[elem_of_arr] = new Token_f(Z);
         for (int elem_of_arr:positions_of_C)
-            equation_temp.set(elem_of_arr, new Token_f(C));
+            equation_temp[elem_of_arr] = new Token_f(C);
         for (int elem_of_arr:positions_of_T)
-            equation_temp.set(elem_of_arr, new Token_f(T));
+            equation_temp[elem_of_arr] = new Token_f(T);
 
 
-        equation_temp = Calculate_op_and_func(equation_temp, true);
+        Calculate_op_and_func(equation_temp, true);
 
-        if(equation_temp.size()==0)
+        equation_temp = new Token[size_of_stack];
+        System.arraycopy(stack,0,equation_temp,0,size_of_stack);
+
+        if(equation_temp.length==0)
             return Float.POSITIVE_INFINITY;
-        if(equation_temp.get(0).Type()==Const.COMPLEX)
-            return (float)equation_temp.get(0).getc().Re();
+        if(equation_temp[0].Type()==Const.COMPLEX)
+            return (float)equation_temp[0].getc().abs();
         else
-        if(equation_temp.get(0).Type()==Const.REAL)
-            return equation_temp.get(0).getf();
+        if(equation_temp[0].Type()==Const.REAL)
+            return equation_temp[0].getf();
         else
             return Float.POSITIVE_INFINITY;
     }
@@ -107,7 +121,7 @@ public class Parser {
     private void setPositions_Arrays ()
     {
         int x = 0, y = 0, z = 0, c = 0, t = 0;
-        for(Token current:equation)
+        for(Token current:equation_arr)
         {
             switch (current.Type())
             {
@@ -124,9 +138,9 @@ public class Parser {
         positions_of_C = new int [c];
         positions_of_T = new int [t];
 
-        for(int  i =0; i< equation.size(); i++)
+        for(int  i =0; i< equation_arr.length; i++)
         {
-            switch (equation.get(i).Type())
+            switch (equation_arr[i].Type())
             {
                 case Const.X:positions_of_X[--x]=i;break;
                 case Const.Y:positions_of_Y[--y]=i;break;
@@ -140,10 +154,10 @@ public class Parser {
 
     private void Convert_to_Float()
     {
-        for(int i = 0; i<equation.size(); i++)
+        for(int i = 0; i<equation_arr.length; i++)
         {
-            if(equation.get(i).Stype()==Const.NUM)
-                equation.set(i, equation.get(i).tofloat());
+            if(equation_arr[i].Stype()==Const.NUM)
+                equation_arr[i] =  equation_arr[i].tofloat();
         }
     }
 
@@ -167,48 +181,55 @@ public class Parser {
 //-------------------------------------------------------------------------------------------------------------
 
 
-    private ArrayList<Token> Calculate_op_and_func (ArrayList<Token> arr, boolean with_compare_and_set)
+    private void Calculate_op_and_func (Token[] arr, boolean with_compare_and_set)
     {
-        ArrayList<Token>stack = new ArrayList<Token>(arr.size()/3*2+1);
+        size_of_stack = 0;
         for (Token current:arr)
         {
             switch (current.Stype())
             {
-                case Const.VAR:
-                case Const.NUM: stack.add(current);break;
-                case Const.FUNC:
-                    if (stack.size()<1)
-                        throw new IllegalArgumentException("Calculate_op_and_func few nums");
-                    if (stack.get(stack.size()-1).Stype()!=Const.NUM)
-                        stack.add(current);
-                    else
-                        stack.add(Function_parser.Run_func(current.Type(), stack.remove(stack.size()-1)));
+                case Const.VAR://todo make replace here for dont create array
+                case Const.NUM:
+                    stack[size_of_stack] = current;
+                    size_of_stack++;
                     break;
-
-                case Const.SET:
-                case Const.COMPARE:
-                    if(!with_compare_and_set)
-                    {
-                        stack.add(current);
-                        break;
+                case Const.FUNC:
+                    if (current.Priority()==5) {
+                        if (size_of_stack < 1)
+                            throw new IllegalArgumentException("Calculate_op_and_func few nums");
+                        if (stack[size_of_stack - 1].Stype() != Const.NUM) {
+                            stack[size_of_stack] = current;
+                            size_of_stack++;
+                        }
+                        else{
+                            stack[size_of_stack-1] = current.Func.Run(stack[size_of_stack - 1]);
+                        }
                     }
-                    //case Const.FUNC2:todo add more than one arguments functions
-                case Const.OPER:
-                    if(stack.size()<2)
-                        throw new IllegalArgumentException("Calculate_op_and_func few nums");
-                    if (stack.get(stack.size()-1).Stype()!=Const.NUM||stack.get(stack.size()-2).Stype()!=Const.NUM)
-                        stack.add(current);
                     else
-                        stack.add(Function_parser.Run_func2(current.Type(),
-                                stack.remove(stack.size()-2), stack.remove(stack.size()-1)));
+                    if (current.Priority()>=2&&current.Priority()<=4) {
+                        if (size_of_stack < 2)
+                            throw new IllegalArgumentException("Calculate_op_and_func few nums"+current.toString());
+                        if (stack[size_of_stack - 1].Stype() != Const.NUM || stack[size_of_stack - 2].Stype() != Const.NUM){
+                            stack[size_of_stack] = current;
+                            size_of_stack++;
+                        }
+                        else{
+                            stack[size_of_stack-2] = current.Func.Run(stack[size_of_stack - 2], stack[size_of_stack - 1]);
+                            size_of_stack--;
+                        }
+                    }else {
+                        if (!with_compare_and_set) {
+                            stack[size_of_stack] = current;
+                            size_of_stack++;
+                        }//todo with compare and seet dont do its functions
+                    }
                     break;
 
 
             }
         }
-        if (with_compare_and_set&&stack.size()>1)
+        if (with_compare_and_set&&size_of_stack>1)
             throw new IllegalArgumentException("Calculate_op_and_func too many nums");
-        return stack;
     }
 
 
@@ -221,7 +242,7 @@ public class Parser {
 
         int end_ = end;
 
-        if(arr.get(begin).Type()==Const.MINUS||arr.get(begin).Type()==Const.PLUS) {
+        if(arr.get(begin).Stype() == Const.FUNC && (arr.get(begin).Func.equals("-")||arr.get(begin).Func.equals("+"))) {
             arr.add(begin, new Token_d(0d));
             end++;
         }
@@ -272,7 +293,6 @@ public class Parser {
         if ((bm % 2 )== 1) {
             arr.add(end+1, new Token_d(Const.ABSBR));
             end++;
-            bm++;
         }
 
 
@@ -285,18 +305,18 @@ public class Parser {
         for (int i = begin; i <= end; i++)
             if (b2 == 0&&arr.get(i).Type() == Const.ABSBR) {
                 if (bml == -1 && i < end) {
-                    if (!((arr.get(i + 1).Stype() == Const.OPER&& arr.get(i + 1).Type() != Const.PLUS&& arr.get(i + 1).Type() != Const.MINUS) ||
+                    if (!((arr.get(i + 1).Priority()>=3&&arr.get(i + 1).Priority()<=4) ||
                             arr.get(i + 1).Stype() == Const.RBR  ||
-                            arr.get(i+1).Type() == Const.FACTORIAL)) {
+                            (arr.get(i+1).Stype() == Const.FUNC&& arr.get(i+1).Func.equals("!")))) {
                         bml = i;
                     } else  throw new IllegalArgumentException("vlines in arr @1122");
-                } else if (i > 0 && !(arr.get(i - 1).Stype() == Const.OPER
-                        ||  arr.get(i - 1).Stype() == Const.LBR || arr.get(i-1).Stype() == Const.FUNC)) {
+                } else if (i > 0 && !((arr.get(i - 1).Priority()>=2&&arr.get(i - 1).Priority()<=4)
+                        ||  arr.get(i - 1).Stype() == Const.LBR || (arr.get(i-1).Stype() == Const.FUNC&&arr.get(i-1).Priority()==5))) {
                     if (bml == i - 1)
                         throw new IllegalArgumentException("vlines in arr vlines are side by side");
                     if (bml == -1)
                         throw new IllegalArgumentException("vlines in arr right vline without left");
-                    arr.set(bml, new Token_d(Const.ABS));
+                    arr.set(bml, new Token_d("Abs", 10, true));
                     arr.set(i, new Token_d(Const.RBR));
                     arr.add(bml+1, new Token_d(Const.LBR));
                     end++;
@@ -308,9 +328,9 @@ public class Parser {
                     bml = -1;
 
                 } else if (i < end &&
-                        !((arr.get(i + 1).Stype() == Const.OPER&& arr.get(i + 1).Type() != Const.PLUS&& arr.get(i + 1).Type() != Const.MINUS) ||
+                        !((arr.get(i + 1).Priority()>=3&&arr.get(i + 1).Priority()<=4) ||
                                 arr.get(i + 1).Stype() == Const.RBR ||
-                                arr.get(i+1).Type() == Const.FACTORIAL)) {
+                                (arr.get(i+1).Stype() == Const.FUNC&& arr.get(i+1).Func.equals("!")))) {
                     bml = i;
                 } else
                     throw new IllegalArgumentException("vlines in arr unreachable @1124");
@@ -350,16 +370,18 @@ public class Parser {
         if (bm > 0) throw new IllegalArgumentException("vlines in arr not all vlines used");//well done
 
         for (int i = begin; i < end; i++)
-            if (   (arr.get(i).Stype()  == Const.VAR||
-                    arr.get(i).Stype() == Const.RBR ||
-                    arr.get(i).Type() == Const.FACTORIAL ||       //todo I hope that factorial is the only function with prefix argument
-                    arr.get(i).Stype() == Const.NUM     )&&
-                    (arr.get(i + 1).Stype()  == Const.VAR ||
-                            arr.get(i + 1).Stype() == Const.LBR ||
-                            arr.get(i + 1).Stype() == Const.FUNC ||
-                            arr.get(i + 1).Stype() == Const.NUM)) {
+            if (   (    arr.get(i).Stype()  == Const.VAR||
+                        arr.get(i).Stype() == Const.RBR ||
+                        (arr.get(i).Stype() == Const.FUNC&& arr.get(i).Func.equals("!") )||
+                        arr.get(i).Stype() == Const.NUM     )&&
+                    (   arr.get(i + 1).Stype()  == Const.VAR ||
+                        arr.get(i + 1).Stype() == Const.LBR ||
+                        (arr.get(i + 1).Stype() == Const.FUNC&&
+                                arr.get(i+1).Priority()==5&&
+                                !arr.get(i+1).Func.equals("!")) ||
+                        arr.get(i + 1).Stype() == Const.NUM)) {
 
-                arr.add(i+1, new Token_d(Const.MULT));
+                arr.add(i+1, new Token_d("*", 10, true));
                 end++;
             }
 

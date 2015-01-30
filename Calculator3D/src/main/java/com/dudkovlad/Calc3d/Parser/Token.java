@@ -5,8 +5,8 @@ package com.dudkovlad.Calc3d.Parser;
  */
 public abstract class Token {
 
+    public MyDelegate Func;
 
-    public abstract String      toString ();
 
 
     public abstract Complex     getc ();
@@ -25,6 +25,11 @@ public abstract class Token {
 
 
     public abstract boolean     Is_float ();
+
+
+    public abstract void        Set_radians (boolean radians_);
+
+    public abstract boolean     Is_radians ();
 
 
     public abstract byte        Type ();

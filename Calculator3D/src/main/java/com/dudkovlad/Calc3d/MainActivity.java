@@ -1,23 +1,25 @@
 package com.dudkovlad.Calc3d;
 
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 
 /**
  * Created by vlad on 28.01.14.
  */
-public class MainActivity extends Activity
+public class MainActivity extends ActionBarActivity
 {
     Context context;
     FragmentManager fm;
@@ -32,6 +34,9 @@ public class MainActivity extends Activity
                         debugview.setText(msg.obj.toString());
                     break;
                 case ThreadForCalculating.SHOW_RESULT:
+
+
+
                     debugview.setText("");
                     if (mainFragment != null && debugview != null && mainFragment.result_view != null) {
                         String result = msg.obj.toString();
@@ -40,7 +45,13 @@ public class MainActivity extends Activity
                             result = "";
                         }
                         mainFragment.result_view.setText(result);
+
+                        Data.HistoryChange(new HistoryItem(mainFragment.equation_view.getText().toString(), result, 10, true));
                     }
+                    ArrayList<HistoryItem> temp = (ArrayList<HistoryItem>)Data.history_items.clone();
+                    histAdapter.clear();
+
+                    histAdapter.addAll(temp);
                     break;
 
                 default:
@@ -65,20 +76,22 @@ public class MainActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activ_main_drawer);
-        Data.Load_Data (getSharedPreferences("main_prefs", 0));
-/*
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            this.setTheme();
-        }*/
-        myClickListener = new MyClickListener(this);
-        fm = getFragmentManager();
-        context = this;
 
         debugview = (TextView)findViewById(R.id.debugview);
 
         debugview.setTextSize(10);
         //debugview.setBackgroundColor(Data.colors[Data.color_theme][4]);
         debugview.setTextColor(0x99ffffff);
+        Data.Load_Data (getSharedPreferences("main_prefs", 0), this);
+/*
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            this.setTheme();
+        }*/
+        myClickListener = new MyClickListener(this);
+        fm = getSupportFragmentManager();
+        context = this;
+
+
 
 
         CreateNavDrawer();
@@ -89,13 +102,10 @@ public class MainActivity extends Activity
         setMainFragment(mainFragment);
         where = 0;
 
-        threadFC.Result(Data.history_items.get(0).getHistory_src());
 
         Toast.makeText(this, "Hello World!", Toast.LENGTH_SHORT).show();
 
 
-        Toast.makeText(this, Data.history_items.get(0).getHistory_src(), Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, Data.history_items.get(1).getHistory_src(), Toast.LENGTH_SHORT).show();
 
 
 	}
@@ -115,11 +125,11 @@ public class MainActivity extends Activity
 
     }
 
-    void setMainFragment (Fragment fragmen)
+    void setMainFragment (Fragment fragment)
     {
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, fragmen).commit();
+                .replace(R.id.content_frame, fragment).commit();
 
     }
 

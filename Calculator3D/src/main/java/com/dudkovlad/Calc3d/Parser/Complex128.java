@@ -138,6 +138,79 @@ public class Complex128 extends Complex {
     }
 
     @Override
+    public Complex arcsin()
+    {
+        return pow(2).times(new Complex128(-1)).plus(new Complex128(1)).pow(0.5)
+                .plus(times(new Complex128(0, 1))).ln().times(new Complex128(0, -1));
+    }
+
+    @Override
+    public Complex arccos()
+    {
+        return pow(2).times(new Complex128(-1)).plus(new Complex128(1)).pow(0.5)
+                .plus(times(new Complex128(0f, 1))).ln().times(new Complex128(0, -1))
+                .plus(new Complex128(Math.PI / 2));
+    }
+
+    @Override
+    public Complex arctan()
+    {
+        return times(new Complex128(0, -1)).plus(new Complex128(1)).ln()
+                .minus(times(new Complex128(0, 1)).plus(new Complex128(1)).ln())
+                .times(new Complex128(0, 0.5));
+    }
+
+    @Override
+    public Complex arccotan()
+    {
+        return minus(new Complex128(0, 1)).divides(this).ln()
+                .minus(plus(new Complex128(0, 1)).divides(this).ln())
+                .times(new Complex128(0, 0.5));
+    }
+
+    @Override
+    public Complex cotan()
+    {
+        return cos().divides(sin());
+    }
+
+    @Override
+    public Complex sinh()
+    {
+        return times(new Complex128(0, 1)).sin().times(new Complex128(0, -1));
+    }
+
+    @Override
+    public Complex cosh()
+    {
+        return times(new Complex128(0, 1)).cos();
+    }
+
+    @Override
+    public Complex tanh()
+    {
+        return times(new Complex128(0, 1)).tan().times(new Complex128(0, -1));
+    }
+
+    @Override
+    public Complex arcsinh()
+    {
+        return times(new Complex128(0, -1)).arcsin().times(new Complex128(0, -1));
+    }
+
+    @Override
+    public Complex arccosh()
+    {
+        return times(new Complex128(0, -1)).arccos();
+    }
+
+    @Override
+    public Complex arctanh()
+    {
+        return times(new Complex128(0, -1)).tan().times(new Complex128(0, -1));
+    }
+
+    @Override
     public Complex128 log10() {
         return this.log(10);
     }
@@ -166,7 +239,7 @@ public class Complex128 extends Complex {
 
 
 
-
+//todo complex classes need optimisation
 
 
 

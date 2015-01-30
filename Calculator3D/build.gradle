@@ -8,7 +8,7 @@ def getVersion() {
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
 
@@ -37,7 +37,7 @@ android {
         }
 
         release {
-            runProguard true
+            //runProguard true
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             signingConfig signingConfigs.release
@@ -46,35 +46,12 @@ android {
     }
 
 
-    /*
-                android {
-                    signingConfigs {
-                        debug {
-                            storeFile file("debug.keystore")
-                        }
-
-                        myConfig {
-                            storeFile file("other.keystore")
-                            storePassword "android"
-                            keyAlias "androiddebugkey"
-                            keyPassword "android"
-                        }
-                    }
-
-                    buildTypes {
-                        foo {
-                            debuggable true
-                            jniDebugBuild true
-                            signingConfig signingConfigs.myConfig
-                        }
-                    }
-                }
-                */
 
 }
 
 dependencies {
     compile 'com.android.support:support-v13:21.0.0'
+    compile "com.android.support:appcompat-v7:21.0.3"
     //compile 'com.android.support:support-v4:21.0.0'
     //compile 'com.android.support:appcompat-v7:21.0.0'
 

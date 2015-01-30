@@ -1,6 +1,6 @@
 package com.dudkovlad.Calc3d;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ public class EnteringFragment extends Fragment  {
     TextView result_view;
     LinearLayout mainLay, equationLay, resultLay;
     ImageButton settings_button, delete_button;
+    Toolbar toolbar;
     Context context;
 
 
@@ -74,6 +76,8 @@ public class EnteringFragment extends Fragment  {
         delete_button = (ImageButton)mainLay.findViewById(R.id.delete_button);
         settings_button = (ImageButton)mainLay.findViewById(R.id.settings_button);
 
+        Toolbar toolbar = (Toolbar) mainLay.findViewById(R.id.my_awesome_toolbar);
+        ((MainActivity)context).setSupportActionBar(toolbar);
 
 
         equation_view.setBackgroundColor(Data.colors[Data.color_theme][6]);
@@ -82,7 +86,8 @@ public class EnteringFragment extends Fragment  {
         equation_view.setTextSize(20);
         equation_view.setTextColor(0x99000000);
         equation_view.setLines(2);
-        equation_view.setText(Data.history_items.get(0).getHistory_src());
+        if (Data.history_items.size()>0)
+            equation_view.setText(Data.history_items.get(0).getHistory_src());
 
 
         settings_button.setImageDrawable(settings_but_states); //todo make color changing
@@ -109,6 +114,8 @@ public class EnteringFragment extends Fragment  {
         result_view.setLines(2);
         result_view.setTextSize(20); //todo find how to calculate text size
 
+        if (Data.history_items.size()>0)
+            result_view.setText(Data.history_items.get(0).getHistory_result());
 
 
 
@@ -117,7 +124,8 @@ public class EnteringFragment extends Fragment  {
 
 
 
-        mPagesAdapter = new PagesAdapter(context, getFragmentManager());
+
+        mPagesAdapter = new PagesAdapter(context, getChildFragmentManager());
         mViewPager.setAdapter(mPagesAdapter);
         mViewPager.setCurrentItem(Data.pages_mainpage-1);
 

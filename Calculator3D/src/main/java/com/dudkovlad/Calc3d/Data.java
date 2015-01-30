@@ -1,5 +1,6 @@
 package com.dudkovlad.Calc3d;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 
 import java.util.ArrayList;
@@ -22,27 +23,28 @@ public class Data {
     public static int color_theme;
     public static boolean result_show_float;
 
-    public static void Load_Data(SharedPreferences __prefs)
+    public static void Load_Data(SharedPreferences __prefs, Context context)
     {
 
         prefs = __prefs;
 
         boolean first_run = prefs.getBoolean("first_run", true);
-        int history_count = prefs.getInt("history_count",2);
-        history_items = new ArrayList<HistoryItem>(history_count);
+        int history_count = prefs.getInt("history_count",1);
+        history_items = new ArrayList<>(history_count);
         HistoryItem histitem;
         for(int i = 0; i < history_count; i++)
         {
-            histitem = new HistoryItem(
-                    prefs.getString("history_src"     +i, "2+"+i),
-                    prefs.getString("history_result"  +i, "4"),
-                    prefs.getInt("history_num_sys"    +i, 10),
-                    prefs.getBoolean("history_degrees"+i, false));
+            histitem =
+                new HistoryItem(
+                    prefs.getString("history_src"     + i, "2+2"),
+                    prefs.getString("history_result"  + i, "4"),
+                    prefs.getInt("history_num_sys"    + i, 10),
+                    prefs.getBoolean("history_radians"+ i, true));
             history_items.add(histitem);
         }
         result_show_float = prefs.getBoolean("result_show_float", false);
 
-        color_theme = prefs.getInt("color_theme", LIGHT_GREEN);
+        color_theme = prefs.getInt("color_theme", GRAY);
 
         del_but_show = prefs.getBoolean("del_but_show", true);
         del_but_prcnt = prefs.getInt("del_but_prcnt", 25);
@@ -95,9 +97,9 @@ public class Data {
                             },
                             {
                                     "∩","∪","∆","\\",
-                                    "bin","oct","5 + ((1 + 2) × 4) - 3","Cos(1+3/4^2)+(8+2×5)÷(1+3×2-4)",
-                                    "A","B","(8+2×5)÷(1+3×2-4)","³√",
-                                    "D","E","5+|5+5|+5|","X^2+Y^2=Z"
+                                    "bin","oct","5 + ((1 + 2) × 4) - 3=14","Cos(1+3/4^2)+(8+2×5)÷(1+3×2-4)=6.373979630824",
+                                    "A","B","(8+2×5)÷(1+3×2-4)=6","³√",
+                                    "D","E","|5+|5-10|-30|=20","X^2+Y^2=Z"
                             }
                     };
 
@@ -122,7 +124,7 @@ public class Data {
             editor.putString("history_src"     +i, history_items.get(i).getHistory_src());
             editor.putString("history_result"     +i, history_items.get(i).getHistory_result());
             editor.putInt("history_num_sys"     +i, history_items.get(i).getHistory_num_sys());
-            editor.putBoolean("history_degrees"     +i, history_items.get(i).getHistory_degrees());
+            editor.putBoolean("history_radians"     +i, history_items.get(i).getHistory_radians());
         }
 
         editor.putBoolean("result_show_float", result_show_float);
@@ -151,6 +153,44 @@ public class Data {
 
 
         editor.apply();
+    }
+
+
+    public static void HistoryNext (HistoryItem item)
+    {
+        if ((history_items.size() > 0 && !history_items.get(0).getHistory_src().equals(""))||history_items.size() == 0)
+            history_items.add(0, item);
+        else
+            HistoryChange(item);
+
+        for (int i = history_items.size()-1; i > 0; i--)
+        {
+            if ( item.equals(history_items.get(i)) )
+                history_items.remove(i);
+        }
+    }
+
+
+    public static void HistoryRemove (int i)
+    {
+        if (history_items.size() > i)
+            history_items.remove(i);
+    }
+
+    public static void HistoryChange (HistoryItem item) {
+        if (history_items.size() > 0) {
+            history_items.remove(0);
+            history_items.add(0, item);
+
+            for (int i = history_items.size()-1; i > 0; i--)
+            {
+                if ( item.equals(history_items.get(i)) )
+                    history_items.remove(i);
+            }
+        }
+        else HistoryNext(item);
+
+
     }
 
 
@@ -189,7 +229,7 @@ public class Data {
         {0xFFE0F7FA, 0xFFB2EBF2, 0xFF80DEEA, 0xFF4DD0E1, 0xFF26C6DA, 0xFF00BCD4, 0xFF00ACC1, 0xFF0097A7, 0xFF00838F, 0xFF006064, 0xFF84FFFF, 0xFF18FFFF, 0xFF00E5FF, 0xFF00B8D4},
         {0xFFE0F2F1, 0xFFB2DFDB, 0xFF80CBC4, 0xFF4DB6AC, 0xFF26A69A, 0xFF009688, 0xFF00897B, 0xFF00796B, 0xFF00695C, 0xFF004D40, 0xFFA7FFEB, 0xFF64FFDA, 0xFF1DE9B6, 0xFF00BFA5},
         {0xFFE8F5E9, 0xFFC8E6C9, 0xFFA5D6A7, 0xFF81C784, 0xFF66BB6A, 0xFF4CAF50, 0xFF43A047, 0xFF388E3C, 0xFF2E7D32, 0xFF1B5E20, 0xFFB9F6CA, 0xFF69F0AE, 0xFF00E676, 0xFF00C853},
-         {0xFFF1F8E9, 0xFFDCEDC8, 0xFFC5E1A5, 0xFFAED581, 0xFF9CCC65, 0xFF8BC34A, 0xFF7CB342, 0xFF689F38, 0xFF558B2F, 0xFF33691E, 0xFFCCFF90, 0xFFB2FF59, 0xFF76FF03, 0xFF64DD17},
+        {0xFFF1F8E9, 0xFFDCEDC8, 0xFFC5E1A5, 0xFFAED581, 0xFF9CCC65, 0xFF8BC34A, 0xFF7CB342, 0xFF689F38, 0xFF558B2F, 0xFF33691E, 0xFFCCFF90, 0xFFB2FF59, 0xFF76FF03, 0xFF64DD17},
         {0xFFF9FBE7, 0xFFF0F4C3, 0xFFE6EE9C, 0xFFDCE775, 0xFFD4E157, 0xFFCDDC39, 0xFFC0CA33, 0xFFAFB42B, 0xFF9E9D24, 0xFF827717, 0xFFF4FF81, 0xFFEEFF41, 0xFFC6FF00, 0xFFAEEA00},
         {0xFFFFFDE7, 0xFFFFF9C4, 0xFFFFF59D, 0xFFFFF176, 0xFFFFEE58, 0xFFFFEB3B, 0xFFFDD835, 0xFFFBC02D, 0xFFF9A825, 0xFFF57F17, 0xFFFFFF8D, 0xFFFFFF00, 0xFFFFEA00, 0xFFFFD600},
         {0xFFFFF8E1, 0xFFFFECB3, 0xFFFFE082, 0xFFFFD54F, 0xFFFFCA28, 0xFFFFC107, 0xFFFFB300, 0xFFFFA000, 0xFFFF8F00, 0xFFFF6F00, 0xFFFFE57F, 0xFFFFD740, 0xFFFFC400, 0xFFFFAB00},

@@ -8,11 +8,11 @@ import java.util.ArrayList;
 public class Equation {
 
 
-    public static String toString (ArrayList<Token> arrlist)
+    public static String toString (Token [] arrlist)
     {
         String out = "";
         for (Token elem : arrlist)
-            out += elem.toString();
+            out += elem.toString();//todo num_system
         return out;
     }
 
@@ -28,7 +28,24 @@ public class Equation {
             {
                 case Const.VAR:
                 case Const.NUM: out.add(current);break;
-                case Const.FUNC: stack.add(current);break;
+                case Const.FUNC:
+                    if (current.Func.getNumArguments()==1)
+                        stack.add(current);
+                    else
+                    if (current.Func.getNumArguments()==2) {
+                        for (int j = stack.size() - 1; j >= 0; j--) {
+                            //if (stack.get(j).Stype() != Const.LBR)
+                            if (current.Priority()==4 && current.Priority() >= stack.get(j).Priority())
+                                j=-1;
+                            else
+                            if (current.Priority() > stack.get(j).Priority()&&current.Priority()!=5)
+                                j=-1;
+                            else
+                                out.add(stack.remove(j));
+                        }
+                        stack.add(current);
+                    }
+                    break;
                 case Const.COMMA:
                     for(int j = stack.size()-1;j>=0&&stack.get(j).Stype()!= Const.LBR;j--)
                     {
@@ -46,23 +63,10 @@ public class Equation {
                         out.add(stack.remove(j));
                     }
                     stack.remove(stack.size()-1);
-                    if (stack.size()>0&&stack.get(stack.size()-1).Stype()==Const.FUNC) {
+                    if (stack.size()>0&&(stack.get(stack.size()-1).Stype()==Const.FUNC&&
+                                            stack.get(stack.size()-1).Priority()==5)) {
                         out.add(stack.remove(stack.size()-1));
                     }
-                    break;
-                case Const.OPER:
-                case Const.COMPARE:
-                case Const.SET:
-                    for(int j = stack.size()-1; j>=0; j--)
-                    {
-                        if (stack.get(j).Stype()!= Const.LBR)
-                            if(current.Type()== Const.POW&&current.Priority()>=stack.get(j).Priority())
-                                break;
-                        if(current.Priority()>stack.get(j).Priority())
-                            break;
-                        out.add(stack.remove(j));
-                    }
-                    stack.add(current);
                     break;
             }
         }
@@ -170,9 +174,9 @@ public class Equation {
     }
 */
 
-    public static ArrayList<Token> Create (String in)
+    public static ArrayList<Token> Create (String in, int num_system, boolean radians)
     {
-
+// todo make num_system works
         if (in.isEmpty())
             throw new IllegalArgumentException("create equation in is empty");
         String temp_s = in.charAt(0)+"";
@@ -183,7 +187,7 @@ public class Equation {
         int num=0;
         int num2=0;
         if (in_length == 1) {
-            equation.add(new Token_d(temp_s));
+            equation.add(new Token_d(temp_s, num_system, radians));
         }
         else {
             for (int i = 1; i < in_length; i++) {
@@ -204,7 +208,7 @@ public class Equation {
                         type = 3;
                     else if (temp_cm==' ') {
                         if(temp_cp==0) {
-                            equation.add(new Token_d(temp_c+""));
+                            equation.add(new Token_d(temp_c+"", num_system, radians));
                         }
                         continue;
                     }
@@ -227,26 +231,26 @@ public class Equation {
                     }
                     temp_s = temp_s + temp_c;
                     if(temp_cp==0) {
-                        equation.add(new Token_d(temp_s));
+                        equation.add(new Token_d(temp_s, num_system, radians));
                     }
                 }
                 else if (type == 3&&((temp_c=='='&&(temp_cm == '<'||temp_cm == '>'))||(temp_c == '√'&&temp_cm == '³')))
                 {
                     temp_s = temp_s + temp_c;
                 }
-                else if (type == 2&&( 'a' <= temp_c && temp_c <= 'z' || 'A' <= temp_c && temp_c <= 'Z'
+                else if (type == 2&&( 'a' <= temp_c && temp_c <= 'z' || 'A' <= temp_c && temp_c <= 'Z'//todo сделать распознавание 'е' и других констант такими чтобы функции начинались с маленьких букв
                         || '0' <= temp_c && temp_c <= '9' || temp_c == '.')) {
                     temp_s = temp_s + temp_c;
                     if(temp_cp==0) {
-                        equation.add(new Token_d(temp_s));
+                        equation.add(new Token_d(temp_s, num_system, radians));
                     }
                 }
                 else {
-                    equation.add(new Token_d(temp_s));
+                    equation.add(new Token_d(temp_s, num_system, radians));
                     type = 0;
                     num = 0;
                     if(temp_cp==0) {
-                        equation.add(new Token_d(temp_c+""));
+                        equation.add(new Token_d(temp_c+"", num_system, radians));
                     }
                 }
             }
