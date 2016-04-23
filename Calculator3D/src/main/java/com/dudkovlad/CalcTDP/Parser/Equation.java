@@ -1,4 +1,4 @@
-package com.dudkovlad.Calc3d.Parser;
+package com.dudkovlad.CalcTDP.Parser;
 
 import java.util.ArrayList;
 

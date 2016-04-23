@@ -1,7 +1,6 @@
-package com.dudkovlad.Calc3d.Parser;
+package com.dudkovlad.CalcTDP.Parser;
 
-import com.dudkovlad.Calc3d.Data;
-import com.dudkovlad.Calc3d.MainActivity;
+import com.dudkovlad.CalcTDP.Data;
 
 /**
  * Created by vlad on 16.06.2014.

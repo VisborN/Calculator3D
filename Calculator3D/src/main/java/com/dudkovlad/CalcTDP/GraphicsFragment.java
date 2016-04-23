@@ -1,4 +1,4 @@
-package com.dudkovlad.Calc3d;
+package com.dudkovlad.CalcTDP;
 
 import android.support.v4.app.Fragment;
 import android.content.Context;

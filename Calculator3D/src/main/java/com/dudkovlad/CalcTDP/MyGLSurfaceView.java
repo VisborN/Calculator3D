@@ -1,4 +1,4 @@
-package com.dudkovlad.Calc3d;
+package com.dudkovlad.CalcTDP;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;

@@ -1,4 +1,4 @@
-package com.dudkovlad.Calc3d.Parser;
+package com.dudkovlad.CalcTDP.Parser;
 
 /**
  * Created by vlad on 25.05.2014.

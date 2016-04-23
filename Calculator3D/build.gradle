@@ -7,16 +7,16 @@ def getVersion() {
 }
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
 
     defaultConfig {
 
         minSdkVersion 15
-        targetSdkVersion 21
-        versionCode 1                       //here changing version
+        targetSdkVersion 23
+        versionCode 2                       //here changing version
         versionName getVersion()
-        //applicationId "com.dudkovlad.Calc3d"
+        //applicationId "com.dudkovlad.CalcTDP"
     }
 
 
@@ -24,10 +24,10 @@ android {
 
     signingConfigs{
         release{
-            storeFile file ("./keystore_.jks")
-            storePassword "fkjycbfkjycj"
-            keyAlias "dudkovlad"
-            keyPassword "fkjycbfkjycj"
+            storeFile file ("C:/keystore_.jks")
+            storePassword ""
+            keyAlias "Calculator TDP"
+            keyPassword ""
         }
 
     }
@@ -50,8 +50,8 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v13:21.0.0'
-    compile "com.android.support:appcompat-v7:21.0.3"
+    compile 'com.android.support:support-v13:23.3.0'
+    compile "com.android.support:appcompat-v7:23.3.0"
     //compile 'com.android.support:support-v4:21.0.0'
     //compile 'com.android.support:appcompat-v7:21.0.0'
 

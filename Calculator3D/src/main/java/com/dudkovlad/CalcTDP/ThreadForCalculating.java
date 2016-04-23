@@ -1,9 +1,9 @@
-package com.dudkovlad.Calc3d;
+package com.dudkovlad.CalcTDP;
 
 import android.os.Handler;
 import android.os.Message;
 
-import com.dudkovlad.Calc3d.Parser.Parser;
+import com.dudkovlad.CalcTDP.Parser.Parser;
 
 /**
  * Created by vlad on 22.11.2014.

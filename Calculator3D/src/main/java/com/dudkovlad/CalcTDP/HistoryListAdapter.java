@@ -1,4 +1,4 @@
-package com.dudkovlad.Calc3d;
+package com.dudkovlad.CalcTDP;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
@@ -84,6 +84,7 @@ public class HistoryListAdapter extends ArrayAdapter<HistoryItem> {
         item.setOnClickListener(((MainActivity) mContext).myClickListener);
         item.setOnLongClickListener(((MainActivity) mContext).myClickListener);
         ((TextView)item.findViewById(R.id.history_src)).setHint(((Integer)position).toString()); //это костыль для onClickListener чтобы он понимал с каким элементом списка работает
+				//todo заменить на onItemClicklistener
 
         return item;
     }

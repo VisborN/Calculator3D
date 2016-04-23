@@ -1,4 +1,4 @@
-package com.dudkovlad.Calc3d;
+package com.dudkovlad.CalcTDP;
 
 /**
  * Created by vlad on 27.11.2014.
